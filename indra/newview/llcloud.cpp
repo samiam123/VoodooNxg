@@ -439,8 +439,8 @@ void LLCloudLayer::decompress(LLBitPack &bitpack, LLGroupHeader *group_headerp)
 	// simulator and viewer are not equal.
 	group_headerp->stride = group_headerp->patch_size; 		// offset required to step up one row
 	set_group_of_patch_header(group_headerp);
-
-	decode_patch_header(bitpack, &patch_header);
+    decode_patch_header(bitpack, &patch_header, FALSE); // with var
+	//decode_patch_header(bitpack, &patch_header); // non var
 	decode_patch(bitpack, gBuffer);
 	decompress_patch(mDensityp, gBuffer, &patch_header); 
 }

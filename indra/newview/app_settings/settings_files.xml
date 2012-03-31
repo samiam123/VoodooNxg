@@ -61,7 +61,7 @@
             <key>Global</key>
             <map>
               <key>Name</key>
-              <string>settings_singularity.xml</string>
+              <string>settings_Voodoo.xml</string>
               <key>NameFromSetting</key>
               <string>ClientSettingsFile</string>
             </map>

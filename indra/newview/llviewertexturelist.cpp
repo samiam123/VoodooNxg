@@ -302,6 +302,7 @@ void LLViewerTextureList::shutdown()
 
 void LLViewerTextureList::dump()
 {
+	/*
 	llinfos << "LLViewerTextureList::dump()" << llendl;
 	for (image_priority_list_t::iterator it = mImageList.begin(); it != mImageList.end(); ++it)
 	{
@@ -315,6 +316,7 @@ void LLViewerTextureList::dump()
 		<< " http://asset.siva.lindenlab.com/" << image->getID() << ".texture"
 		<< llendl;
 	}
+	*/
 }
 
 void LLViewerTextureList::destroyGL(BOOL save_state)

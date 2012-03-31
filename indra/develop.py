@@ -73,11 +73,11 @@ class PlatformSetup(object):
     for t in ('Debug', 'Release', 'ReleaseSSE2', 'RelWithDebInfo'):
         build_types[t.lower()] = t
 
-    build_type = build_types['relwithdebinfo']
+    build_type = build_types['releasesse2']
     standalone = 'OFF'
     unattended = 'OFF'
     universal = 'OFF'
-    project_name = 'Singularity'
+    project_name = 'Voodoo'
     distcc = True
     cmake_opts = []
     word_size = 32
@@ -473,14 +473,6 @@ class DarwinSetup(UnixSetup):
 
 class WindowsSetup(PlatformSetup):
     gens = {
-        'vc71' : {
-            'gen' : r'Visual Studio 7 .NET 2003',
-            'ver' : r'7.1'
-            },
-        'vc80' : {
-            'gen' : r'Visual Studio 8 2005',
-            'ver' : r'8.0'
-            },
         'vc90' : {
             'gen' : r'Visual Studio 9 2008',
             'ver' : r'9.0'
@@ -490,8 +482,6 @@ class WindowsSetup(PlatformSetup):
             'ver' : r'10.0'
             }
         }
-    gens['vs2003'] = gens['vc71']
-    gens['vs2005'] = gens['vc80']
     gens['vs2008'] = gens['vc90']
     gens['vs2010'] = gens['vc100']
 
@@ -505,29 +495,29 @@ class WindowsSetup(PlatformSetup):
 
     def _get_generator(self):
         if self._generator is None:
-            for version in 'vc80 vc90 vc100 vc71'.split():
+            for version in 'vc90 vc100'.split():
                 if self.find_visual_studio(version):
                     self._generator = version
                     print 'Building with ', self.gens[version]['gen']
                     break
-            else:
-                print >> sys.stderr, 'Cannot find a Visual Studio installation, testing for express editions'
-                for version in 'vc80 vc90 vc100 vc71'.split():
-                    if self.find_visual_studio_express(version):
-                        self._generator = version
-                        self.using_express = True
-                        print 'Building with ', self.gens[version]['gen'] , "Express edition"
-                        break
-                else:
-					for version in 'vc80 vc90 vc100 vc71'.split():
-						if self.find_visual_studio_express_single(version):
-							self._generator = version
-							self.using_express = True
-							print 'Building with ', self.gens[version]['gen'] , "Express edition"
-							break
-					else:
-						print >> sys.stderr, 'Cannot find any Visual Studio installation'
-						sys.exit(1)
+		if self._generator is None:
+			print >> sys.stderr, 'Cannot find a Visual Studio installation, testing for express editions'
+			for version in 'vc90 vc100'.split():
+				if self.find_visual_studio_express(version):
+					self._generator = version
+					self.using_express = True
+					print 'Building with ', self.gens[version]['gen'] , "Express edition"
+					break
+		if self._generator is None:
+			for version in 'vc90 vc100'.split():
+				if self.find_visual_studio_express_single(version):
+					self._generator = version
+					self.using_express = True
+					print 'Building with ', self.gens[version]['gen'] , "Express edition"
+					break
+		if self._generator is None:
+			print >> sys.stderr, 'Cannot find any Visual Studio installation'
+			sys.exit(1)
         return self._generator
 
     def _set_generator(self, gen):
@@ -608,6 +598,7 @@ class WindowsSetup(PlatformSetup):
             key = _winreg.OpenKey(reg, key_str)
             value = _winreg.QueryValueEx(key, value_str)[0]+"IDE"
             print 'Found: %s' % value
+            self.using_express = True
             return value
         except WindowsError, err:
             print >> sys.stderr, "Didn't find ", self.gens[gen]['gen']
@@ -630,6 +621,7 @@ class WindowsSetup(PlatformSetup):
             key = _winreg.OpenKey(reg, key_str)
             value = _winreg.QueryValueEx(key, value_str)[0]+"IDE"
             print 'Found: %s' % value
+            self.using_express = True
             return value
         except WindowsError, err:
             print >> sys.stderr, "Didn't find ", self.gens[gen]['gen']
@@ -693,9 +685,9 @@ class WindowsSetup(PlatformSetup):
                 continue
             vstool_cmd = (os.path.join('tools','vstool','VSTool.exe') +
                           ' --solution ' +
-                          os.path.join(build_dir,'Singularity.sln') +
+                          os.path.join(build_dir,'Voodoo.sln') +
                           ' --config ' + self.build_type +
-                          ' --startup secondlife-bin')
+                          ' --startup Voodoo')
             print 'Running %r in %r' % (vstool_cmd, getcwd())
             self.run(vstool_cmd)        
             print >> open(stamp, 'w'), self.build_type
@@ -749,7 +741,6 @@ class CygwinSetup(WindowsSetup):
 setup_platform = {
     'darwin': DarwinSetup,
     'linux2': LinuxSetup,
-    'linux3': LinuxSetup,
     'win32' : WindowsSetup,
     'cygwin' : CygwinSetup
     }
@@ -775,8 +766,9 @@ Options:
   -p | --project=NAME   set the root project name. (Doesn't effect makefiles)
                         
 Commands:
-  build           configure and build default target
-  clean           delete all build directories, does not affect sources
+  build      configure and build default target
+  clean      delete all build directories, does not affect sources
+  configure  configure project by running cmake (default command if none given)
   configure       configure project by running cmake (default if none given)
   printbuilddirs  print the build directory that will be used
 

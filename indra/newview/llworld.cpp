@@ -79,14 +79,15 @@ const S32 MAX_NUMBER_OF_CLOUDS	= 750;
 const S32 WORLD_PATCH_SIZE = 16;
 
 extern LLColor4U MAX_WATER_COLOR;
-
-const U32 LLWorld::mWidth = 256;
+//Buzz whats the diff below?
+U32 LLWorld::mWidth = 256; //for var
+//const U32 LLWorld::mWidth = 256; //non var
 
 // meters/point, therefore mWidth * mScale = meters per edge
 const F32 LLWorld::mScale = 1.f;
-
-const F32 LLWorld::mWidthInMeters = mWidth * mScale;
-
+//U32 LLWorld::mScale = 256; // for var
+//const F32 LLWorld::mWidthInMeters = mWidth * mScale; // non var
+F32 LLWorld::mWidthInMeters = mWidth * mScale;
 //
 // Functions
 //
@@ -132,11 +133,13 @@ void LLWorld::destroyClass()
 		LLViewerRegion* region_to_delete = *region_it++;
 		removeRegion(region_to_delete->getHost());
 	}
+	// Buzz this may mess with water on vars ? --------------
+	// Commenting it out to test sams voodoo NAHH changes map water
 	if(LLVOCache::hasInstance())
 	{
 		LLVOCache::getInstance()->destroyClass() ;
 	}
-	LLViewerPartSim::getInstance()->destroyClass();
+    LLViewerPartSim::getInstance()->destroyClass();
 
 	mDefaultWaterTexturep = NULL ;
 	for (S32 i = 0; i < 8; i++)
@@ -145,8 +148,8 @@ void LLWorld::destroyClass()
 	}
 }
 
-
-LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host)
+LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host, const U32 &region_size_x, const U32 &region_size_y) //for var
+//LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host) //non var
 {
 	LLMemType mt(LLMemType::MTYPE_REGIONS);
 	llinfos << "Add region with handle: " << region_handle << " on host " << host << llendl;
@@ -179,9 +182,13 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host)
 
 	U32 iindex = 0;
 	U32 jindex = 0;
+    mWidth = region_size_x;  //for var
+    mWidthInMeters = mWidth * mScale; //for var
 	from_region_handle(region_handle, &iindex, &jindex);
- 	S32 x = (S32)(iindex/mWidth);
- 	S32 y = (S32)(jindex/mWidth);
+    S32 x = (S32)(iindex/256); //for var
+    S32 y = (S32)(jindex/256); //for var
+ 	//S32 x = (S32)(iindex/mWidth); //non var
+ 	//S32 y = (S32)(jindex/mWidth); //non var
 	llinfos << "Adding new region (" << x << ":" << y << ")" << llendl;
 	llinfos << "Host: " << host << llendl;
 
@@ -602,7 +609,10 @@ LLVector3 LLWorld::resolveLandNormalGlobal(const LLVector3d &pos_global)
 void LLWorld::updateVisibilities()
 {
 	F32 cur_far_clip = LLViewerCamera::getInstance()->getFar();
-
+//-------------------------voodoo--------------------------
+	//LLViewerCamera::getInstance()->setFar(mLandFarClip);
+	//F32 diagonal_squared = F_SQRT2 * F_SQRT2 * mWidth * mWidth;
+//-------------------------------------------------------------
 	// Go through the culled list and check for visible regions
 	for (region_list_t::iterator iter = mCulledRegionList.begin();
 			iter != mCulledRegionList.end(); )
@@ -612,6 +622,12 @@ void LLWorld::updateVisibilities()
                 
 		LLSpatialPartition* part = regionp->getSpatialPartition(LLViewerRegion::PARTITION_TERRAIN);
 		if (part)
+//-------------------------Voodoo-------------------------------------		
+		//F32 height = regionp->getLand().getMaxZ() - regionp->getLand().getMinZ();
+		//F32 radius = 0.5f * (F32) sqrt(height * height + diagonal_squared);
+		//if (!regionp->getLand().hasZData()
+		//	|| LLViewerCamera::getInstance()->sphereInFrustum(regionp->getCenterAgent(), radius))
+//---------------------------------------------------------------------
 		{
 			LLSpatialGroup* group = (LLSpatialGroup*) part->mOctree->getListener(0);
 			if (LLViewerCamera::getInstance()->AABBInFrustum(group->mBounds[0], group->mBounds[1]))
@@ -835,7 +851,8 @@ F32 LLWorld::getLandFarClip() const
 
 void LLWorld::setLandFarClip(const F32 far_clip)
 {
-	static S32 const rwidth = (S32)REGION_WIDTH_U32;
+    static S32 const rwidth = (S32)getRegionWidthInMeters(); // for var
+	//static S32 const rwidth = (S32)REGION_WIDTH_U32; //non var
 	S32 const n1 = (llceil(mLandFarClip) - 1) / rwidth;
 	S32 const n2 = (llceil(far_clip) - 1) / rwidth;
 	bool need_water_objects_update = n1 != n2;
@@ -911,8 +928,8 @@ void LLWorld::updateWaterObjects()
 	}
 
 	// Region width in meters.
-	S32 const rwidth = (S32)REGION_WIDTH_U32;
-
+	//S32 const rwidth = (S32)REGION_WIDTH_U32;//non var
+	S32 const rwidth = (S32)getRegionWidthInMeters();//REGION_WIDTH_U32;
 	// The distance we might see into the void
 	// when standing on the edge of a region, in meters.
 	S32 const draw_distance = llceil(mLandFarClip);
@@ -1264,11 +1281,21 @@ void process_enable_simulator(LLMessageSystem *msg, void **user_data)
 
 	// which simulator should we modify?
 	LLHost sim(ip_u32, port);
-
+    // ----------Added one block below for var -----------------------------------------------------------
+	U32 region_size_x = 256;
+    msg->getU32Fast(_PREHASH_SimulatorInfo, _PREHASH_RegionSizeX, region_size_x);
+    U32 region_size_y = 256;
+    msg->getU32Fast(_PREHASH_SimulatorInfo, _PREHASH_RegionSizeY, region_size_y);
+    if (region_size_y == 0 || region_size_x == 0)
+    {
+        region_size_x = 256;
+        region_size_y = 256;
+    }
+    //-------------------------------------------------------------------------------------------------------
 	// Viewer trusts the simulator.
 	msg->enableCircuit(sim, TRUE);
-	LLWorld::getInstance()->addRegion(handle, sim);
-
+	//LLWorld::getInstance()->addRegion(handle, sim); //non var
+    LLWorld::getInstance()->addRegion(handle, sim, region_size_x, region_size_y); //for var
 	// give the simulator a message it can use to get ip and port
 	llinfos << "simulator_enable() Enabling " << sim << " with code " << msg->getOurCircuitCode() << llendl;
 	msg->newMessageFast(_PREHASH_UseCircuitCode);
@@ -1418,7 +1445,9 @@ static LLVector3d unpackLocalToGlobalPosition(U32 compact_local, const LLVector3
     pos_local.mdV[VX] = (compact_local >> 16) & 0xFFU;
 
     pos_global += pos_local;
-    return pos_global;
+	// comment out one line below add in one after should help with tps sams voodoo test
+    //return pos_global;
+	return region_origin + pos_local;
 }
 
 void LLWorld::getAvatars(std::vector<LLUUID>* avatar_ids, std::vector<LLVector3d>* positions, const LLVector3d& relative_to, F32 radius) const

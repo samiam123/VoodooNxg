@@ -253,7 +253,7 @@ void LLPanelNetwork::updateProxyEnabled(LLPanelNetwork * self, bool enabled, std
 	self->childSetEnabled("socks5_proxy_port",  enabled);
 	self->childSetEnabled("socks5_proxy_host",  enabled);
 	self->childSetEnabled("socks5_host_label",  enabled);
-	//self->childSetEnabled("socks5_proxy_label", enabled); Making Dummy View -HgB
+	self->childSetEnabled("socks5_proxy_label", enabled); //Making Dummy View -HgB
 	self->childSetEnabled("socks5_proxy_port",  enabled);
 	self->childSetEnabled("socks5_auth_label",  enabled);
 	self->childSetEnabled("socks5_auth",        enabled);
@@ -262,7 +262,7 @@ void LLPanelNetwork::updateProxyEnabled(LLPanelNetwork * self, bool enabled, std
 	// this is still not ideal as apply or ok is needed for this to be saved to the preferences
 	self->childSetEnabled("Web", gSavedSettings.getBOOL("BrowserProxyEnabled"));
 
-	self->childSetEnabled("Socks", enabled);
+	self->childSetEnabled("Socks5", enabled);
 
 	// Hide the auth specific lables if authtype is none or
 	// we are not enabled.

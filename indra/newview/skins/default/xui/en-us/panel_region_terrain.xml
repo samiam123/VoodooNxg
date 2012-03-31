@@ -42,11 +42,11 @@
 	<view_border bevel_style="none" border_thickness="1" bottom_delta="-5" follows="top|left"
 	     height="130" left="8" width="460" />
 	<button bottom_delta="-80" follows="left|top" height="20"
-	     label="Download RAW terrain..." left="10" name="download_raw_btn"
+	     label="Download RAW Terrain" left="10" name="download_raw_btn"
 	     tool_tip="Available only to estate owners, not managers" width="170" />
 	<button bottom_delta="0" follows="left|top" font="SansSerifSmall" height="18" label="?"
 	     left="190" name="download_raw_help" width="18" />
-	<button bottom_delta="-23" follows="left|top" height="20" label="Upload RAW terrain..."
+	<button bottom_delta="-23" follows="left|top" height="20" label="Upload RAW Terrain"
 	     left="10" name="upload_raw_btn"
 	     tool_tip="Available only to estate owners, not managers" width="170" />
 	<button bottom_delta="0" follows="left|top" font="SansSerifSmall" height="18" label="?"

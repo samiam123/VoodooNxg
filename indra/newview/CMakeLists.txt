@@ -16,6 +16,7 @@ endif(FMODEX)
 if(NOT FMODEX)
 	include(FMOD)
 endif(NOT FMODEX)
+include(FMOD)
 include(OPENAL)
 include(HUNSPELL)
 include(FindOpenGL)
@@ -556,7 +557,7 @@ set(viewer_SOURCE_FILES
     )
 
 # This gets renamed in the packaging step
-set(VIEWER_BINARY_NAME "secondlife-bin" CACHE STRING
+set(VIEWER_BINARY_NAME "Voodoo" CACHE STRING
     "The name of the viewer executable to create.")
 
 set(viewer_HEADER_FILES
@@ -1121,13 +1122,15 @@ if (WINDOWS)
     # at this point use it.
     set_source_files_properties(llviewerprecompiledheaders.cpp
         PROPERTIES
-        COMPILE_FLAGS "/Ycllviewerprecompiledheaders.h"
+        #COMPILE_FLAGS "/Ycllviewerprecompiledheaders.h"
+        COMPILE_FLAGS "/Y-"
         )        
     foreach( src_file ${viewer_SOURCE_FILES} )
         set_source_files_properties(
             ${src_file}
             PROPERTIES
-            COMPILE_FLAGS "/Yullviewerprecompiledheaders.h"
+            #COMPILE_FLAGS "/Yullviewerprecompiledheaders.h"
+            COMPILE_FLAGS "/Y-"
             )        
     endforeach( src_file ${viewer_SOURCE_FILES} )
     list(APPEND viewer_SOURCE_FILES llviewerprecompiledheaders.cpp)
@@ -1161,8 +1164,8 @@ if (WINDOWS)
         ${ARTWORK_DIR}/res/lltooltranslate.cur
         ${ARTWORK_DIR}/res/lltoolzoomin.cur
         ${ARTWORK_DIR}/res/lltoolzoomout.cur
-        ${ARTWORK_DIR}/res/snowglobe_icon.BMP
-        ${ARTWORK_DIR}/res/snowglobe_icon.ico
+        ${ARTWORK_DIR}/res/Voodoo.BMP
+        ${ARTWORK_DIR}/res/Voodoo.ico
         ${ARTWORK_DIR}/res/resource.h
         ${ARTWORK_DIR}/res/toolbuy.cur
         ${ARTWORK_DIR}/res/toolopen.cur
@@ -1220,6 +1223,7 @@ if (WINDOWS)
         odbccp32
         ole32
         oleaut32
+
         shell32
         user32
         Vfw32
@@ -1430,7 +1434,8 @@ endif (FMODEX)
 
     set_target_properties(${VIEWER_BINARY_NAME}
         PROPERTIES
-        LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS ${GOOGLE_PERFTOOLS_LINKER_FLAGS} ${EXTRA_LINKER_FLAGS}"
+        #LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS ${GOOGLE_PERFTOOLS_LINKER_FLAGS} ${EXTRA_LINKER_FLAGS}"
+        LINK_FLAGS "/NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS ${GOOGLE_PERFTOOLS_LINKER_FLAGS} /LARGEADDRESSAWARE"
         LINK_FLAGS_DEBUG "/NODEFAULTLIB:\"LIBCMT;LIBCMTD;MSVCRT\""
         LINK_FLAGS_RELEASE ${release_flags}
         )
@@ -1691,6 +1696,7 @@ if (WINDOWS)
     set_target_properties(llcommon
         PROPERTIES
         LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT"
+        #LINK_FLAGS "/NODEFAULTLIB:LIBCMT"
         LINK_FLAGS_DEBUG "/NODEFAULTLIB:\"LIBCMT;LIBCMTD;MSVCRT\""
         )
 
