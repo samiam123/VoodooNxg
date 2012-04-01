@@ -1279,6 +1279,7 @@ void LLAudioEngine::assetCallback(LLVFS *vfs, const LLUUID &uuid, LLAssetType::E
 			adp->setHasValidData(false);
 			adp->setHasLocalData(false);
 			adp->setHasDecodedData(false);
+	        adp->setHasDecodeRequestPending( false ); // <FS:ND> Buffer has no data, can be reused.
 		}
 	}
 	else
@@ -1293,6 +1294,7 @@ void LLAudioEngine::assetCallback(LLVFS *vfs, const LLUUID &uuid, LLAssetType::E
 		{
 			adp->setHasValidData(true);
 		    adp->setHasLocalData(true);
+			adp->setHasDecodeRequestPending( true ); // <FS:ND> Data must be decoded, wait for it.
 		    gAudioDecodeMgrp->addDecodeRequest(uuid);
 		}
 	}
@@ -1382,6 +1384,10 @@ void LLAudioSource::update()
 	{
 		if (getCurrentData())
 		{
+				// <FS:ND> Don't try to load if still waiting for decoded data. Otherwise load fails, mCorrupted gets set and we never get a sound played.
+    		if( getCurrentData()->hasDecodeRequestPending() )
+    			return;
+   			// </FS:ND>
 			// Hack - try and load the sound.  Will do this as a callback
 			// on decode later.
 			if (getCurrentData()->load() && getCurrentData()->getBuffer())
@@ -1692,9 +1698,6 @@ LLAudioBuffer * LLAudioSource::getCurrentBuffer()
 	return mCurrentDatap->getBuffer();
 }
 
-
-
-
 //
 // LLAudioChannel implementation
 //
@@ -1708,7 +1711,6 @@ LLAudioChannel::LLAudioChannel() :
 	mSecondaryGain(1.0f)
 {
 }
-
 
 LLAudioChannel::~LLAudioChannel()
 {
@@ -1812,10 +1814,12 @@ LLAudioData::LLAudioData(const LLUUID &uuid) :
 	mBufferp(NULL),
 	mHasLocalData(false),
 	mHasDecodedData(false),
-	mHasValidData(true)
+	mHasValidData(true),
+    mHasDecodeRequest(true)
 {
 	if (uuid.isNull())
 	{
+		mHasDecodeRequest = false; //FS audio patch
 		// This is a null sound.
 		return;
 	}
@@ -1825,10 +1829,13 @@ LLAudioData::LLAudioData(const LLUUID &uuid) :
 		// Already have a decoded version, don't need to decode it.
 		mHasLocalData = true;
 		mHasDecodedData = true;
+		mHasDecodeRequest = false;
 	}
 	else if (gAssetStorage && gAssetStorage->hasLocalAsset(uuid, LLAssetType::AT_SOUND))
 	{
 		mHasLocalData = true;
+		mHasDecodeRequest = false;
+
 	}
 }
 
