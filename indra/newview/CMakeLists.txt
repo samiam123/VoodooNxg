@@ -441,6 +441,7 @@ set(viewer_SOURCE_FILES
     lltoolselectland.cpp
     lltoolselectrect.cpp
     lltoolview.cpp
+    lltpresponder.cpp
     lltracker.cpp
     lluploaddialog.cpp
 	lluploadfloaterobservers.cpp
@@ -930,6 +931,7 @@ set(viewer_HEADER_FILES
     lltoolselectland.h
     lltoolselectrect.h
     lltoolview.h
+    lltpresponder.h
     lltracker.h
     lltranslate.h
     lluiconstants.h

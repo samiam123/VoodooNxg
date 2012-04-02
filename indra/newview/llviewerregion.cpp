@@ -1609,11 +1609,14 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("SendUserReport");
 	capabilityNames.append("SendUserReportWithScreenshot");
 	capabilityNames.append("ServerReleaseNotes");
-	//capabilityNames.append("SimConsole");
+	//uncommented sim con caps
+	capabilityNames.append("SimConsole");
 	capabilityNames.append("SimulatorFeatures");
 	capabilityNames.append("SetDisplayName");
 	//capabilityNames.append("SimConsoleAsync");
 	capabilityNames.append("StartGroupProposal");
+	// added one line for new caps faster tps RS
+    capabilityNames.append("TeleportLocation");
 	capabilityNames.append("TextureStats");
 	capabilityNames.append("UntrustedSimulatorMessage");
 	capabilityNames.append("UpdateAgentInformation");

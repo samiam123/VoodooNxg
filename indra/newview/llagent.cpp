@@ -99,7 +99,7 @@
 #include "llfloaterchat.h"
 
 #include "lluictrlfactory.h" //For LLUICtrlFactory::getLayeredXMLNode
-
+#include "lltpresponder.h"
 // [RLVa:KB] - Checked: 2010-09-27 (RLVa-1.1.3b)
 #include "rlvhandler.h"
 #include "rlvinventory.h"
@@ -2141,6 +2141,9 @@ void LLAgent::setStartPosition( U32 location_id )
     agent_pos.mV[VZ] = llclamp( agent_pos.mV[VZ],
                                 mRegionp->getLandHeightRegion( agent_pos ),
                                 LLWorld::getInstance()->getRegionMaxHeight() );
+//	std::string url = gAgent.getRegion()->getCapability("HomeLocation");
+//	if( !url.empty() )
+//	{
     // Send the CapReq
     LLSD request;
     LLSD body;
@@ -2152,6 +2155,7 @@ void LLAgent::setStartPosition( U32 location_id )
 
     body["HomeLocation"] = homeLocation;
 
+//		LLHTTPClient::post( url, body, new LLHomeLocationResponder() );
     // This awkward idiom warrants explanation.
     // For starters, LLSDMessage::ResponderAdapter is ONLY for testing the new
     // LLSDMessage functionality with a pre-existing LLHTTPClient::Responder.
@@ -3473,7 +3477,13 @@ void LLAgent::teleportRequest(
 	bool is_local = (region_handle == to_region_handle(getPositionGlobal()));
 	if(regionp && teleportCore(is_local))
 	{
-		LL_INFOS("") << "TeleportLocationRequest: '" << region_handle << "':"
+		std::string url;
+		if(region_handle != regionp->getHandle() &&
+			!(url=regionp->getCapability("TeleportLocation")).empty())
+		{
+			LLSD body;
+			body["LocationPos"] = ll_sdmap_from_vector3(pos_local);
+		/*LL_INFOS("") << "TeleportLocationRequest: '" << region_handle << "':"
 					 << pos_local << LL_ENDL;
 		LLMessageSystem* msg = gMessageSystem;
 		msg->newMessage("TeleportLocationRequest");
@@ -3484,15 +3494,71 @@ void LLAgent::teleportRequest(
 		msg->addU64("RegionHandle", region_handle);
 		msg->addVector3("Position", pos_local);
 		// <edit>
-		//LLVector3 look_at(0,1,0);
+		//LLVector3 look_at(0,1,0);*/
 		LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
-		/*if (look_at_from_camera)
+			body["LocationLookAt"] = ll_sdmap_from_vector3(look_at);
+			body["RegionHandle"] = LLSD::Real(region_handle);
+			LLHTTPClient::post(url, body, new LLTPResponder());
+		}
+		else
+		// if (look_at_from_camera)
 		{
-			look_at = LLViewerCamera::getInstance()->getAtAxis();
-		}*/
+			llinfos << "TeleportLocationRequest: '" << region_handle << "':" << pos_local
+					<< llendl;
+			LLMessageSystem* msg = gMessageSystem;
+			msg->newMessage("TeleportLocationRequest");
+			msg->nextBlockFast(_PREHASH_AgentData);
+			msg->addUUIDFast(_PREHASH_AgentID, getID());
+			msg->addUUIDFast(_PREHASH_SessionID, getSessionID());
+			msg->nextBlockFast(_PREHASH_Info);
+			msg->addU64("RegionHandle", region_handle);
+			msg->addVector3("Position", pos_local);
+			// <edit>
+			//LLVector3 look_at(0,1,0);
+			//look_at = LLViewerCamera::getInstance()->getAtAxis();
+			LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();			
+			/*if (look_at_from_camera)
+			{
+				look_at = LLViewerCamera::getInstance()->getAtAxis();
+			}*/
+			// </edit>
+			msg->addVector3("LookAt", look_at);
+			sendReliableMessage();
+		}
 		// </edit>
-		msg->addVector3("LookAt", look_at);
-		sendReliableMessage();
+		//msg->addVector3("LookAt", look_at);
+		//sendReliableMessage();
+		//*/
+ LLSD body;
+      body["LocationPos"] = ll_sdmap_from_vector3(pos_local);
+      LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
+      body["LocationLookAt"] = ll_sdmap_from_vector3(look_at);
+      body["RegionHandle"] = LLSD::Real(region_handle);
+      LLHTTPClient::post(url, body, new LLTPResponder());
+    }
+    else
+    {
+      llinfos << "TeleportLocationRequest: '" << region_handle << "':" << pos_local
+          << llendl;
+      LLMessageSystem* msg = gMessageSystem;
+      msg->newMessage("TeleportLocationRequest");
+      msg->nextBlockFast(_PREHASH_AgentData);
+      msg->addUUIDFast(_PREHASH_AgentID, getID());
+      msg->addUUIDFast(_PREHASH_SessionID, getSessionID());
+      msg->nextBlockFast(_PREHASH_Info);
+      msg->addU64("RegionHandle", region_handle);
+      msg->addVector3("Position", pos_local);
+      // <edit>
+      //LLVector3 look_at(0,1,0);
+      LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
+      /*if (look_at_from_camera)
+      {
+        look_at = LLViewerCamera::getInstance()->getAtAxis();
+		}*/
+      // </edit>
+      msg->addVector3("LookAt", look_at);
+      sendReliableMessage();
+      //}
 	}
 }
 
