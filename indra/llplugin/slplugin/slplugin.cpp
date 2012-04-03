@@ -105,7 +105,9 @@ BOOL PreventSetUnhandledExceptionFilter()
 {
 // WARNING: This won't work on 64-bit Windows systems so we turn it off it.
 //          It should work for any flavor of 32-bit Windows we care about.
-//          If it's off, sometimes you will see an OS message when a plugin crashes
+//
+	/*If it's off, sometimes you will see an OS message when a plugin crashes
+	// this can also cause false positives on some AV scanners so i have commented it out sams voodoo
 #ifndef _WIN64
 	HMODULE hKernel32 = LoadLibraryA( "kernel32.dll" );
 	if ( NULL == hKernel32 )
@@ -130,6 +132,8 @@ BOOL PreventSetUnhandledExceptionFilter()
 #else
 	return FALSE;
 #endif
+	*/
+return TRUE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

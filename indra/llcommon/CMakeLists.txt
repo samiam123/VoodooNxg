@@ -202,6 +202,7 @@ set(llcommon_HEADER_FILES
     llrun.h
     llrefcount.h
     llsafehandle.h
+    llscopedvolatileaprpool.h
     llsd.h
     llsdserialize.h
     llsdserialize_xml.h
@@ -221,6 +222,7 @@ set(llcommon_HEADER_FILES
     llstring.h
     llstringtable.h
     llsys.h
+    ll_template_cast.h
     llthread.h
     llthreadsafequeue.h
     lltimer.h
