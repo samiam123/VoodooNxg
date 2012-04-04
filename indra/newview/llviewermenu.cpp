@@ -259,7 +259,7 @@
 #include "llagentui.h"
 
 #include "hippogridmanager.h"
-
+#include "llfloaterregiondebugconsole.h"
 using namespace LLOldEvents;
 using namespace LLVOAvatarDefines;
 void init_client_menu(LLMenuGL* menu);
@@ -1173,6 +1173,8 @@ void init_client_menu(LLMenuGL* menu)
 										&menu_check_control,
 										(void*)"ShowConsoleWindow"));
 
+	menu->append(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
+
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | Modified: RLVa-1.0.0e | OK
 	#ifdef RLV_ADVANCED_TOGGLE_RLVA
 		if (gSavedSettings.controlExists(RLV_SETTING_MAIN))
@@ -1579,16 +1581,16 @@ void init_debug_rendering_menu(LLMenuGL* menu)
 	item = new LLMenuItemCheckGL("Audit Texture", menu_toggle_control, NULL, menu_check_control, (void*)"AuditTexture");
 	menu->append(item);
 
-#ifndef LL_RELEASE_FOR_DOWNLOAD
-	menu->appendSeparator();
-	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-#else
-	if(gSavedSettings.getBOOL("QAMode"))
-	{
-		menu->appendSeparator();
-		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-	}
-#endif
+//#ifndef LL_RELEASE_FOR_DOWNLOAD
+//	menu->appendSeparator();
+//	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+//#else
+//	if(gSavedSettings.getBOOL("QAMode"))
+//	{
+//		menu->appendSeparator();
+//		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+//	}
+//#endif
 	
 	menu->createJumpKeys();
 }

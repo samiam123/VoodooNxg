@@ -1613,7 +1613,7 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("SimConsole");
 	capabilityNames.append("SimulatorFeatures");
 	capabilityNames.append("SetDisplayName");
-	//capabilityNames.append("SimConsoleAsync");
+	capabilityNames.append("SimConsoleAsync");
 	capabilityNames.append("StartGroupProposal");
 	// added one line for new caps faster tps RS
     capabilityNames.append("TeleportLocation");

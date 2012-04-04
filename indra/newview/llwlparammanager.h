@@ -37,6 +37,7 @@
 #include <map>
 #include "llenvmanager.h"
 #include "llwlparamset.h"
+#include "llwaterparamset.h"
 #include "llwlanimator.h"
 #include "llwldaycycle.h"
 #include "llviewercamera.h"

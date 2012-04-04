@@ -128,11 +128,12 @@ private:
 public:
 	void addImage(LLViewerFetchedTexture *image);
 	void deleteImage(LLViewerFetchedTexture *image);
-private:
+/*
+private: // commented out for region console and moved down sams voodoo
 
 	void addImageToList(LLViewerFetchedTexture *image);
 	void removeImageFromList(LLViewerFetchedTexture *image);
-
+*/
 	LLViewerFetchedTexture * getImage(const LLUUID &image_id,									 
 									 BOOL usemipmap = TRUE,
 									 LLViewerTexture::EBoostLevel boost_priority = LLViewerTexture::BOOST_NONE,		// Get the requested level immediately upon creation.
@@ -141,6 +142,9 @@ private:
 									 LLGLenum primary_format = 0,
 									 LLHost request_from_host = LLHost()
 									 );
+private: 
+  void addImageToList(LLViewerFetchedTexture *image); 
+  void removeImageFromList(LLViewerFetchedTexture *image); 
 	
 	LLViewerFetchedTexture * getImageFromFile(const std::string& filename,									 
 									 BOOL usemipmap = TRUE,
