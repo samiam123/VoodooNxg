@@ -28,7 +28,7 @@
 #define LL_MESSAGE_PREHASH_H
 
 /**
- * Generated from message template version number 2.000
+ * Generated from message template version number 2.000.0
  */
 
 
@@ -39,6 +39,8 @@ extern char const* const _PREHASH_Y;
 extern char const* const _PREHASH_Z;
 extern char const* const _PREHASH_SizeX;
 extern char const* const _PREHASH_SizeY;
+extern char const* const _PREHASH_RegionSizeX;
+extern char const* const _PREHASH_RegionSizeY;
 extern char const* const _PREHASH_AddFlags;
 extern char const* const _PREHASH_FailureInfo;
 extern char const* const _PREHASH_MapData;

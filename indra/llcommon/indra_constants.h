@@ -104,7 +104,7 @@ const 	F32 	DEFAULT_AGENT_HEIGHT	= 1.9f;
 const 	F32 	MAX_AGENT_HEIGHT		= 2.45f;
 
 // For linked sets
-const S32 MAX_CHILDREN_PER_TASK = 255;
+const S32 MAX_CHILDREN_PER_TASK = 1000;
 const S32 MAX_CHILDREN_PER_PHYSICAL_TASK = 32;
 
 const S32 MAX_JOINTS_PER_OBJECT = 1;	// limiting to 1 until Havok 2.x
@@ -153,7 +153,11 @@ const	char	LAND_LAYER_CODE					= 'L';
 const	char	WATER_LAYER_CODE				= 'W';
 const	char	WIND_LAYER_CODE					= '7';
 const	char	CLOUD_LAYER_CODE				= '8';
-
+// Extended land layer for Aurora Sim
+const   char    AURORA_LAND_LAYER_CODE          = 'M';
+const   char    AURORA_WATER_LAYER_CODE         = 'X';
+const   char    AURORA_WIND_LAYER_CODE          = '9';
+const   char    AURORA_CLOUD_LAYER_CODE         = ':';
 // keys
 // Bit masks for various keyboard modifier keys.
 const MASK MASK_NONE =			0x0000;

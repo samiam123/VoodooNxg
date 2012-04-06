@@ -72,7 +72,7 @@ BOOL LLPanelGeneral::postBuild()
 	childSetValue("show_my_title_checkbox", gSavedSettings.getBOOL("RenderHideGroupTitle"));
 	childSetValue("afk_timeout_spinner", gSavedSettings.getF32("AFKTimeout"));
 	childSetValue("notify_money_change_checkbox", gSavedSettings.getBOOL("NotifyMoneyChange"));
-
+    childSetValue("Use_Serverside_Windlight_Settings", gSavedSettings.getBOOL("UseServersideWindlightSettings"));
 	
 
 	childSetValue("ui_scale_slider", gSavedSettings.getF32("UIScaleFactor"));
@@ -147,7 +147,7 @@ void LLPanelGeneral::apply()
 	gSavedSettings.setBOOL("RenderHideGroupTitle", childGetValue("show_my_title_checkbox"));
 	gSavedSettings.setF32("AFKTimeout", childGetValue("afk_timeout_spinner").asReal());
 	gSavedSettings.setBOOL("NotifyMoneyChange", childGetValue("notify_money_change_checkbox"));
-
+    gSavedSettings.setBOOL("UseServersideWindlightSettings", childGetValue("Use_Serverside_Windlight_Settings"));
 	
 	gSavedSettings.setF32("UIScaleFactor", childGetValue("ui_scale_slider").asReal());
 	gSavedSettings.setBOOL("UIAutoScale", childGetValue("ui_auto_scale"));

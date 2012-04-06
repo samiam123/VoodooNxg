@@ -107,8 +107,9 @@ private:
 private:
 	// Back pointer to the region that owns this structure.
 	LLViewerRegion*	mRegion;
-
-	S32				mParcelGridsPerEdge;
+    S32               mParcelGridsPerEdge; // for var
+	S32             mRegionSize;
+	//S32				mParcelGridsPerEdge;// non var
 
 	LLPointer<LLViewerTexture> mTexture;
 	LLPointer<LLImageRaw> mImageRaw;

@@ -53,21 +53,32 @@ LLVLManager::~LLVLManager()
 	}
 	mPacketData.reset();
 }
-
+// Buzz layers set here
 void LLVLManager::addLayerData(LLVLData *vl_datap, const S32 mesg_size)
 {
-	if (LAND_LAYER_CODE == vl_datap->mType)
+    if (LAND_LAYER_CODE == vl_datap->mType ||  //for var
+    AURORA_LAND_LAYER_CODE == vl_datap->mType) //for var
+	//if (LAND_LAYER_CODE == vl_datap->mType)// non var
 	{
 		mLandBits += mesg_size * 8;
 	}
-	else if (WIND_LAYER_CODE == vl_datap->mType)
+    else if (WIND_LAYER_CODE == vl_datap->mType || //for var
+    AURORA_WIND_LAYER_CODE == vl_datap->mType) //for var
+	//else if (WIND_LAYER_CODE == vl_datap->mType) //non var
 	{
 		mWindBits += mesg_size * 8;
 	}
-	else if (CLOUD_LAYER_CODE == vl_datap->mType)
+    else if (CLOUD_LAYER_CODE == vl_datap->mType || //for var
+	AURORA_CLOUD_LAYER_CODE == vl_datap->mType) //for var
+	//else if (CLOUD_LAYER_CODE == vl_datap->mType) //non var
 	{
 		mCloudBits += mesg_size * 8;
 	}
+    else if (WATER_LAYER_CODE == vl_datap->mType || // for var
+    AURORA_CLOUD_LAYER_CODE == vl_datap->mType) // for var
+  {
+    mWaterBits += mesg_size * 8;//for var
+    }
 	else
 	{
 		llerrs << "Unknown layer type!" << (S32)vl_datap->mType << llendl;
@@ -93,15 +104,29 @@ void LLVLManager::unpackData(const S32 num_packets)
 		{
 			datap->mRegionp->getLand().decompressDCTPatch(bit_pack, &goph, FALSE);
 		}
-		else if (WIND_LAYER_CODE == datap->mType)
+		//-------------- added block below for var -----------------------------------------------
+   else if (AURORA_LAND_LAYER_CODE == datap->mType)
+    {
+      datap->mRegionp->getLand().decompressDCTPatch(bit_pack, &goph, TRUE);
+    }
+    else if (WIND_LAYER_CODE == datap->mType ||
+      AURORA_WIND_LAYER_CODE == datap->mType)
+	  //------------------------------------------------------------------------------------------
+		//else if (WIND_LAYER_CODE == datap->mType)//non var
 		{
 			datap->mRegionp->mWind.decompress(bit_pack, &goph);
 
 		}
-		else if (CLOUD_LAYER_CODE == datap->mType)
+     else if (CLOUD_LAYER_CODE == datap->mType || //for var
+      AURORA_CLOUD_LAYER_CODE == datap->mType) // for var
+		//else if (CLOUD_LAYER_CODE == datap->mType) //non var
 		{
 			datap->mRegionp->mCloudLayer.decompress(bit_pack, &goph);
 		}
+    else if (WATER_LAYER_CODE == datap->mType || // for var
+      AURORA_WATER_LAYER_CODE == datap->mType) //for var
+    { //for var
+    } //for var
 	}
 
 	for (i = 0; i < mPacketData.count(); i++)

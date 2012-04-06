@@ -69,7 +69,7 @@ void LLFloaterStats::buildStats()
 									"DebugStatModeFPS", TRUE, TRUE);
 	stat_barp->setUnitLabel(" fps");
 	stat_barp->mMinBar = 0.f;
-	stat_barp->mMaxBar = 45.f;
+	stat_barp->mMaxBar = 100.f;
 	stat_barp->mTickSpacing = 7.5f;
 	stat_barp->mLabelSpacing = 15.f;
 	stat_barp->mPrecision = 1;

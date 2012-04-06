@@ -100,7 +100,7 @@
 #endif
 
 #if LL_WINDOWS
-#	include <share.h> // For _SH_DENYWR in initMarkerFile
+#include <share.h> // For _SH_DENYWR in initMarkerFile
 #else
 #   include <sys/file.h> // For initMarkerFile support
 #endif
@@ -501,7 +501,7 @@ static void settings_to_globals()
 	gAgentPilot.mNumRuns		= gSavedSettings.getS32("StatsNumRuns");
 	gAgentPilot.mQuitAfterRuns	= gSavedSettings.getBOOL("StatsQuitAfterRuns");
 	gAgent.setHideGroupTitle(gSavedSettings.getBOOL("RenderHideGroupTitle"));
-		
+
 	gDebugWindowProc = gSavedSettings.getBOOL("DebugWindowProc");
 	gAllowIdleAFK = gSavedSettings.getBOOL("AllowIdleAFK");
 	gAllowTapTapHoldRun = gSavedSettings.getBOOL("AllowTapTapHoldRun");
@@ -601,7 +601,8 @@ bool LLAppViewer::init()
 	LLVector4a::initClass();
 	// Need to do this initialization before we do anything else, since anything
 	// that touches files should really go through the lldir API
-	gDirUtilp->initAppDirs("SecondLife");
+	//gDirUtilp->initAppDirs("SecondLife");
+     gDirUtilp->initAppDirs("Voodoo");
 	// set skin search path to default, will be overridden later
 	// this allows simple skinned file lookups to work
 	gDirUtilp->setSkinFolder("default");
@@ -2316,7 +2317,7 @@ bool LLAppViewer::initConfiguration()
     mYieldTime = gSavedSettings.getS32("YieldTime");
              
 	// XUI:translate
-	gSecondLife = "Singularity Viewer";
+	gSecondLife = "Voodoo";
 
 	// Read skin/branding settings if specified.
 	//if (! gDirUtilp->getSkinDir().empty() )
@@ -3596,7 +3597,7 @@ void LLAppViewer::badNetworkHandler()
 		"the issue. \n"
 		" \n"
 		"If the problem continues, please report the issue at: \n"
-		"http://www.singularityviewer.org" << grid_support_msg;
+		"http://grid.kikcs-ass.net" << grid_support_msg;
 	forceDisconnect(message.str());
 }
 

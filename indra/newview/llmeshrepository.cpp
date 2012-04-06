@@ -66,7 +66,7 @@
 #include "llinventorymodel.h"
 #include "llfoldertype.h"
 #include "llviewerparcelmgr.h"
-
+#include "rlvviewer2.h"
 #include "boost/lexical_cast.hpp"
 #ifndef LL_WINDOWS
 #include "netdb.h"

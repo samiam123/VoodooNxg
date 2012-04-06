@@ -3,7 +3,7 @@
 	<map>
 		<!-- Ascent-Specific Settings -->
 
-    <key>SingularityBoldGroupModerator</key>
+    <key>VoodooBoldGroupModerator</key>
     <map>
       <key>Comment</key>
       <string>Should group moderator chat be displayed in bold</string>
@@ -398,7 +398,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</map>
 		<key>AscentBuildPrefs_PivotIsPercent</key>
 		<map>

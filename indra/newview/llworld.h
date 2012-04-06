@@ -70,8 +70,8 @@ class LLWorld : public LLSingleton<LLWorld>
 public:
 	LLWorld();
 	void destroyClass();
-
-	LLViewerRegion*	addRegion(const U64 &region_handle, const LLHost &host);
+    LLViewerRegion*  addRegion(const U64 &region_handle, const LLHost &host, const U32 &region_size_x, const U32 &region_size_y);
+	//LLViewerRegion*	addRegion(const U64 &region_handle, const LLHost &host); //non var
 		// safe to call if already present, does the "right thing" if
 		// hosts are same, or if hosts are different, etc...
 	void			removeRegion(const LLHost &host);
@@ -170,12 +170,13 @@ private:
 	region_list_t	mCulledRegionList;
 
 	// Number of points on edge
-	static const U32 mWidth;
+    static U32 mWidth; //for var
+	//static const U32 mWidth; //non var
 
 	// meters/point, therefore mWidth * mScale = meters per edge
 	static const F32 mScale;
-
-	static const F32 mWidthInMeters;
+    static F32 mWidthInMeters; //for var
+	//static const F32 mWidthInMeters; //non var
 
 	F32 mLandFarClip;					// Far clip distance for land.
 	LLPatchVertexArray		mLandPatch;

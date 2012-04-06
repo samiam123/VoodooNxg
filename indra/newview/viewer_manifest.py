@@ -73,7 +73,12 @@ class ViewerManifest(LLManifest):
             self.path("*.ttf")
             self.path("*.txt")
             self.end_prefix("fonts")
-
+            
+        # Include the local_assets directory recursively
+         #if self.prefix(src="local_assets"):
+           #  self.path("*.j2c")
+           #  self.end_prefix("local_assets")
+ 
         # skins
         if self.prefix(src="skins"):
                 self.path("paths.xml")
@@ -136,7 +141,8 @@ class ViewerManifest(LLManifest):
     def installer_prefix(self):
         mapping={"secondlife":'SecondLife_',
                  "snowglobe":'Snowglobe_',
-                 "singularity":'Singularity_'}
+                 "Voodoo":'Voodoo_'}
+				 
         return mapping[self.viewer_branding_id()]
 
     def flags_list(self):
@@ -179,7 +185,7 @@ class WindowsManifest(ViewerManifest):
         super(WindowsManifest, self).construct()
         # the final exe is complicated because we're not sure where it's coming from,
         # nor do we have a fixed name for the executable
-        self.path(src='%s/secondlife-bin.exe' % self.args['configuration'], dst=self.final_exe())
+        self.path(src='%s/Voodoo.exe' % self.args['configuration'], dst=self.final_exe())
 
         # Plugin host application
         self.path(os.path.join(os.pardir,
@@ -208,14 +214,14 @@ class WindowsManifest(ViewerManifest):
         self.path("dbghelp.dll")
 
         # For using FMOD for sound... DJS
-        #~if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
-            #~try:
-                #~self.path("fmod.dll")
-                #~pass
-            #~except:
-                #~print "Skipping fmod.dll - not found"
-               #~ pass
-            #~self.end_prefix()
+        if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
+            try:
+                self.path("fmod.dll")
+                pass
+            except:
+                print "Skipping fmod.dll - not found"
+                pass
+            self.end_prefix()
 
         # For textures
         #if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
@@ -309,7 +315,7 @@ class WindowsManifest(ViewerManifest):
             #~ self.end_prefix()
 
         # The config file name needs to match the exe's name.
-        #~ self.path(src="%s/secondlife-bin.exe.config" % self.args['configuration'], dst=self.final_exe() + ".config")
+        #~ self.path(src="%s/Voodoo.exe.config" % self.args['configuration'], dst=self.final_exe() + ".config")
 
         # Vivox runtimes
         if self.prefix(src="vivox-runtime/i686-win32", dst=""):
@@ -332,8 +338,14 @@ class WindowsManifest(ViewerManifest):
         # pull in the crash logger and updater from other projects
         self.path(src='../win_crash_logger/%s/windows-crash-logger.exe' % self.args['configuration'], dst="win_crash_logger.exe")
         self.path(src='../win_updater/%s/windows-updater.exe' % self.args['configuration'], dst="updater.exe")
-
-
+        
+        # Visual C++ runtimes for 2k8 and 2k10
+        #if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
+         #   self.path("vcredist_x86_2k8.exe")
+         #   self.path("vcredist_x86_2k10.exe")
+         #   self.end_prefix()
+        # Visual C++ runtimes for 2k8 and 2k10
+        # self.path(src='../../libraries/i686-win32/lib/release", dst="")
     def nsi_file_commands(self, install=True):
         def wpath(path):
             if path.endswith('/') or path.endswith(os.path.sep):
@@ -406,9 +418,9 @@ class WindowsManifest(ViewerManifest):
         !define INSTFLAGS "%(flags)s"
         !define INSTNAME   "%(channel_oneword)s"
         !define SHORTCUT   "%(channel)s Viewer"
-        !define URLNAME   "secondlife"
-        !define INSTALL_ICON "install_icon_singularity.ico"
-        !define UNINSTALL_ICON "install_icon_singularity.ico"
+        !define URLNAME   "Voodoo"
+        !define INSTALL_ICON "install_icon_Voodoo.ico"
+        !define UNINSTALL_ICON "install_icon_Voodoo.ico"
         Caption "${VIEWERNAME} ${VERSION_LONG}"
         """
         if 'installer_name' in self.args:
@@ -417,7 +429,7 @@ class WindowsManifest(ViewerManifest):
             installer_file = installer_file % substitution_strings
         substitution_strings['installer_file'] = installer_file
 
-        tempfile = "secondlife_setup_tmp.nsi"
+        tempfile = "Voodoo_setup_tmp.nsi"
         # the following replaces strings in the nsi template
         # it also does python-style % substitution
         self.replace_in("installers/windows/installer_template.nsi", tempfile, {
@@ -482,7 +494,7 @@ class DarwinManifest(ViewerManifest):
                 self.path("SecondLife.nib")
 
    			  # SG:TODO
-                self.path("../newview/res/singularity.icns", dst="singularity.icns")
+                self.path("../newview/res/Voodoo.icns", dst="Voodoo.icns")
 
                 # Translations
                 self.path("English.lproj")
@@ -581,10 +593,10 @@ class DarwinManifest(ViewerManifest):
                                  { 'viewer_binary' : self.dst_path_of('Contents/MacOS/'+self.app_name())})
 
     def app_name(self):
-        return "Singularity"
+        return "Voodoo"
         
     def info_plist_name(self):
-        return "Info-Singularity.plist"
+        return "Info-Voodoo.plist"
 
     def package_finish(self):
         channel_standin = self.app_name()
@@ -698,7 +710,7 @@ class LinuxManifest(ViewerManifest):
             self.path("secondlife-stripped","bin/"+self.binary_name())
             self.path("../linux_crash_logger/linux-crash-logger-stripped","linux-crash-logger.bin")
         else:
-            self.path("secondlife-bin","bin/"+self.binary_name())
+            self.path("Voodoo","bin/"+self.binary_name())
             self.path("../linux_crash_logger/linux-crash-logger","linux-crash-logger.bin")
 
         self.path("linux_tools/launch_url.sh","launch_url.sh")
@@ -718,13 +730,13 @@ class LinuxManifest(ViewerManifest):
         self.path("featuretable_linux.txt")
 
     def wrapper_name(self):
-        return 'singularity'
+        return 'Voodoo'
 
     def binary_name(self):
-        return 'singularity-do-not-run-directly'
+        return 'Voodoo-do-not-run-directly'
     
     def icon_name(self):
-        return "singularity_icon.png"
+        return "Voodoo_icon.png"
 
     def package_finish(self):
         if 'installer_name' in self.args:

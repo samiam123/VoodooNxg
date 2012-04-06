@@ -228,12 +228,13 @@ void	decode_patch_group_header(LLBitPack &bitpack, LLGroupHeader *gopp)
 
 	gPatchSize = gopp->patch_size; 
 }
-
-void	decode_patch_header(LLBitPack &bitpack, LLPatchHeader *ph)
+void  decode_patch_header(LLBitPack &bitpack, LLPatchHeader *ph, BOOL b_large_patch)//with var
+// void	decode_patch_header(LLBitPack &bitpack, LLPatchHeader *ph)// non var
 {
 	U8 retvalu8;
 
-	retvalu8 = 0;
+	retvalu8 = 0;// non var
+    //retvalu32 = 0;// with var
 	bitpack.bitUnpack(&retvalu8, 8);
 	ph->quant_wbits = retvalu8;
 
@@ -254,7 +255,12 @@ void	decode_patch_header(LLBitPack &bitpack, LLPatchHeader *ph)
 	bitpack.bitUnpack(&(ret[1]), 8);
 	bitpack.bitUnpack(&(ret[0]), 8);
 #else
-	bitpack.bitUnpack((U8 *)&retvalu32, 32);
+	// Buzz check here sam voodoo var
+  //if (b_large_patch)
+    bitpack.bitUnpack((U8 *)&retvalu32, 32);
+   // else
+   // bitpack.bitUnpack((U8 *)&retvalu32, 10);
+	//bitpack.bitUnpack((U8 *)&retvalu32, 32);//non var
 #endif
 	ph->dc_offset = *(F32 *)&retvalu32;
 
@@ -268,15 +274,22 @@ void	decode_patch_header(LLBitPack &bitpack, LLPatchHeader *ph)
 #endif
 	ph->range = retvalu16;
 
-	retvalu16 = 0;
+	retvalu32 = 0;
+	//retvalu16 = 0;
 #ifdef LL_BIG_ENDIAN
 	ret = (U8 *)&retvalu16;
 	bitpack.bitUnpack(&(ret[1]), 8);
 	bitpack.bitUnpack(&(ret[0]), 2);
 #else
-	bitpack.bitUnpack((U8 *)&retvalu16, 10);
+	// Buzz check here sam voodoo this is the orginal place
+	if (b_large_patch)
+    bitpack.bitUnpack((U8 *)&retvalu32, 32);
+    else
+    bitpack.bitUnpack((U8 *)&retvalu32, 10);
+	//bitpack.bitUnpack((U8 *)&retvalu16, 10); non var
 #endif
-	ph->patchids = retvalu16;
+	//ph->patchids = retvalu16; //non var
+    ph->patchids = retvalu32; //with var
 
 	gWordBits = (ph->quant_wbits & 0xf) + 2;
 }
