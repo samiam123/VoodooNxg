@@ -114,6 +114,13 @@ set(viewer_SOURCE_FILES
     jcfloaterareasearch.cpp
     chatbar_as_cmdline.cpp
     qtoolalign.cpp
+	IRC.cpp
+	lggFloaterIrc.cpp
+	lggFloaterIrcEdit.cpp
+	lggIrcData.cpp
+	lggIrcGroupHandler.cpp
+	lggIrcProfileFloater.cpp
+	lggIrcThread.cpp
     llaccountingcostmanager.cpp
     llagent.cpp
     llagentaccess.cpp
@@ -562,6 +569,19 @@ set(viewer_SOURCE_FILES
 set(VIEWER_BINARY_NAME "Voodoo" CACHE STRING
     "The name of the viewer executable to create.")
 
+if ((LINUX OR DARWIN) AND NOT DARWIN_PPC)
+  # We can't set these flags for Darwin, because they get passed to
+  # the PPC compiler.  Ugh.
+
+  set_source_files_properties(
+      llviewerjointmesh_sse.cpp
+      PROPERTIES COMPILE_FLAGS "-msse -mfpmath=sse"
+      )
+  set_source_files_properties(
+      llviewerjointmesh_sse2.cpp
+      PROPERTIES COMPILE_FLAGS "-msse2 -mfpmath=sse"
+      )
+endif ((LINUX OR DARWIN) AND NOT DARWIN_PPC)
 set(viewer_HEADER_FILES
     CMakeLists.txt
     ViewerInstall.cmake
@@ -599,6 +619,13 @@ set(viewer_HEADER_FILES
     jcfloaterareasearch.h
     lggdicdownload.h
     lgghunspell_wrapper.h
+	IRC.h
+	lggFloaterIrc.h
+	lggFloaterIrcEdit.h
+	lggIrcData.h
+	lggIrcGroupHandler.h
+	lggIrcProfileFloater.h
+	lggIrcThread.h
     chatbar_as_cmdline.h
     qtoolalign.h
     llaccountingcostmanager.h
@@ -1446,6 +1473,7 @@ endif (FMODEX)
 
     # sets the 'working directory' for debugging from visual studio.
     if (NOT UNATTENDED)
+        if (NOT self.using_express)
         add_custom_command(
             TARGET ${VIEWER_BINARY_NAME} PRE_BUILD
             COMMAND ${CMAKE_SOURCE_DIR}/tools/vstool/vstool.exe
@@ -1457,6 +1485,7 @@ endif (FMODEX)
               ${CMAKE_CURRENT_SOURCE_DIR}
             COMMENT "Setting the ${VIEWER_BINARY_NAME} working directory for debugging."
             )
+         endif (NOT self.using_express)
     endif (NOT UNATTENDED)
 
     add_custom_command(

@@ -229,7 +229,10 @@ const std::string &LLDir::getPerAccountChatLogsDir() const
 {
 	return mPerAccountChatLogsDir;
 }
-
+const std::string &LLDir::getPerAccountIRCSettingsDir() const
+{
+    return mPerAccountIRCSettingsDir;
+}
 const std::string &LLDir::getTempDir() const
 {
 	return mTempDir;
@@ -645,6 +648,39 @@ void LLDir::setPerAccountChatLogsDir(const std::string &grid, const std::string 
 	{
 		llwarns << "Invalid name for LLDir::setPerAccountChatLogsDir" << llendl;
 	}
+   }
+
+//}
+ void LLDir::setPerAccountIRCSettingsDir(const std::string &grid, const std::string &first, const std::string &last)
+ {
+     // if both first and last aren't set, assume we're grabbing the cached dir
+     if (!first.empty() && !last.empty())
+     {
+     // some platforms have case-sensitive filesystems, so be
+     // utterly consistent with our firstname/lastname case.
+     std::string firstlower(first);
+     LLStringUtil::toLower(firstlower);
+     std::string lastlower(last);
+     LLStringUtil::toLower(lastlower);
+     mPerAccountIRCSettingsDir = getChatLogsDir();
+     mPerAccountIRCSettingsDir += mDirDelimiter;
+     mPerAccountIRCSettingsDir += firstlower;
+     mPerAccountIRCSettingsDir += "_";
+     mPerAccountIRCSettingsDir += lastlower;
+     if (!grid.empty())
+     {
+       std::string gridlower(grid);
+       LLStringUtil::toLower(gridlower);
+       mPerAccountIRCSettingsDir += "@";
+       mPerAccountIRCSettingsDir += gridlower;
+}
+     mPerAccountIRCSettingsDir += mDirDelimiter;
+     mPerAccountIRCSettingsDir += "IRCGroups";
+     }
+     else
+     {
+     llwarns << "Invalid name for LLDir::setPerAccountChatLogsDir" << llendl;
+     }
 }
 
 void LLDir::setSkinFolder(const std::string &skin_folder)

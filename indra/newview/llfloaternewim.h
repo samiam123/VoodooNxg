@@ -37,10 +37,12 @@
 
 class LLNameListCtrl;
 
-class LLFloaterNewIM : public LLFloater
+//class LLFloaterNewIM : public LLFloater
+class LLFloaterNewIM : public LLFloater, public LLUISingleton<LLFloaterNewIM, LLFloaterNewIM>
 {
 public:
 	LLFloaterNewIM();
+	LLFloaterNewIM(const LLSD& seed);
 	/*virtual*/ ~LLFloaterNewIM();
 
 	/*virtual*/ BOOL postBuild();
@@ -70,8 +72,32 @@ public:
 	S32		getScrollPos();
 	void	setScrollPos( S32 pos );
 
+static void show(LLFloater* instance, const LLSD& key)
+     {
+       LLFloater* floater_to_show = sInstance;
+       VisibilityPolicy<LLFloater>::show(instance, key);
+       if (floater_to_show)
+       {
+	floater_to_show->open();
+       }
+     }
+     static void hide(LLFloater* instance, const LLSD& key)
+     {
+        if (visible(instance, key))
+        {
+            VisibilityPolicy<LLFloater>::hide(instance, key);
+        }
+     }
+     // visibility policy for LLUISingleton
+     static bool visible(LLFloater* instance, const LLSD& key)
+     {
+         LLFloaterNewIM* floaterp = (LLFloaterNewIM*)instance;
+         return floaterp->isInVisibleChain();
+     } 
+
 protected:
 	LLNameListCtrl*	mSelectionList;
+	static LLFloaterNewIM* sInstance;
 };
 
 #endif  // LL_NEWIMPANEL_H

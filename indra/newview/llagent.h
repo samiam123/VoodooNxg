@@ -87,6 +87,7 @@ struct LLGroupData
 	std::string mName;
 };
 
+BOOL isAgentAvatarValid();
 
 // forward declarations
 

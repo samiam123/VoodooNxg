@@ -71,6 +71,7 @@
 #include "llviewerregion.h"
 
 #include "llfirstuse.h"
+#include "lggIrcGroupHandler.h"
 
 // [RLVa:KB]
 #include "rlvhandler.h"
@@ -80,7 +81,8 @@
 // Globals
 //
 LLIMMgr* gIMMgr = NULL;
-
+const EInstantMessage GROUP_DIALOG = IM_SESSION_GROUP_START;
+const EInstantMessage DEFAULT_DIALOG = IM_NOTHING_SPECIAL;
 //
 // Statics
 //
@@ -204,7 +206,11 @@ LLUUID LLIMMgr::computeSessionID(
 	const LLUUID& other_participant_id)
 {
 	LLUUID session_id;
-	if (IM_SESSION_GROUP_START == dialog)
+	if( IM_SESSION_IRC_START == dialog)
+    {
+		session_id = other_participant_id;
+    }
+	else if (IM_SESSION_GROUP_START == dialog)
 	{
 		// slam group session_id to the group_id (other_participant_id)
 		session_id = other_participant_id;
@@ -890,6 +896,7 @@ void LLIMMgr::removeSession(const LLUUID& session_id)
 	LLFloaterIMPanel* floater = findFloaterBySession(session_id);
 	if(floater)
 	{
+		glggIrcGroupHandler.endDownIRCListener(session_id);
 		mFloaters.erase(floater->getHandle());
 		LLFloaterChatterBox::getInstance(LLSD())->removeFloater(floater);
 		//mTabContainer->removeTabPanel(floater);
@@ -1188,6 +1195,14 @@ LLFloaterIMPanel* LLIMMgr::createFloater(
 	{
 		llwarns << "Creating LLFloaterIMPanel with null session ID" << llendl;
 	}
+	if(glggIrcGroupHandler.trySendPrivateImToID("",other_participant_id,true))
+    {
+		dialog = IM_PRIVATE_IRC;
+    }
+	if(glggIrcGroupHandler.trySendPrivateImToID("",other_participant_id,true))
+    {
+		dialog = IM_PRIVATE_IRC;
+    }
 
 	llinfos << "LLIMMgr::createFloater: from " << other_participant_id 
 			<< " in session " << session_id << llendl;

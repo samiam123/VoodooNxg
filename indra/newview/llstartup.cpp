@@ -221,6 +221,7 @@
 #include "llavatarnamecache.h"
 #include "lgghunspell_wrapper.h"
 
+#include "lggIrcGroupHandler.h"
 // [RLVa:KB]
 #include "rlvhandler.h"
 // [/RLVa:KB]
@@ -377,6 +378,11 @@ bool idle_startup()
 	static LLUUID web_login_key;
 	static std::string password;
 	static std::vector<const char*> requested_options;
+// added 3 lines below sams voodoo
+	static U64 first_sim_handle = 0;
+	static LLHost first_sim;
+	static std::string first_sim_seed_cap;
+//--------------------------------------------------
     static U32 first_sim_size_x = 256; //with var -comment out for non var
     static U32 first_sim_size_y = 256; //with var -comment out for non var
 	static LLVector3 initial_sun_direction(1.f, 0.f, 0.f);
@@ -1046,15 +1052,18 @@ bool idle_startup()
 		{
 			gDirUtilp->setPerAccountChatLogsDir(LLStringUtil::null, 
 				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+			gDirUtilp->setPerAccountIRCSettingsDir(LLStringUtil::null, firstname, lastname);
 		}
 		else
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
 				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+			gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getCurrentGridNick(), firstname, lastname);
 		}
 		LLFile::mkdir(gDirUtilp->getChatLogsDir());
 		LLFile::mkdir(gDirUtilp->getPerAccountChatLogsDir());
 
+		LLFile::mkdir(gDirUtilp->getPerAccountIRCSettingsDir());
 		//good as place as any to create user windlight directories
 		std::string user_windlight_path_name(gDirUtilp->getExpandedFilename( LL_PATH_USER_SETTINGS , "windlight", ""));
 		LLFile::mkdir(user_windlight_path_name.c_str());		
@@ -1880,6 +1889,7 @@ bool idle_startup()
 			   && gAgentSessionID.notNull()
 			   && gMessageSystem->mOurCircuitCode
 			   && gFirstSim.isOk())
+			//Buzz check the above for typo First_sim vrs what it is
 			// OGPX : Inventory root might be null in OGP.
 //			   && gAgent.mInventoryRootID.notNull())
 			{
@@ -3007,6 +3017,10 @@ bool idle_startup()
 		// a while. JC
 		gAgent.clearAFK();
 
+		
+		//lgg starting up auto connect irc things here
+	    //but that crashed.. so i duno
+	    glggIrcGroupHandler.startUpAutoRunIRC();
 		// Have the agent start watching the friends list so we can update proxies
 		gAgent.observeFriends();
 		if (gSavedSettings.getBOOL("LoginAsGod"))
@@ -3420,7 +3434,7 @@ bool update_dialog_callback(const LLSD& notification, const LLSD& response)
 
 	// *TODO constantize this guy
 	// *NOTE: This URL is also used in win_setup/lldownloader.cpp
-	LLURI update_url = LLURI::buildHTTP("secondlife.com", 80, "update.php", query_map);
+	//LLURI update_url = LLURI::buildHTTP("secondlife.com", 80, "update.php", query_map);
 	
 	if(LLAppViewer::sUpdaterInfo)
 	{
@@ -3469,7 +3483,7 @@ bool update_dialog_callback(const LLSD& notification, const LLSD& response)
 		gSavedSettings.setString( "NextLoginLocation", LLURLSimString::sInstance.mSimString ); 
 	};
 
-	LLAppViewer::sUpdaterInfo->mParams << "-url \"" << update_url.asString() << "\"";
+	//LLAppViewer::sUpdaterInfo->mParams << "-url \"" << update_url.asString() << "\"";
 
 	LL_DEBUGS("AppInit") << "Calling updater: " << LLAppViewer::sUpdaterInfo->mUpdateExePath << " " << LLAppViewer::sUpdaterInfo->mParams.str() << LL_ENDL;
 

@@ -195,11 +195,15 @@ void LLPrefsIMImpl::apply()
 		{
 			gDirUtilp->setPerAccountChatLogsDir(LLStringUtil::null, 
 				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+			gDirUtilp->setPerAccountIRCSettingsDir(LLStringUtil::null, 
+		        gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
 		}
 		else
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
 				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+        gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getCurrentGridNick(), 
+	            gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
 		}
 		
 		bool new_im_via_email = childGetValue("send_im_to_email").asBoolean();

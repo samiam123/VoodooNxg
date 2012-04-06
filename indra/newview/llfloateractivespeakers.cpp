@@ -50,6 +50,7 @@
 #include "llviewerwindow.h"
 #include "llworld.h"
 #include "llappviewer.h"
+#include "lggIrcGroupHandler.h"
 
 // [RLVa:KB]
 #include "rlvhandler.h"
@@ -802,8 +803,22 @@ void LLPanelActiveSpeakers::onDoubleClickSpeaker(void* user_data)
 	{
 		// Changed for display name support
 		//gIMMgr->addSession(speakerp->mDisplayName, IM_NOTHING_SPECIAL, speaker_id);
-		gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
-	}
+	//	gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
+    if(  glggIrcGroupHandler.sendWhoisToAll(speaker_id))
+    {
+    LLUUID computed_session_id=LLIMMgr::computeSessionID(IM_PRIVATE_IRC, speaker_id);
+
+    if(!gIMMgr->hasSession(computed_session_id))
+    {
+    make_ui_sound("UISndNewIncomingIMSession");
+    gIMMgr->addSession(speakerp->mLegacyName,IM_PRIVATE_IRC,speaker_id);
+    }
+  }
+    else
+  {
+   gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
+   }
+  }
 }
 
 //static
@@ -1308,6 +1323,38 @@ void LLIMSpeakerMgr::setSpeakers(const LLSD& speakers)
 	}
 }
 
+//lgg todo setIrcSpeakers setSpeaker
+void LLIMSpeakerMgr::setIrcSpeakers(const LLSD& speakers)
+{
+    for (speaker_map_t::iterator speaker_it = mSpeakers.begin(); speaker_it != mSpeakers.end(); ++speaker_it)
+    {
+		LLSpeaker* tempspeakerp = speaker_it->second;
+		tempspeakerp->mStatus = LLSpeaker::STATUS_NOT_IN_CHANNEL;
+		tempspeakerp->mDotColor = INACTIVE_COLOR;
+		//tempspeakerp->mActivityTimer.reset(SPEAKER_TIMEOUT);
+}
+
+    //mSpeakers.clear();
+    //mSpeakersSorted.clear();
+
+    for(int i = 0; i < speakers.size(); i++)
+    {
+		LLSD personData = speakers[i];
+		LLUUID agent_id = LLUUID((const LLUUID&)personData["irc_agent_id"]);
+		LLPointer<LLSpeaker> speakerp = findSpeaker(agent_id);
+		if(speakerp.isNull())
+		{
+			speakerp = setSpeaker(
+			agent_id,
+			personData["irc_agent_name"].asString(),
+			LLSpeaker::STATUS_TEXT_ONLY,
+			LLSpeaker::SPEAKER_AGENT);
+		}
+		speakerp->mDotColor = ACTIVE_COLOR;
+		speakerp->mStatus = LLSpeaker::STATUS_TEXT_ONLY;
+		speakerp->mIsModerator = personData["irc_agent_mod"].asBoolean();
+    }
+}
 void LLIMSpeakerMgr::updateSpeakers(const LLSD& update)
 {
 	if ( !update.isMap() ) return;

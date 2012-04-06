@@ -130,7 +130,7 @@ public:
 
 	static void* createFriendsPanel(void* data);
 	static void* createGroupsPanel(void* data);
-
+    static void* createIRCPanel(void* data);
 	// visibility policy for LLUISingleton
 	static bool visible(LLFloater* instance, const LLSD& key)
 	{

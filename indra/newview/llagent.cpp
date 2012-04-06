@@ -148,6 +148,12 @@ const F32 LLAgent::TYPING_TIMEOUT_SECS = 5.f;
 std::map<std::string, std::string> LLAgent::sTeleportErrorMessages;
 std::map<std::string, std::string> LLAgent::sTeleportProgressMessages;
 
+BOOL isAgentAvatarValid()
+{
+	return (gAgentAvatarp &&
+			(gAgentAvatarp->getRegion() != NULL) &&
+			(!gAgentAvatarp->isDead()));
+}
 class LLAgentFriendObserver : public LLFriendObserver
 {
 public:
@@ -204,6 +210,7 @@ LLAgent::LLAgent() :
 	mDistanceTraveled(0.F),
 	mLastPositionGlobal(LLVector3d::zero),
 
+	//mAvatarObject(NULL),
 	mRenderState(0),
 	mTypingTimer(),
 

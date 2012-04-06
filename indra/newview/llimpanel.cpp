@@ -33,7 +33,7 @@
 #include "llviewerprecompiledheaders.h"
 
 #include "llimpanel.h"
-
+#include "lggIrcGroupHandler.h"
 #include "indra_constants.h"
 #include "llfocusmgr.h"
 #include "llfontgl.h"
@@ -229,6 +229,11 @@ bool send_start_session_messages(
 	const LLDynamicArray<LLUUID>& ids,
 	EInstantMessage dialog)
 {
+    if ( dialog == IM_SESSION_IRC_START )
+	{
+      return false;
+	}
+
 	if ( dialog == IM_SESSION_GROUP_START )
 	{
 		session_starter_helper(
@@ -1184,6 +1189,12 @@ void LLFloaterIMPanel::init(const std::string& session_label)
 		xml_filename = "floater_instant_message_group.xml";
 		mVoiceChannel = new LLVoiceChannelGroup(mSessionUUID, mSessionLabel);
 		break;
+    case IM_SESSION_IRC_START:
+        mSessionLabel = "#"+mSessionLabel;
+        mFactoryMap["active_speakers_panel"] = LLCallbackMap(createSpeakersPanel, this);
+        xml_filename =  "floater_instant_message_ad_hoc.xml";
+        mVoiceChannel = new LLVoiceChannelGroup(mSessionUUID, mSessionLabel);
+        break;
 	case IM_SESSION_INVITE:
 		mFactoryMap["active_speakers_panel"] = LLCallbackMap(createSpeakersPanel, this);
 		if (gAgent.isInGroup(mSessionUUID))
@@ -1216,6 +1227,19 @@ void LLFloaterIMPanel::init(const std::string& session_label)
 		
 		mVoiceChannel = new LLVoiceChannelP2P(mSessionUUID, mSessionLabel, mOtherParticipantUUID);
 		break;
+    case IM_PRIVATE_IRC:
+        mSessionLabel = "#"+mSessionLabel;
+
+        xml_filename = "floater_instant_message.xml";
+
+        mTextIMPossible = TRUE;
+        mProfileButtonEnabled = TRUE;
+        mCallBackEnabled = FALSE;
+
+        mVoiceChannel = new LLVoiceChannelP2P(mSessionUUID, mSessionLabel, mOtherParticipantUUID);
+        break;
+
+
 	default:
 		llwarns << "Unknown session type" << llendl;
 		xml_filename = "floater_instant_message.xml";
@@ -1392,6 +1416,24 @@ BOOL LLFloaterIMPanel::postBuild()
 		{
 			childSetEnabled("profile_btn", FALSE);
 		}
+
+		if(IM_SESSION_IRC_START == mDialog || IM_PRIVATE_IRC == mDialog)
+		{
+			childSetEnabled("profile_callee_btn", FALSE);
+			childSetEnabled("start_call_btn",FALSE);
+			childSetEnabled("profile_tele_btn",FALSE);
+			childSetVisible("password",FALSE);
+			childSetVisible("otr_combo",FALSE);
+			if ( IM_SESSION_GROUP_START == mDialog )
+			{
+				childSetEnabled("profile_callee_btn", FALSE);
+			}
+			else if(IM_PRIVATE_IRC == mDialog)
+			{
+				childSetEnabled("profile_callee_btn",TRUE);
+
+			}
+		}
 		
 		if(!mProfileButtonEnabled)
 		{
@@ -1469,10 +1511,13 @@ void LLFloaterIMPanel::draw()
 					  && mCallBackEnabled;
 
 	// hide/show start call and end call buttons
+	if(mDialog!=IM_SESSION_IRC_START && mDialog!=IM_PRIVATE_IRC)
+	{
 	childSetVisible("end_call_btn", LLVoiceClient::voiceEnabled() && mVoiceChannel->getState() >= LLVoiceChannel::STATE_CALL_STARTED);
 	childSetVisible("start_call_btn", LLVoiceClient::voiceEnabled() && mVoiceChannel->getState() < LLVoiceChannel::STATE_CALL_STARTED);
 	childSetEnabled("start_call_btn", enable_connect);
 	childSetEnabled("send_btn", !childGetValue("chat_editor").asString().empty());
+	}
 	
 	LLPointer<LLSpeaker> self_speaker = mSpeakers->findSpeaker(gAgent.getID());
 	if(!mTextIMPossible)
@@ -1680,6 +1725,7 @@ void LLFloaterIMPanel::addHistoryLine(const std::string &utf8msg, LLColor4 incol
 	}
 
 	//Kadah - Bold group mods chat. Doesnt work on the first msg of the session, dont have speakers list yet?
+	// The bool is set in ascent for the line below. sams voodoo
 	if (gSavedSettings.getBOOL("VoodooBoldGroupModerator") && isModerator(source))
 	{
 		mHistoryEditor->appendColoredText(utf8msg.substr(0,1), false, prepend_newline, color);
@@ -1912,6 +1958,8 @@ void LLFloaterIMPanel::onClickTeleport( void* userdata )
 	//  Bring up the Profile window
 	LLFloaterIMPanel* self = (LLFloaterIMPanel*) userdata;
 	
+	if(	glggIrcGroupHandler.sendWhoisToAll(self->getOtherParticipantID())) return;
+	
 	if (self->mOtherParticipantUUID.notNull())
 	{
 		handle_lure(self->getOtherParticipantID());
@@ -2095,6 +2143,11 @@ void deliver_message(const std::string& utf8_text,
 		// which case it's probably an IM to everyone.
 		U8 new_dialog = dialog;
 
+		if ( dialog == IM_SESSION_IRC_START)
+		{
+			glggIrcGroupHandler.sendIrcChatByID(im_session_id,utf8_text);
+			return;
+		}
 		if ( dialog != IM_NOTHING_SPECIAL )
 		{
 			new_dialog = IM_SESSION_SEND;
@@ -2254,6 +2307,7 @@ void LLFloaterIMPanel::sendMsg()
 
 			if ( mSessionInitialized )
 			{
+				//if( mDialog == IM_PRIVATE_IRC)
 				// Split messages that are too long, same code like in llimpanel.cpp
 				U32 split = MAX_MSG_BUF_SIZE - 1;
 				U32 pos = 0;
@@ -2261,6 +2315,7 @@ void LLFloaterIMPanel::sendMsg()
 
 				while (pos < total)
 				{
+					glggIrcGroupHandler.trySendPrivateImToID(utf8text,mOtherParticipantUUID,false);
 					U32 next_split = split;
 
 					if (pos + next_split > total)
@@ -2293,7 +2348,7 @@ void LLFloaterIMPanel::sendMsg()
 
 					std::string send = utf8text.substr(pos, next_split);
 					pos += next_split;
-LL_WARNS("Splitting") << "Pos: " << pos << " next_split: " << next_split << LL_ENDL;
+                    LL_WARNS("Splitting") << "Pos: " << pos << " next_split: " << next_split << LL_ENDL;
 
 					deliver_message(send,
 									mSessionUUID,
@@ -2383,6 +2438,19 @@ void LLFloaterIMPanel::setSpeakers(const LLSD& speaker_list)
 	mSpeakers->setSpeakers(speaker_list);
 }
 
+void LLFloaterIMPanel::setIRCSpeakers(const LLSD& speaker_list)
+{
+	mSpeakers->setIrcSpeakers(speaker_list);
+}
+
+// user is known to be offline when we receive this
+void LLFloaterIMPanel::setOffline()
+{
+	if(!gAgent.isGodlike())
+	{
+		childSetEnabled("profile_tele_btn", false);
+	}
+}
 void LLFloaterIMPanel::sessionInitReplyReceived(const LLUUID& session_id)
 {
 	mSessionUUID = session_id;
