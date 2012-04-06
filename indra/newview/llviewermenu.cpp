@@ -1173,7 +1173,7 @@ void init_client_menu(LLMenuGL* menu)
 										&menu_check_control,
 										(void*)"ShowConsoleWindow"));
 
-	menu->append(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
+	//menu->append(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
 
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | Modified: RLVa-1.0.0e | OK
 	#ifdef RLV_ADVANCED_TOGGLE_RLVA
@@ -1784,6 +1784,7 @@ void init_server_menu(LLMenuGL* menu)
 	{
 		LLMenuGL* sub = new LLMenuGL("Region");
 		menu->appendMenu(sub);
+		sub->append(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
 		sub->append(new LLMenuItemCallGL("Dump Temp Asset Data",
 			&handle_region_dump_temp_asset_data,
 			&enable_god_customer_service, NULL));
