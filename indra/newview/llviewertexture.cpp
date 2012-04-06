@@ -2375,7 +2375,9 @@ void LLViewerFetchedTexture::pauseLoadedCallbacks(const LLLoadedCallbackEntry::s
 
 bool LLViewerFetchedTexture::doLoadedCallbacks()
 {
-	static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds
+	//static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds orginaly
+    // changed this value expermentaly lower is faster, sl has it at 900 .. ick  sams voodoo 
+    static const F32 MAX_INACTIVE_TIME = 8.f ; //seconds 
 
 	if (mNeedsCreateTexture)
 	{
@@ -2386,7 +2388,16 @@ bool LLViewerFetchedTexture::doLoadedCallbacks()
 		destroyRawImage();
 		return false; //paused
 	}	
-	if(sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching)
+	//if(sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching)
+    // Nahh lets not this makes for a big delay for everything and isant a fix sams voodoo 
+    if (mPauseLoadedCallBacks) 
+    { 
+    destroyRawImage(); 
+    return false; //paused 
+   } 
+    if (sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching) 
+ // ------------------------------------------------------------------------------------ 
+
 	{
 		clearCallbackEntryList() ; //remove all callbacks.
 		return false ;
@@ -3357,14 +3368,12 @@ LLViewerMediaTexture::LLViewerMediaTexture(const LLUUID& id, BOOL usemipmaps, LL
 	sMediaMap.insert(std::make_pair(id, this));
 
 	mGLTexturep = gl_image ;
-
 	if(mGLTexturep.isNull())
 	{
 		generateGLTexture() ;
 	}
 
 	mGLTexturep->setAllowCompression(false);
-
 	mGLTexturep->setNeedsAlphaAndPickMask(FALSE) ;
 
 	mIsPlaying = FALSE ;

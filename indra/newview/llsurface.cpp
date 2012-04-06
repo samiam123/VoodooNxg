@@ -36,7 +36,7 @@
 
 #include "llrender.h"
 
-#include "llviewertexturelist.h"
+
 #include "llpatchvertexarray.h"
 #include "patch_dct.h"
 #include "patch_code.h"
@@ -45,9 +45,11 @@
 #include "llregionhandle.h"
 #include "llagent.h"
 #include "llagentcamera.h"
+
 #include "llappviewer.h"
 #include "llworld.h"
 #include "llviewercontrol.h"
+#include "llviewertexturelist.h"
 #include "llsurfacepatch.h"
 #include "llvosurfacepatch.h"
 #include "llvowater.h"
@@ -63,9 +65,10 @@
 extern LLPipeline gPipeline;
 
 LLColor4U MAX_WATER_COLOR(0, 48, 96, 240);
+S32 LLSurface::sTextureSize = 1024;// humm lets see what happens if this is not a fixed size sams voodoo
+                                    // Changing this to 1024 helped less lag and looked better  
 
-
-S32 LLSurface::sTextureSize = 256;
+//S32 LLSurface::sTextureSize = 256;// non var
 S32 LLSurface::sTexelsUpdated = 0;
 F32 LLSurface::sTextureUpdateTime = 0.f;
 LLStat LLSurface::sTexelsUpdatedPerSecStat;
@@ -176,6 +179,8 @@ void LLSurface::create(const S32 grids_per_edge,
 	mNumberOfPatches = mPatchesPerEdge * mPatchesPerEdge;
 	mMetersPerGrid = width / ((F32)(mGridsPerEdge - 1));
 	mMetersPerEdge = mMetersPerGrid * (mGridsPerEdge - 1);
+    sTextureSize = width; // with var buzz
+
 
 	mOriginGlobal.setVec(origin_global);
 
@@ -252,7 +257,7 @@ void LLSurface::createSTexture()
 		mSTexturep = LLViewerTextureManager::getLocalTexture(raw.get(), FALSE);
 		mSTexturep->dontDiscard();
 		gGL.getTexUnit(0)->bind(mSTexturep);
-		mSTexturep->setAddressMode(LLTexUnit::TAM_CLAMP);		
+		mSTexturep->setAddressMode(LLTexUnit::TAM_CLAMP);
 	}
 }
 
@@ -273,7 +278,8 @@ void LLSurface::createWaterTexture()
 				*(default_texture + (i*sTextureSize/2 + j)*4 + 3) = MAX_WATER_COLOR.mV[3];
 			}
 		}
-		
+
+
 		mWaterTexturep = LLViewerTextureManager::getLocalTexture(raw.get(), FALSE);
 		mWaterTexturep->dontDiscard();
 		gGL.getTexUnit(0)->bind(mWaterTexturep);
@@ -299,7 +305,10 @@ void LLSurface::initTextures()
 		mWaterObjp = (LLVOWater *)gObjectList.createObjectViewer(LLViewerObject::LL_VO_WATER, mRegionp);
 		gPipeline.createObject(mWaterObjp);
 		LLVector3d water_pos_global = from_region_handle(mRegionp->getHandle());
-		water_pos_global += LLVector3d(128.0, 128.0, DEFAULT_WATER_HEIGHT);
+
+		//water_pos_global += LLVector3d(128.0, 128.0, DEFAULT_WATER_HEIGHT);
+		//added line below var sams
+		water_pos_global += LLVector3d(mRegionp->getWidth()/2, mRegionp->getWidth()/2, DEFAULT_WATER_HEIGHT);
 		mWaterObjp->setPositionGlobal(water_pos_global);
 	}
 }
@@ -329,8 +338,11 @@ void LLSurface::setOriginGlobal(const LLVector3d &origin_global)
 	// Hack!
 	if (mWaterObjp.notNull() && mWaterObjp->mDrawable.notNull())
 	{
-		const F64 x = origin_global.mdV[VX] + 128.0;
-		const F64 y = origin_global.mdV[VY] + 128.0;
+		//const F64 x = origin_global.mdV[VX] + 128.0;
+		//const F64 y = origin_global.mdV[VY] + 128.0;
+		// added 2 lines below var sams
+		const F64 x = origin_global.mdV[VX] + (F64)mRegionp->getWidth()/2;
+        const F64 y = origin_global.mdV[VY] + (F64)mRegionp->getWidth()/2;
 		const F64 z = mWaterObjp->getPositionGlobal().mdV[VZ];
 
 		LLVector3d water_origin_global(x, y, z);
@@ -352,6 +364,7 @@ void LLSurface::getNeighboringRegions( std::vector<LLViewerRegion*>& uniqueRegio
 }
 
 void LLSurface::connectNeighbor(LLSurface *neighborp, U32 direction)
+
 {
 	if (gNoRender)
 	{
@@ -360,6 +373,8 @@ void LLSurface::connectNeighbor(LLSurface *neighborp, U32 direction)
 
 	S32 i;
 	LLSurfacePatch *patchp, *neighbor_patchp;
+
+
 
 	mNeighbors[direction] = neighborp;
 	neighborp->mNeighbors[gDirOpposite[direction]] = this;
@@ -618,8 +633,8 @@ void LLSurface::moveZ(const S32 x, const S32 y, const F32 delta)
 
 void LLSurface::updatePatchVisibilities(LLAgent &agent) 
 {
+	//LLVector3 pos_region = mRegionp->getPosRegionFromGlobal(gAgent.getCameraPositionGlobal());
 	LLVector3 pos_region = mRegionp->getPosRegionFromGlobal(gAgentCamera.getCameraPositionGlobal());
-
 	LLSurfacePatch *patchp;
 	
 	mVisiblePatchCount = 0;
@@ -691,14 +706,31 @@ void LLSurface::decompressDCTPatch(LLBitPack &bitpack, LLGroupHeader *gopp, BOOL
 
 	while (1)
 	{
-		decode_patch_header(bitpack, &ph);
+		//decode_patch_header(bitpack, &ph);
+		//added one line below var sams
+        decode_patch_header(bitpack, &ph, b_large_patch);
 		if (ph.quant_wbits == END_OF_PATCHES)
 		{
 			break;
 		}
 
-		i = ph.patchids >> 5;
-		j = ph.patchids & 0x1F;
+		//i = ph.patchids >> 5;
+		//j = ph.patchids & 0x1F;
+		// added 8 lines below var sams
+
+		if (b_large_patch)
+    {
+      i = ph.patchids >> 16; //x
+      j = ph.patchids & 0xFFFF; //y
+        }
+    else
+        {
+      i = ph.patchids >> 5; //x
+      j = ph.patchids & 0x1F; //y
+        }
+
+
+
 
 		if ((i >= mPatchesPerEdge) || (j >= mPatchesPerEdge))
 		{
@@ -792,10 +824,14 @@ F32 LLSurface::resolveHeightRegion(const F32 x, const F32 y) const
 		//      i ->
 		// where N = mGridsPerEdge
 
-		const F32 left_bottom  = getZ( left,  bottom );
-		const F32 right_bottom = getZ( right, bottom );
-		const F32 left_top     = getZ( left,  top );
-		const F32 right_top    = getZ( right, top );
+		//const F32 left_bottom  = getZ( left,  bottom );
+		//const F32 right_bottom = getZ( right, bottom );
+		//const F32 left_top     = getZ( left,  top );
+		//const F32 right_top    = getZ( right, top );
+		F32 left_bottom  = getZ( left,  bottom );
+		F32 right_bottom = getZ( right, bottom );
+		F32 left_top     = getZ( left,  top );
+		F32 right_top    = getZ( right, top );
 
 		// dx and dy are incremental steps from (mSurface + k)
 		F32 dx = x - left   * mMetersPerGrid;
@@ -968,7 +1004,7 @@ LLSurfacePatch *LLSurface::resolvePatchRegion(const LLVector3 &pos_region) const
 
 LLSurfacePatch *LLSurface::resolvePatchGlobal(const LLVector3d &pos_global) const
 {
-	llassert(mRegionp);
+
 	LLVector3 pos_region = mRegionp->getPosRegionFromGlobal(pos_global);
 	return resolvePatchRegion(pos_region);
 }
@@ -1220,7 +1256,8 @@ BOOL LLSurface::generateWaterTexture(const F32 x, const F32 y,
 	LLPointer<LLImageRaw> raw = new LLImageRaw(tex_width, tex_height, tex_comps);
 	U8 *rawp = raw->getData();
 
-	F32 scale = 256.f * getMetersPerGrid() / (F32)tex_width;
+    F32 scale = LLWorld::getInstance()->getRegionWidthInMeters() * getMetersPerGrid() / (F32)tex_width; // fixes for var mini map
+	//F32 scale = 256.f * getMetersPerGrid() / (F32)tex_width;
 	F32 scale_inv = 1.f / scale;
 
 	S32 x_begin, y_begin, x_end, y_end;
@@ -1296,6 +1333,7 @@ BOOL LLSurface::generateWaterTexture(const F32 x, const F32 y,
 	{
 		mWaterTexturep->createGLTexture(0, raw);
 	}
+
 	mWaterTexturep->setSubImage(raw, x_begin, y_begin, x_end - x_begin, y_end - y_begin);
 	return TRUE;
 }

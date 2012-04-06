@@ -48,6 +48,7 @@
 #include "llwaterparammanager.h"
 #include "llmath.h"
 #include "llviewerwindow.h"
+#include "llfloaterdaycycle.h"
 
 #include "pipeline.h"
 
@@ -287,6 +288,7 @@ void LLFloaterEnvSettings::onOpenAdvancedWater(void* userData)
 
 void LLFloaterEnvSettings::onSubmitWindlight(void* userData)
 {
+	///*
 	Meta7WindlightPacket * wl = new Meta7WindlightPacket();
 
 	LLWaterParamManager * param_mgr = LLWaterParamManager::getInstance();
@@ -298,6 +300,11 @@ void LLFloaterEnvSettings::onSubmitWindlight(void* userData)
 	std::vector<std::string> strings;
 	strings.push_back((char*)wl);
 	send_generic_message("Windlight", strings);
+	//*/
+	// Added auora WL seetings sams voodoo
+//LLWLParamManager::instance()->SendSettings();
+
+
 }
 
 void LLFloaterEnvSettings::onUseEstateTime(void* userData)

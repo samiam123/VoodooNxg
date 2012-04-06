@@ -238,7 +238,9 @@ LLFloaterTexturePicker::LLFloaterTexturePicker(
 	mFallbackImageName( fallback_image_name ),
 	mWhiteImageAssetID( gSavedSettings.getString( "UIImgWhiteUUID" ) ),
 	mInvisibleImageAssetID(gSavedSettings.getString("UIImgInvisibleUUID")),
-	mAlphaImageAssetID("8dcd4a48-2d37-4909-9f78-f7a9eb4ef903"),
+	//swap alpha uuid to address a problem in OS and auora. the commented out line is the orginal
+	//mAlphaImageAssetID("8dcd4a48-2d37-4909-9f78-f7a9eb4ef903"),
+	mAlphaImageAssetID("00000000-0000-2222-3333-100000001007"),
 	mOriginalImageAssetID(owner->getImageAssetID()),
 	mLabel(label),
 	mTentativeLabel(NULL),

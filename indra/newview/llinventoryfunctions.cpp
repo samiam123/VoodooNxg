@@ -655,9 +655,7 @@ bool LLFindWearables::operator()(LLInventoryCategory* cat,
 	return FALSE;
 }
 
-LLFindWearablesEx::LLFindWearablesEx(bool is_worn, bool include_body_parts)
-:	mIsWorn(is_worn)
-,	mIncludeBodyParts(include_body_parts)
+LLFindWearablesEx::LLFindWearablesEx(bool is_worn, bool include_body_parts):mIsWorn(is_worn),mIncludeBodyParts(include_body_parts)
 {}
 
 bool LLFindWearablesEx::operator()(LLInventoryCategory* cat, LLInventoryItem* item)
@@ -666,10 +664,17 @@ bool LLFindWearablesEx::operator()(LLInventoryCategory* cat, LLInventoryItem* it
 	if (!vitem) return false;
 
 	// Skip non-wearables.
-	if (!vitem->isWearableType() && vitem->getType() != LLAssetType::AT_OBJECT)
+	//<FS:LO> FIRE-1256 fix
+	//if (!vitem->isWearableType() && vitem->getType() != LLAssetType::AT_OBJECT)
+    if (!vitem->isWearableType())
 	{
-		return false;
+	//return false;
+	if((vitem->getType() != LLAssetType::AT_OBJECT) && (vitem->getType() != LLAssetType::AT_GESTURE))
+	{
+    return false;
+    }
 	}
+    //</FS:LO>
 
 	// Skip body parts if requested.
 	if (!mIncludeBodyParts && vitem->getType() == LLAssetType::AT_BODYPART)

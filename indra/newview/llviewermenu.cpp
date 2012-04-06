@@ -259,7 +259,7 @@
 #include "llagentui.h"
 
 #include "hippogridmanager.h"
-
+#include "llfloaterregiondebugconsole.h"
 using namespace LLOldEvents;
 using namespace LLVOAvatarDefines;
 void init_client_menu(LLMenuGL* menu);
@@ -799,7 +799,7 @@ void init_menus()
 	// TomY TODO convert these two
 	LLMenuGL*menu;
 
-	menu = new LLMenuGL("Singularity");
+	menu = new LLMenuGL("Voodoo");
 	menu->append(new LLMenuItemCallGL(	"Close All Dialogs", 
 										&handle_close_all_notifications, NULL, NULL, 'D', MASK_CONTROL | MASK_ALT | MASK_SHIFT));
 	menu->appendSeparator();
@@ -1172,6 +1172,7 @@ void init_client_menu(LLMenuGL* menu)
 										NULL, 
 										&menu_check_control,
 										(void*)"ShowConsoleWindow"));
+
 
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | Modified: RLVa-1.0.0e | OK
 	#ifdef RLV_ADVANCED_TOGGLE_RLVA
@@ -1579,16 +1580,16 @@ void init_debug_rendering_menu(LLMenuGL* menu)
 	item = new LLMenuItemCheckGL("Audit Texture", menu_toggle_control, NULL, menu_check_control, (void*)"AuditTexture");
 	menu->append(item);
 
-#ifndef LL_RELEASE_FOR_DOWNLOAD
-	menu->appendSeparator();
-	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-#else
-	if(gSavedSettings.getBOOL("QAMode"))
-	{
-		menu->appendSeparator();
-		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-	}
-#endif
+//#ifndef LL_RELEASE_FOR_DOWNLOAD
+//	menu->appendSeparator();
+//	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+//#else
+//	if(gSavedSettings.getBOOL("QAMode"))
+//	{
+//		menu->appendSeparator();
+//		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+//	}
+//#endif
 	
 	menu->createJumpKeys();
 }
@@ -1782,6 +1783,7 @@ void init_server_menu(LLMenuGL* menu)
 	{
 		LLMenuGL* sub = new LLMenuGL("Region");
 		menu->appendMenu(sub);
+		sub->append(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
 		sub->append(new LLMenuItemCallGL("Dump Temp Asset Data",
 			&handle_region_dump_temp_asset_data,
 			&enable_god_customer_service, NULL));

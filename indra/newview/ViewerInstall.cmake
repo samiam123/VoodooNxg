@@ -3,7 +3,8 @@ install(TARGETS ${VIEWER_BINARY_NAME}
         )
 
 # Install artwork lying inside the source tree.
-install(DIRECTORY res skins app_settings
+#install(DIRECTORY res skins app_settings
+install(DIRECTORY res skins app_settings local_assets
         DESTINATION ${APP_SHARE_DIR}
         PATTERN ".svn" EXCLUDE
         )

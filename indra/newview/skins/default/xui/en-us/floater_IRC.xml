@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<floater border="false" can_close="true" can_minimize="true" bottom="-371" height="300" left="280" width="350" can_resize="false" name="IRC" title="IRC" >
+	<scroll_list background_visible="true" bottom="10" column_padding="5" draw_border="true"
+		   draw_heading="false" draw_stripes="true" enabled="true"
+		   follows="left|top|right|bottom" left="10" mouse_opaque="true"
+		   multi_select="false" name="IRC_list" tab_stop="true" top="-25"
+		   width="240">
+		<column label="" name="IRC_name" width="248" />
+	</scroll_list>
+
+	<pad bottom="-7" height="0" left="-90" width="1" />
+	<button bottom_delta="-35" follows="top|right" font="SansSerif" height="22"
+	     label="IM/Call" left_delta="0" name="IRC_IM" width="80" />
+	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
+	     label="New" name="IRC_new" width="80" />
+	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
+	     label="Edit" name="IRC_edit" width="80" />
+	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
+		   label="Remove" name="IRC_remove" width="80" />
+	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
+		   label="Refresh" name="IRC_refresh" width="80" />
+	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
+		   label="Help" name="IRC_Help" width="80" />
+</floater>

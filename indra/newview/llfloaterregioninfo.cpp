@@ -1092,10 +1092,11 @@ BOOL LLPanelRegionTextureInfo::sendUpdate()
 	llinfos << "LLPanelRegionTextureInfo::sendUpdate()" << llendl;
 
 	// Make sure user hasn't chosen wacky textures.
-	if (!validateTextureSizes())
-	{
-		return FALSE;
-	}
+	//  Buzz -Revolution  Allow 'wacky' things
+    //if (!validateTextureSizes()) // comment out with var uncomment for non var
+    //{
+    //return FALSE;
+    //}
 
 	LLTextureCtrl* texture_ctrl;
 	std::string buffer;
@@ -1336,17 +1337,23 @@ void LLPanelRegionTerrainInfo::onClickDownloadRaw(void* data)
 void LLPanelRegionTerrainInfo::onClickDownloadRaw_continued(AIFilePicker* filepicker)
 {
 	if (!filepicker->hasFilename())
+	//LLFilePicker& picker = LLFilePicker::instance();
+	//if (!picker.getSaveFile(LLFilePicker::FFSAVE_RAW, "terrain.raw"))
 	{
+		llwarns << "No file" << llendl;
 		return;
 	}
 	std::string filepath = filepicker->getFilename();
+		//std::string filepath = picker.getFirstFile();
 	gXferManager->expectFileForRequest(filepath);
-
+// added one line for raw
+	//LLPanelRegionTerrainInfo* self = (LLPanelRegionTerrainInfo*)data;
 	strings_t strings;
 	strings.push_back("download filename");
 	strings.push_back(filepath);
 	LLUUID invoice(LLFloaterRegionInfo::getLastInvoice());
 	sendEstateOwnerMessage(gMessageSystem, "terrain", invoice, strings);
+	//self->sendEstateOwnerMessage(gMessageSystem, "terrain", invoice, strings);
 }
 
 // static
@@ -1361,8 +1368,11 @@ void LLPanelRegionTerrainInfo::onClickUploadRaw(void* data)
 void LLPanelRegionTerrainInfo::onClickUploadRaw_continued(AIFilePicker* filepicker)
 {
 	if (!filepicker->hasFilename())
+     {
+		llwarns << "No file" << llendl;
 		return;
 
+     }
 	std::string filepath = filepicker->getFilename();
 	gXferManager->expectFileForTransfer(filepath);
 

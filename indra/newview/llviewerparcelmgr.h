@@ -46,6 +46,7 @@ class LLParcel;
 class LLViewerTexture;
 class LLViewerRegion;
 
+//const F32 DWELL_NAN = -1.0f;	// A dwell having this value will be displayed as Loading...
 // Constants for sendLandOwner
 //const U32 NO_NEIGHBOR_JOIN = 0x0;
 //const U32 ALL_NEIGHBOR_JOIN = U32(  NORTH_MASK 
@@ -89,7 +90,7 @@ public:
 
 	LLViewerParcelMgr();
 	~LLViewerParcelMgr();
-
+    void init(F32 region_size); // for var
 	static void cleanupGlobals();
 
 	BOOL	selectionEmpty() const;
@@ -239,7 +240,7 @@ public:
 
 	// If the point is outside the current hover parcel, request more data
 	void	setHoverParcel(const LLVector3d& pos_global);
-
+	//void	requestHoverParcelProperties(const LLVector3d& pos_global); // or voodoo
 	bool	canAgentBuyParcel(LLParcel*, bool forGroup) const;
 	
 //	void	startClaimLand(BOOL is_for_group = FALSE);
@@ -264,8 +265,8 @@ public:
 								  BOOL remove_contribution);
 		// callers responsibility to call deleteParcelBuy() on return value
 	void sendParcelBuy(ParcelBuyInfo*);
-	void deleteParcelBuy(ParcelBuyInfo* *);
-					   
+	void deleteParcelBuy(ParcelBuyInfo* *); //this
+	//void deleteParcelBuy(ParcelBuyInfo*&); //or voodoo					   
 	void sendParcelDeed(const LLUUID& group_id);
 
 	// Send the ParcelRelease message

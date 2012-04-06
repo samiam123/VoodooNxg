@@ -680,7 +680,6 @@ bool LLPipeline::allocateScreenBuffer(U32 resX, U32 resY, U32 samples)
 		// Set this flag in case we crash while resizing window or allocating space for deferred rendering targets
 		gSavedSettings.setBOOL("RenderInitError", TRUE);
 		gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
-
 		S32 shadow_detail = gSavedSettings.getS32("RenderShadowDetail");
 		BOOL ssao = gSavedSettings.getBOOL("RenderDeferredSSAO");
 		BOOL RenderDepthOfField = gSavedSettings.getBOOL("RenderDepthOfField");
@@ -892,10 +891,12 @@ void LLPipeline::createGLBuffers()
 
 	if (LLPipeline::sWaterReflections)
 	{ //water reflection texture
+//		U32 res = (U32) gSavedSettings.getS32("RenderWaterRefResolution");// remove later sam old
 		U32 res = (U32) llmax(gSavedSettings.getS32("RenderWaterRefResolution"), 512);
 			
 		mWaterRef.allocate(res,res,GL_RGBA,TRUE,FALSE);
 		//always use FBO for mWaterDis so it can be used for avatar texture bakes
+		//mWaterDis.allocate(res,res,GL_RGBA,TRUE,FALSE); // remove me later sam old
 		mWaterDis.allocate(res,res,GL_RGBA,TRUE,FALSE,LLTexUnit::TT_TEXTURE, true);
 	}
 
@@ -937,7 +938,8 @@ void LLPipeline::createGLBuffers()
 			LLImageGL::generateTextures(1, &mNoiseMap);
 			
 			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mNoiseMap);
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise, false);
+			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise);// remove this later sam old
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise, false);			
 			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_POINT);
 		}
 
@@ -952,7 +954,8 @@ void LLPipeline::createGLBuffers()
 
 			LLImageGL::generateTextures(1, &mTrueNoiseMap);
 			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mTrueNoiseMap);
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise, false);
+			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise);// remove me later sam old
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise, false);			
 			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_POINT);
 		}
 
@@ -989,7 +992,8 @@ void LLPipeline::createGLBuffers()
 
 			LLImageGL::generateTextures(1, &mLightFunc);
 			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mLightFunc);
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, lg, false);
+			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, lg);// remove me sam old
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, lg, false);			
 			gGL.getTexUnit(0)->setTextureAddressMode(LLTexUnit::TAM_CLAMP);
 			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_TRILINEAR);
 
@@ -3529,9 +3533,15 @@ void LLPipeline::renderGeom(LLCamera& camera, BOOL forceVBOUpdate)
 	}
 
 	LLAppViewer::instance()->pingMainloopTimeout("Pipeline:ForceVBO");
-	
+//---------------------------------------------------------------------
+    //fake vertex buffer updating 
+    //to guaranttee at least updating one VBO buffer every frame 
+    //to walk around the bug caused by ATI card --> DEV-3855 
+	//Re-enabling sams voodoo as this problem still happens 
+    if(forceVBOUpdate) 
+    gSky.mVOSkyp->updateDummyVertexBuffer();
+//---------------------------------------------------------------------
 	gFrameStats.start(LLFrameStats::RENDER_GEOM);
-
 	// Initialize lots of GL state to "safe" values
 	gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 	gGL.matrixMode(LLRender::MM_TEXTURE);
@@ -6526,8 +6536,10 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield, b
 				mDeferredLight.flush();
 			}
 
+			//U32 dof_width = mScreen.getWidth()*CameraDoFResScale;//remove me sam old
+			//U32 dof_height = mScreen.getHeight()*CameraDoFResScale;// me to sam old
 			U32 dof_width = (U32) (mScreen.getWidth()*CameraDoFResScale);
-			U32 dof_height = (U32) (mScreen.getHeight()*CameraDoFResScale);
+			U32 dof_height = (U32) (mScreen.getHeight()*CameraDoFResScale);			
 			
 			{ //perform DoF sampling at half-res (preserve alpha channel)
 				mScreen.bindTarget();
@@ -8662,15 +8674,16 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 		
 		da = powf(da, split_exp.mV[2]);
 
+
 		F32 sxp = split_exp.mV[1] + (split_exp.mV[0]-split_exp.mV[1])*da;
-		
+
+
 		for (U32 i = 0; i < 4; ++i)
 		{
 			F32 x = (F32)(i+1)/4.f;
 			x = powf(x, sxp);
 			mSunClipPlanes.mV[i] = near_clip+range*x;
 		}
-
 		mSunClipPlanes.mV[0] *= 1.25f; //bump back first split for transition padding
 	}
 
@@ -8727,6 +8740,8 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 				delta += (frust[i+4]-frust[(i+2)%4+4])*0.05f;
 				delta.normVec();
 				F32 dp = delta*pn;
+				//frust[i] = eye + (delta*dist[j]*0.95f)/dp;// remove me sam old
+				//frust[i+4] = eye + (delta*dist[j+1]*1.05f)/dp;// me to sam old
 				frust[i] = eye + (delta*dist[j]*0.75f)/dp;
 				frust[i+4] = eye + (delta*dist[j+1]*1.25f)/dp;
 			}

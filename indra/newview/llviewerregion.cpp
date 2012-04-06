@@ -298,9 +298,10 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 	mCacheLoaded(FALSE),
 	mCacheDirty(FALSE),
 	mReleaseNotesRequested(FALSE),
-	mCapabilitiesReceived(false)
+	mCapabilitiesReceived(false),
+    mWidth(region_width_meters) //for var
 {
-	mWidth = region_width_meters;
+	//mWidth = region_width_meters; //non var
 	mImpl->mOriginGlobal = from_region_handle(handle); 
 	updateRenderMatrix();
 
@@ -310,7 +311,8 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 	mImpl->mCompositionp =
 		new LLVLComposition(mImpl->mLandp,
 							grids_per_region_edge,
-							region_width_meters / grids_per_region_edge);
+							//region_width_meters / grids_per_region_edge);//non var
+                            mWidth / grids_per_region_edge); //for var
 	mImpl->mCompositionp->setSurface(mImpl->mLandp);
 
 	// Create the surfaces
@@ -320,7 +322,12 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 					mImpl->mOriginGlobal,
 					mWidth);
 
-	mParcelOverlay = new LLViewerParcelOverlay(this, region_width_meters);
+	//mParcelOverlay = new LLViewerParcelOverlay(this, region_width_meters);//non var
+    //Re-init the parcel mgr for this sim for var
+    //LLViewerParcelMgr::getInstance()->init(region_width_meters); // for var
+	 mParcelOverlay = new LLViewerParcelOverlay(this, mWidth); 
+    //Re-init the parcel mgr for this sim 
+    //LLViewerParcelMgr::getInstance()->init(mWidth); 
 
 	setOriginGlobal(from_region_handle(handle));
 	calculateCenterGlobal();
@@ -1602,11 +1609,14 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("SendUserReport");
 	capabilityNames.append("SendUserReportWithScreenshot");
 	capabilityNames.append("ServerReleaseNotes");
-	//capabilityNames.append("SimConsole");
+	//uncommented sim con caps
+	capabilityNames.append("SimConsole");
 	capabilityNames.append("SimulatorFeatures");
 	capabilityNames.append("SetDisplayName");
-	//capabilityNames.append("SimConsoleAsync");
+	capabilityNames.append("SimConsoleAsync");
 	capabilityNames.append("StartGroupProposal");
+	// added one line for new caps faster tps RS
+    capabilityNames.append("TeleportLocation");
 	capabilityNames.append("TextureStats");
 	capabilityNames.append("UntrustedSimulatorMessage");
 	capabilityNames.append("UpdateAgentInformation");

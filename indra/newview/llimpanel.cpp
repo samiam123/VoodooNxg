@@ -1680,7 +1680,7 @@ void LLFloaterIMPanel::addHistoryLine(const std::string &utf8msg, LLColor4 incol
 	}
 
 	//Kadah - Bold group mods chat. Doesnt work on the first msg of the session, dont have speakers list yet?
-	if (gSavedSettings.getBOOL("SingularityBoldGroupModerator") && isModerator(source))
+	if (gSavedSettings.getBOOL("VoodooBoldGroupModerator") && isModerator(source))
 	{
 		mHistoryEditor->appendColoredText(utf8msg.substr(0,1), false, prepend_newline, color);
 		LLStyleSP style(new LLStyle);
@@ -1788,9 +1788,7 @@ BOOL LLFloaterIMPanel::handleKeyHere( KEY key, MASK mask )
 		}
 	}
 
-	// May need to call base class LLPanel::handleKeyHere if not handled
-	// in order to tab between buttons.  JNC 1.2.2002
-	return handled;
+	return handled || LLFloater::handleKeyHere(key, mask);
 }
 
 BOOL LLFloaterIMPanel::handleDragAndDrop(S32 x, S32 y, MASK mask, BOOL drop,

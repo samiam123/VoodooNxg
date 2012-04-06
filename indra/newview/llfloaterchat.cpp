@@ -629,7 +629,8 @@ LLColor4 get_text_color(const LLChat& chat)
 //static
 void LLFloaterChat::loadHistory()
 {
-	LLLogChat::loadHistory(std::string("chat"), &chatFromLogFile, (void *)LLFloaterChat::getInstance(LLSD())); 
+	//LLLogChat::loadHistory(std::string("chat"), &chatFromLogFile, (void *)LLFloaterChat::getInstance(LLSD())); // not right sams voodoo
+	LLLogChat::loadHistory(std::string("chat.txt"), &chatFromLogFile, (void *)LLFloaterChat::getInstance(LLSD()));
 }
 
 //static
@@ -639,6 +640,7 @@ void LLFloaterChat::chatFromLogFile(LLLogChat::ELogLineType type , std::string l
 	{
 	case LLLogChat::LOG_EMPTY:
 	case LLLogChat::LOG_END:
+		// This will cause an error if the log file dosent exist and user wants to open it anyway. Sams notes
 		// *TODO: nice message from XML file here
 		break;
 	case LLLogChat::LOG_LINE:

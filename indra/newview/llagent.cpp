@@ -99,7 +99,7 @@
 #include "llfloaterchat.h"
 
 #include "lluictrlfactory.h" //For LLUICtrlFactory::getLayeredXMLNode
-
+#include "lltpresponder.h"
 // [RLVa:KB] - Checked: 2010-09-27 (RLVa-1.1.3b)
 #include "rlvhandler.h"
 #include "rlvinventory.h"
@@ -2141,6 +2141,11 @@ void LLAgent::setStartPosition( U32 location_id )
     agent_pos.mV[VZ] = llclamp( agent_pos.mV[VZ],
                                 mRegionp->getLandHeightRegion( agent_pos ),
                                 LLWorld::getInstance()->getRegionMaxHeight() );
+	std::string url = gAgent.getRegion()->getCapability("HomeLocation");
+	if( !url.empty() // added this if back in for now sams voodoo 
+	)
+	{
+	
     // Send the CapReq
     LLSD request;
     LLSD body;
@@ -2151,7 +2156,27 @@ void LLAgent::setStartPosition( U32 location_id )
     homeLocation["LocationLookAt"] = ll_sdmap_from_vector3(mFrameAgent.getAtAxis());
 
     body["HomeLocation"] = homeLocation;
-
+	
+		LLHTTPClient::post( url, body, new LLHomeLocationResponder() );
+	}
+	else
+	{
+		LLMessageSystem* msg = gMessageSystem;
+		msg->newMessageFast(_PREHASH_SetStartLocationRequest);
+		msg->nextBlockFast( _PREHASH_AgentData);
+		msg->addUUIDFast(_PREHASH_AgentID, getID());
+		msg->addUUIDFast(_PREHASH_SessionID, getSessionID());
+		msg->nextBlockFast( _PREHASH_StartLocationData);
+		// corrected by sim
+		msg->addStringFast(_PREHASH_SimName, "");
+		msg->addU32Fast(_PREHASH_LocationID, location_id);
+		msg->addVector3Fast(_PREHASH_LocationPos, agent_pos);
+		msg->addVector3Fast(_PREHASH_LocationLookAt,mFrameAgent.getAtAxis());
+		// Reliable only helps when setting home location.  Last
+		// location is sent on quit, and we don't have time to ack
+		// the packets.
+		msg->sendReliable(mRegionp->getHost());
+	}
     // This awkward idiom warrants explanation.
     // For starters, LLSDMessage::ResponderAdapter is ONLY for testing the new
     // LLSDMessage functionality with a pre-existing LLHTTPClient::Responder.
@@ -2164,23 +2189,23 @@ void LLAgent::setStartPosition( U32 location_id )
     // We must trust that the underlying LLHTTPClient code will eventually
     // fire either the reply callback or the error callback; either will cause
     // the ResponderAdapter to delete itself.
-    LLSDMessage::ResponderAdapter*
-        adapter(new LLSDMessage::ResponderAdapter(new LLHomeLocationResponder()));
+    //LLSDMessage::ResponderAdapter*
+     //   adapter(new LLSDMessage::ResponderAdapter(new LLHomeLocationResponder()));
 
-    request["message"] = "HomeLocation";
-    request["payload"] = body;
-    request["reply"]   = adapter->getReplyName();
-    request["error"]   = adapter->getErrorName();
+    //request["message"] = "HomeLocation";
+    //request["payload"] = body;
+    //request["reply"]   = adapter->getReplyName();
+    //request["error"]   = adapter->getErrorName();
 
-    gAgent.getRegion()->getCapAPI().post(request);
+    //gAgent.getRegion()->getCapAPI().post(request);
 
     const U32 HOME_INDEX = 1;
     if( HOME_INDEX == location_id )
     {
         setHomePosRegion( mRegionp->getHandle(), getPositionAgent() );
     }
-}
-
+  }
+//}
 void LLAgent::requestStopMotion( LLMotion* motion )
 {
 	// Notify all avatars that a motion has stopped.
@@ -3179,6 +3204,8 @@ void LLAgent::processScriptControlChange(LLMessageSystem *msg, void **)
 }
 
 /*
+// Note to selph... Clean this mess up if new caps hold up ok after more testing
+// Ill leave the orginal in for now but not active
 // static
 void LLAgent::processControlTake(LLMessageSystem *msg, void **)
 {
@@ -3473,7 +3500,13 @@ void LLAgent::teleportRequest(
 	bool is_local = (region_handle == to_region_handle(getPositionGlobal()));
 	if(regionp && teleportCore(is_local))
 	{
-		LL_INFOS("") << "TeleportLocationRequest: '" << region_handle << "':"
+		std::string url;
+		if(region_handle != regionp->getHandle() &&
+			!(url=regionp->getCapability("TeleportLocation")).empty())
+		{
+			LLSD body;
+			body["LocationPos"] = ll_sdmap_from_vector3(pos_local);
+		/*LL_INFOS("") << "TeleportLocationRequest: '" << region_handle << "':"
 					 << pos_local << LL_ENDL;
 		LLMessageSystem* msg = gMessageSystem;
 		msg->newMessage("TeleportLocationRequest");
@@ -3484,15 +3517,71 @@ void LLAgent::teleportRequest(
 		msg->addU64("RegionHandle", region_handle);
 		msg->addVector3("Position", pos_local);
 		// <edit>
-		//LLVector3 look_at(0,1,0);
+		//LLVector3 look_at(0,1,0);*/
 		LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
-		/*if (look_at_from_camera)
+			body["LocationLookAt"] = ll_sdmap_from_vector3(look_at);
+			body["RegionHandle"] = LLSD::Real(region_handle);
+			LLHTTPClient::post(url, body, new LLTPResponder());
+		}
+		else
+		// if (look_at_from_camera)
 		{
-			look_at = LLViewerCamera::getInstance()->getAtAxis();
-		}*/
+			llinfos << "TeleportLocationRequest: '" << region_handle << "':" << pos_local
+					<< llendl;
+			LLMessageSystem* msg = gMessageSystem;
+			msg->newMessage("TeleportLocationRequest");
+			msg->nextBlockFast(_PREHASH_AgentData);
+			msg->addUUIDFast(_PREHASH_AgentID, getID());
+			msg->addUUIDFast(_PREHASH_SessionID, getSessionID());
+			msg->nextBlockFast(_PREHASH_Info);
+			msg->addU64("RegionHandle", region_handle);
+			msg->addVector3("Position", pos_local);
+			// <edit>
+			//LLVector3 look_at(0,1,0);
+			//look_at = LLViewerCamera::getInstance()->getAtAxis();
+			LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();			
+			/*if (look_at_from_camera)
+			{
+				look_at = LLViewerCamera::getInstance()->getAtAxis();
+			}*/
+			// </edit>
+			msg->addVector3("LookAt", look_at);
+			sendReliableMessage();
+		}
 		// </edit>
-		msg->addVector3("LookAt", look_at);
-		sendReliableMessage();
+		//msg->addVector3("LookAt", look_at);
+		//sendReliableMessage();
+		//*/
+ LLSD body;
+      body["LocationPos"] = ll_sdmap_from_vector3(pos_local);
+      LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
+      body["LocationLookAt"] = ll_sdmap_from_vector3(look_at);
+      body["RegionHandle"] = LLSD::Real(region_handle);
+      LLHTTPClient::post(url, body, new LLTPResponder());
+    }
+    else
+    {
+      llinfos << "TeleportLocationRequest: '" << region_handle << "':" << pos_local
+          << llendl;
+      LLMessageSystem* msg = gMessageSystem;
+      msg->newMessage("TeleportLocationRequest");
+      msg->nextBlockFast(_PREHASH_AgentData);
+      msg->addUUIDFast(_PREHASH_AgentID, getID());
+      msg->addUUIDFast(_PREHASH_SessionID, getSessionID());
+      msg->nextBlockFast(_PREHASH_Info);
+      msg->addU64("RegionHandle", region_handle);
+      msg->addVector3("Position", pos_local);
+      // <edit>
+      //LLVector3 look_at(0,1,0);
+      LLVector3 look_at = LLViewerCamera::getInstance()->getAtAxis();
+      /*if (look_at_from_camera)
+      {
+        look_at = LLViewerCamera::getInstance()->getAtAxis();
+		}*/
+      // </edit>
+      msg->addVector3("LookAt", look_at);
+      sendReliableMessage();
+      //}
 	}
 }
 
@@ -3580,7 +3669,8 @@ void LLAgent::teleportViaLocation(const LLVector3d& pos_global)
 	{
 		// If we're getting teleported due to @tpto we should disregard any @tploc=n or @unsit=n restrictions from the same object
 		if ( (gRlvHandler.hasBehaviourExcept(RLV_BHVR_TPLOC, gRlvHandler.getCurrentObject())) ||
-		     ( (gAgentAvatarp) && (gAgentAvatarp->isSitting()) && 
+		     ( (gAgentAvatarp) && (gAgentAvatarp->isSitting()) &&
+			 
 			   (gRlvHandler.hasBehaviourExcept(RLV_BHVR_UNSIT, gRlvHandler.getCurrentObject()))) )
 		{
 			RlvNotifications::notifyBlockedTeleport();

@@ -65,11 +65,11 @@
 		font="SansSerifSmall"
 		follows="left|top|right" border_visible="false" mouse_opaque="false"
 		drop_shadow_visible="true" border_drop_shadow_visible="false" />
-  <!--<button label="Get Grid Info" label_selected="Get Grid Info" enabled="true" name="btn_gridinfo"
+  <button label="Get Grid Info" label_selected="Get Grid Info" enabled="true" name="btn_gridinfo"
 		height="18" width="100" left="120" bottom_delta="-22"
 		halign="center"
 		follows="left|top" scale_image="true"
-	    font="SansSerifSmall" mouse_opaque="true" />-->
+	    font="SansSerifSmall" mouse_opaque="true"/>
   <!-- Platform -->
   <text type="string" length="1" enabled="true" name="platform_label"
 		height="10" width="100" left="12" bottom_delta="-32"

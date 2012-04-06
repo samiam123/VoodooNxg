@@ -215,7 +215,8 @@ BOOL LLVorbisDecodeState::initDecode()
 	int r = ov_open_callbacks(mInFilep, &mVF, NULL, 0, vfs_callbacks);
 	if(r < 0) 
 	{
-		llwarns << r << " Input to vorbis decode does not appear to be an Ogg bitstream: " << mUUID << llendl;
+		//llwarns << r << " Input to vorbis decode does not appear to be an Ogg bitstream: " << mUUID << llendl;
+        LL_WARNS_ONCE(NULL) << r << " Input to vorbis decode does not appear to be an Ogg bitstream: " << mUUID << llendl;
 		return(FALSE);
 	}
 	
@@ -257,25 +258,30 @@ BOOL LLVorbisDecodeState::initDecode()
 	    (size_t)sample_count <= 0)
 	{
 		abort_decode = true;
-		llwarns << "Illegal sample count: " << sample_count << llendl;
+		//llwarns << "Illegal sample count: " << sample_count << llendl;
+        LL_WARNS_ONCE(NULL) << "Illegal sample count: " << sample_count << llendl;
+
 	}
 	
 	if( size_guess > LLVORBIS_CLIP_REJECT_SIZE ||
 	    size_guess < 0)
 	{
 		abort_decode = true;
-		llwarns << "Illegal sample size: " << size_guess << llendl;
+		//llwarns << "Illegal sample size: " << size_guess << llendl;
+		LL_WARNS_ONCE(NULL) << "Illegal sample size: " << size_guess << llendl;
 	}
 	// <edit>
 	}
 	// </edit>
 	if( abort_decode )
 	{
-		llwarns << "Canceling initDecode. Bad asset: " << mUUID << llendl;
+		//llwarns << "Canceling initDecode. Bad asset: " << mUUID << llendl;
+		LL_WARNS_ONCE(NULL) << "Canceling initDecode. Bad asset: " << mUUID << llendl;
 		vorbis_comment* comment = ov_comment(&mVF,-1);
 		if (comment && comment->vendor)
 		{
-			llwarns << "Bad asset encoded by: " << comment->vendor << llendl;
+			//llwarns << "Bad asset encoded by: " << comment->vendor << llendl;
+            LL_WARNS_ONCE(NULL) << "Bad asset encoded by: " << comment->vendor << llendl;
 		}
 		delete mInFilep;
 		mInFilep = NULL;
@@ -636,6 +642,7 @@ void LLAudioDecodeMgr::Impl::processQueue(const F32 num_secs)
 						LLAudioData *adp = gAudiop->getAudioData(mCurrentDecodep->getUUID());
 						adp->setHasDecodedData(TRUE);
 						adp->setHasValidData(TRUE);
+                        adp->setHasDecodeRequestPending( false ); // <FS:ND/> All done, buffer can be used.
 
 						// At this point, we could see if anyone needs this sound immediately, but
 						// I'm not sure that there's a reason to - we need to poll all of the playing
@@ -645,6 +652,12 @@ void LLAudioDecodeMgr::Impl::processQueue(const F32 num_secs)
 					else
 					{
 						llinfos << "Vorbis decode failed!!!" << llendl;
+							// <FS:ND> Decode failed, mark audiodata as not waiting for decoded data, then it can be reused.
+    						LLAudioData *adp = gAudiop->getAudioData(mCurrentDecodep->getUUID());
+    						if( adp )
+    							adp->setHasDecodeRequestPending( false );
+    						// </FS:ND>
+
 					}
 					mCurrentDecodep = NULL;
 				}

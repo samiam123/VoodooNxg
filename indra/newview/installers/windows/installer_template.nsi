@@ -68,8 +68,8 @@ Name ${VIEWERNAME}
 SubCaption 0 $(LicenseSubTitleSetup)	; override "license agreement" text
 
 BrandingText "Prepare to Implode!"						; bottom of window text
-Icon          %%SOURCE%%\installers\windows\install_icon_singularity.ico
-UninstallIcon %%SOURCE%%\installers\windows\install_icon_singularity.ico
+Icon          %%SOURCE%%\installers\windows\install_icon_voodoo.ico
+UninstallIcon %%SOURCE%%\installers\windows\uninstall_icon_voodoo.ico
 WindowIcon off							; show our icon in left corner
 BGGradient 9090b0 000000 notext
 CRCCheck on								; make sure CRC is OK
@@ -81,7 +81,7 @@ SetOverwrite on							; stomp files by default
 AutoCloseWindow true					; after all files install, close window
 
 InstallDir "$PROGRAMFILES\${INSTNAME}"
-InstallDirRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\${INSTNAME}" ""
+InstallDirRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\${INSTNAME}" ""
 DirText $(DirectoryChooseTitle) $(DirectoryChooseSetup)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -183,7 +183,7 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Function CheckIfAlreadyCurrent
   Push $0
-	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\$INSTPROG" "Version"
+	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\$INSTPROG" "Version"
     StrCmp $0 ${VERSION_LONG} 0 DONE
 	MessageBox MB_OKCANCEL $(CheckIfCurrentMB) /SD IDOK IDOK DONE
     Quit
@@ -197,21 +197,21 @@ FunctionEnd
 ; Close the program, if running. Modifies no variables.
 ; Allows user to bail out of install process.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Function CloseSecondLife
+Function CloseVoodoo
   Push $0
-  FindWindow $0 "Second Life" ""
+  FindWindow $0 "Voodoo" ""
   IntCmp $0 0 DONE
-  MessageBox MB_OKCANCEL $(CloseSecondLifeInstMB) IDOK CLOSE IDCANCEL CANCEL_INSTALL
+  MessageBox MB_OKCANCEL $(CloseVoodooInstMB) IDOK CLOSE IDCANCEL CANCEL_INSTALL
 
   CANCEL_INSTALL:
     Quit
 
   CLOSE:
-    DetailPrint $(CloseSecondLifeInstDP)
+    DetailPrint $(CloseVoodooInstDP)
     SendMessage $0 16 0 0
 
   LOOP:
-	  FindWindow $0 "Second Life" ""
+	  FindWindow $0 "Voodoo" ""
 	  IntCmp $0 0 DONE
 	  Sleep 500
 	  Goto LOOP
@@ -227,33 +227,7 @@ FunctionEnd
 ; *TODO: Return current SL version info and have installer check
 ; if it is up to date.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Function CheckNetworkConnection
-    Push $0
-    Push $1
-    Push $2	# Option value for GetOptions
-    DetailPrint $(CheckNetworkConnectionDP)
-    ; Look for a tag value from the stub installer, used for statistics
-    ; to correlate installs.  Default to "" if not found on command line.
-    StrCpy $2 ""
-    ${GetOptions} $COMMANDLINE "/STUBTAG=" $2
-    GetTempFileName $0
-    !define HTTP_TIMEOUT 5000 ; milliseconds
-    ; Don't show secondary progress bar, this will be quick.
-    NSISdl::download_quiet \
-        /TIMEOUT=${HTTP_TIMEOUT} \
-        "http://install.secondlife.com/check/?stubtag=$2&version=${VERSION_LONG}" \
-        $0
-    Pop $1 ; Return value, either "success", "cancel" or an error message
-    ; MessageBox MB_OK "Download result: $1"
-    ; Result ignored for now
-	; StrCmp $1 "success" +2
-	;	DetailPrint "Connection failed: $1"
-    Delete $0 ; temporary file
-    Pop $2
-    Pop $1
-    Pop $0
-    Return
-FunctionEnd
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Delete files in Documents and Settings\<user>\SecondLife\cache
@@ -388,13 +362,13 @@ Push $2
 	; Otherwise (preview/dmz etc) just remove cache
     StrCmp $INSTFLAGS "" RM_ALL RM_CACHE
       RM_ALL:
-        RMDir /r "$2\Application Data\SecondLife"
+        RMDir /r "$2\Application Data\Voodoo"
       RM_CACHE:
         # Local Settings directory is the cache, there is no "cache" subdir
-        RMDir /r "$2\Local Settings\Application Data\SecondLife"
+        RMDir /r "$2\Local Settings\Application Data\Voodoo"
         # Vista version of the same
-        RMDir /r "$2\AppData\Local\SecondLife"
-        Delete "$2\Application Data\SecondLife\user_settings\settings_windlight.xml"
+        RMDir /r "$2\AppData\Local\Voodoo"
+        Delete "$2\Application Data\Voodoo\user_settings\settings_windlight.xml"
 
   CONTINUE:
     IntOp $0 $0 + 1
@@ -409,13 +383,13 @@ Pop $0
 Push $0
   ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders" "Common AppData"
   StrCmp $0 "" +2
-  RMDir /r "$0\SecondLife"
+  RMDir /r "$0\Voodoo"
 Pop $0
 
 ; Delete filse in C:\Windows\Application Data\SecondLife
 ; If the user is running on a pre-NT system, Application Data lives here instead of
 ; in Documents and Settings.
-RMDir /r "$WINDIR\Application Data\SecondLife"
+RMDir /r "$WINDIR\Application Data\Voodoo"
 
 FunctionEnd
 
@@ -423,21 +397,21 @@ FunctionEnd
 ; Close the program, if running. Modifies no variables.
 ; Allows user to bail out of uninstall process.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Function un.CloseSecondLife
+Function un.CloseVoodoo
   Push $0
-  FindWindow $0 "Second Life" ""
+  FindWindow $0 "Voodoo" ""
   IntCmp $0 0 DONE
-  MessageBox MB_OKCANCEL $(CloseSecondLifeUnInstMB) IDOK CLOSE IDCANCEL CANCEL_UNINSTALL
+  MessageBox MB_OKCANCEL $(CloseVoodooUnInstMB) IDOK CLOSE IDCANCEL CANCEL_UNINSTALL
 
   CANCEL_UNINSTALL:
     Quit
 
   CLOSE:
-    DetailPrint $(CloseSecondLifeUnInstDP)
+    DetailPrint $(CloseVoodooUnInstDP)
     SendMessage $0 16 0 0
 
   LOOP:
-	  FindWindow $0 "Second Life" ""
+	  FindWindow $0 "Voodoo" ""
 	  IntCmp $0 0 DONE
 	  Sleep 500
 	  Goto LOOP
@@ -455,10 +429,10 @@ FunctionEnd
 ;
 Function un.RemovePassword
 
-DetailPrint "Removing Second Life password"
+DetailPrint "Removing Voodoo password"
 
 SetShellVarContext current
-Delete "$APPDATA\SecondLife\user_settings\password.dat"
+Delete "$APPDATA\Voodoo\user_settings\password.dat"
 SetShellVarContext all
 
 FunctionEnd
@@ -485,8 +459,8 @@ Delete "$INSTDIR\dronesettings.ini"
 Delete "$INSTDIR\message_template.msg"
 Delete "$INSTDIR\newview.pdb"
 Delete "$INSTDIR\newview.map"
-Delete "$INSTDIR\SecondLife.pdb"
-Delete "$INSTDIR\SecondLife.map"
+Delete "$INSTDIR\Voodoo.pdb"
+Delete "$INSTDIR\Voodoo.map"
 Delete "$INSTDIR\comm.dat"
 Delete "$INSTDIR\*.glsl"
 Delete "$INSTDIR\motions\*.lla"
@@ -539,10 +513,10 @@ Call un.CheckIfAdministrator		; Make sure the user can install/uninstall
 SetShellVarContext all			
 
 ; Make sure we're not running
-Call un.CloseSecondLife
+Call un.CloseVoodoo
 
 ; Clean up registry keys and subkeys (these should all be !defines somewhere)
-DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\$INSTPROG"
+DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\$INSTPROG"
 DeleteRegKey HKEY_LOCAL_MACHINE "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$INSTPROG"
 
 ; Clean up shortcuts
@@ -556,9 +530,9 @@ Delete "$INSTDIR\Uninstall $INSTSHORTCUT.lnk"
 ; Clean up cache and log files.
 ; Leave them in-place for non AGNI installs.
 
-!ifdef UNINSTALL_SETTINGS
+; !ifdef UNINSTALL_SETTINGS
 Call un.DocumentsAndSettingsFolder
-!endif
+; !endif
 
 ; remove stored password on uninstall
 Call un.RemovePassword
@@ -679,7 +653,7 @@ lbl_check_silent:
     
 	; If we currently have a version of SL installed, default to the language of that install
     ; Otherwise don't change $LANGUAGE and it will default to the OS UI language.
-	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\${INSTNAME}" "InstallerLanguage"
+	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\${INSTNAME}" "InstallerLanguage"
     IfErrors lbl_build_menu
 	StrCpy $LANGUAGE $0
 
@@ -697,7 +671,7 @@ lbl_build_menu:
     StrCpy $LANGUAGE $0
 
 	; save language in registry		
-	WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\${INSTNAME}" "InstallerLanguage" $LANGUAGE
+	WriteRegStr HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\${INSTNAME}" "InstallerLanguage" $LANGUAGE
 lbl_return:
     Pop $0
     Return
@@ -707,7 +681,7 @@ FunctionEnd
 Function un.onInit
 	; read language from registry and set for uninstaller
     ; Key will be removed on successful uninstall
-	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Linden Research, Inc.\${INSTNAME}" "InstallerLanguage"
+	ReadRegStr $0 HKEY_LOCAL_MACHINE "SOFTWARE\Voodoo\${INSTNAME}" "InstallerLanguage"
     IfErrors lbl_end
 	StrCpy $LANGUAGE $0
 lbl_end:
@@ -730,7 +704,7 @@ StrCpy $INSTSHORTCUT "${SHORTCUT}"
 Call CheckWindowsVersion		; warn if on Windows 98/ME
 Call CheckIfAdministrator		; Make sure the user can install/uninstall
 Call CheckIfAlreadyCurrent		; Make sure that we haven't already installed this version
-Call CloseSecondLife			; Make sure we're not running
+Call CloseVoodoo			; Make sure we're not running
 #Call CheckNetworkConnection		; ping secondlife.com
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
