@@ -22,6 +22,7 @@
 	<text bottom_delta="-20" follows="left|top" font="SansSerifSmall" height="16" left_delta="-50" name="EmIRCtxt_idle" width="50">Idle Time:</text>
 	<line_editor enabled="false" bevel_style="in" border_style="line" border_thickness="1" bottom_delta="-0" follows="left|top" font="SansSerifSmall" height="20" left_delta="50" max_length="256" mouse_opaque="false" name="EmIRCProfile_WhoIdle" width="250">[IDLE]</line_editor>
 
+
 	<button bottom_delta="-30" enabled="true" follows="left|top" font="SansSerif"
 	     halign="center" height="22" label="Private IM" left="80"
 	     mouse_opaque="true" name="IRC_Profile_IM" scale_image="true" width="85" />

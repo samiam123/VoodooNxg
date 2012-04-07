@@ -8,6 +8,7 @@
 	     width="240">
 		<column label="" name="IRC_name" width="248" />
 	</scroll_list>
+
 	<pad bottom="-7" height="0" left="-90" width="1" />
 	<button bottom_delta="-25" follows="top|right" font="SansSerif" height="22"
 	     label="IM/Call" left_delta="0" name="IRC_IM" width="80" />

@@ -313,15 +313,7 @@
 			<string>Boolean</string>
 			<key>Value</key>
 			<integer>0</integer>
-		</map>
-	
-	
-	
-	
-	
-	
-	
-	
+		</map>	
     <key>RLVaLoginLastLocation</key>
     <map>
       <key>Comment</key>
@@ -537,7 +529,6 @@
 		<key>Value</key>
 			<integer>0</integer>
     </map>
-
     <key>KeywordsChangeColor</key>
     <map>
       <key>Comment</key>
@@ -631,6 +622,5 @@
       <key>Value</key>
       <string></string>
     </map>
-
   </map>
 </llsd>

@@ -44,8 +44,9 @@ class LLUICtrl;
 class LLTextBox;
 class LLScrollListCtrl;
 class LLButton;
-
-class lggPanelIRC : public LLPanel//,public LLSimpleListener
+//class LLSimpleListener;
+//class lggPanelIRC : public LLPanel//,public LLSimpleListener
+class lggPanelIRC : public LLPanel , public LLOldEvents::LLSimpleListener
 {
 public:lggPanelIRC();
 virtual ~lggPanelIRC();

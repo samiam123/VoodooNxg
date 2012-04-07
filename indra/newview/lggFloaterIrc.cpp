@@ -61,7 +61,7 @@ lggPanelIRC::~lggPanelIRC()
 {
 	//gAgent.removeListener(this);
 }
-  //  bool lggPanelIRC::handleEvent(LLPointer<LLOldEvents> event, const LLSD& userdata)
+    //bool lggPanelIRC::handleEvent(LLPointer<LLOldEvents> event, const LLSD& userdata)
   bool lggPanelIRC::handleEvent(LLPointer<LLOldEvents::LLEvent> event, const LLSD& userdata)
 {
 	
@@ -258,7 +258,7 @@ void init_irc_list(LLScrollListCtrl* ctrl)
 		std::string style = "NORMAL";
 		LLSD element;
 		// comment out one line for now gives an error sams voodoo
-		//element["columns"][0]["Color"] = gColors.getColor("DefaultListText").getValue();
+		element["columns"][0]["Color"] = gColors.getColor("DefaultListText").getValue();
 		
 		element["id"] = id;
 		element["columns"][0]["column"] = "IRC_name";

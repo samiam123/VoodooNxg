@@ -243,7 +243,7 @@ void lggIrcGroupHandler::startUpIRCListener(lggIrcData dat)
 	llinfos << " add session..." << llendl;
 	make_ui_sound("UISndStartIM");
 	LLSD args;
-	gIMMgr->addMessage(dat.id,dat.id,std::string("Imprudence"),
+	gIMMgr->addMessage(dat.id,dat.id,std::string("Talon"),
 		//gIMMgr->addSystemMessage(idat.id,
 		llformat("IRC Session Initiated on server: %s:%s \nYour nick is %s and you are on the channel: %s\nWARNING: THIS IS A IRC CHAT WINDOW, Chat can not be verified by Imprudence, people may or may not have the same nick name as their in-world avatar, or may not even be human at all."
 		, dat.server.c_str(), dat.port.c_str(),dat.nick.c_str(),dat.channel.c_str()));
