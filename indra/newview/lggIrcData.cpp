@@ -39,7 +39,8 @@
 #include "llviewerobject.h"
 #include "llagent.h"
 #include "llvoavatarself.h"
-
+//#include "llvoavatar.h"
+//LLVOAvatarSelf *gAgentAvatarp = NULL;
 lggIrcData lggIrcData::fromLLSD(LLSD inputData)
 {
 	
@@ -102,18 +103,18 @@ lggIrcData::lggIrcData(std::string iserver, std::string iname, std::string iport
 
 lggIrcData::lggIrcData()
   : server("irc.freenode.org"),
-  name("talon"),
+  name("Aurora Viewer"),
   port("6667"),
-  channel("#talon-grid"),
+  channel("#aurora-viewer"),
   serverPassword(""),
   channelPassword(""),
   nickPassword(""),
   autoLogin(FALSE),
   id(LLUUID::generateNewID())
 {
-	std::string first("Talon");
+	std::string first("Voodoo");
 	// Prevents crash at startup where viewer object and NVPair may not exist yet.
-	// In the event that either of these happen. Name is replaced with "Imprudence"
+	// In the event that either of these happen. Name is replaced with "Voodoo"
 	//if(gAgent.getAvatarObject())
 	if(gAgentAvatarp)
 	{

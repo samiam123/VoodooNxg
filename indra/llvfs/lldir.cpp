@@ -673,7 +673,7 @@ void LLDir::setPerAccountChatLogsDir(const std::string &grid, const std::string 
        LLStringUtil::toLower(gridlower);
        mPerAccountIRCSettingsDir += "@";
        mPerAccountIRCSettingsDir += gridlower;
-}
+     }
      mPerAccountIRCSettingsDir += mDirDelimiter;
      mPerAccountIRCSettingsDir += "IRCGroups";
      }

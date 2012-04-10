@@ -406,6 +406,7 @@ LLPanelLogin::LLPanelLogin(const LLRect &rect,
 	refreshLocation( false );
 #endif
 
+	//loadNewsBar();
 }
 
 void LLPanelLogin::setSiteIsAlive( bool alive )
@@ -417,7 +418,7 @@ void LLPanelLogin::setSiteIsAlive( bool alive )
 		if ( web_browser )
 		{
 			loadLoginPage();
-						
+			//loadNewsBar();			
 			web_browser->setVisible(true);
 			
 			// mark as available
@@ -516,14 +517,26 @@ void LLPanelLogin::draw()
 
 		S32 width = getRect().getWidth();
 		S32 height = getRect().getHeight();
+//------ added impru type news bar ----------
+		S32 news_bar_height = 8;
+		LLMediaCtrl* news_bar = getChild<LLMediaCtrl>("news_bar");
+		if (news_bar)
+		{
+			news_bar_height = news_bar->getRect().getHeight();
+		}
+//---------------------------------------------
 
 		if ( mHtmlAvailable )
 		{
 #if !USE_VIEWER_AUTH
 			// draw a background box in black
-			gl_rect_2d( 0, height - 264, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
+			//gl_rect_2d( 0, height - 264, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
 			// draw the bottom part of the background image - just the blue background to the native client UI
-			mLogoImage->draw(0, -264, width + 8, mLogoImage->getHeight());
+			//mLogoImage->draw(0, -264, width + 8, mLogoImage->getHeight());
+			gl_rect_2d( 0, height - 264 + news_bar_height, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
+			// draw the bottom part of the background image - just the blue background to the native client UI
+			mLogoImage->draw(0, -264 + news_bar_height, width + 8, mLogoImage->getHeight());
+			
 #endif
 		}
 		else
@@ -959,7 +972,8 @@ void LLPanelLogin::loadLoginPage()
 			}
 		}
 	}
-	else if (gHippoGridManager->getConnectedGrid()->isOpenSimulator()){
+	else if (gHippoGridManager->getConnectedGrid()->isOpenSimulator())
+	{
 		oStr << "&grid=" << gHippoGridManager->getConnectedGrid()->getGridNick();
 	}
 	else if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA)
@@ -1245,7 +1259,8 @@ void LLPanelLogin::onSelectLoginEntry(LLUICtrl* ctrl, void* data)
 	}
 }
 
-// static
+// static ---------------------------------------------------------------------------------
+
 void LLPanelLogin::onLoginComboLostFocus(LLFocusableElement* fe, void*)
 {
 	if (sInstance)
@@ -1288,4 +1303,66 @@ void LLPanelLogin::clearPassword()
 	sInstance->childSetText("password_edit", blank);
 	sInstance->mIncomingPassword = blank;
 	sInstance->mMungedPassword = blank;
+}
+//--------------------- newsbar stuff ----------
+bool LLPanelLogin::loadNewsBar()
+{
+	std::string news_url = gSavedSettings.getString("NewsBarURL");
+
+	if (news_url.empty())
+
+	{
+		return false;
+	}
+
+	LLMediaCtrl* news_bar = getChild<LLMediaCtrl>("news_bar");
+
+	if (!news_bar)
+
+
+	{
+		return false;
+
+	}
+
+	// *HACK: Not sure how else to make LLMediaCtrl respect user's
+	// preference when opening links with target="_blank". -Jacek
+	if (gSavedSettings.getBOOL("UseExternalBrowser"))
+
+	{
+		news_bar->setOpenInExternalBrowser( true );
+		news_bar->setOpenInInternalBrowser( false );
+
+	}
+	else
+	{
+		news_bar->setOpenInExternalBrowser( false );
+		news_bar->setOpenInInternalBrowser( true );
+
+	}
+
+	std::ostringstream full_url;
+
+	full_url << news_url;
+
+	// Append a "?" if the URL doesn't already have query params.
+	if (LLURI(news_url).queryMap().size() == 0)
+	{
+		full_url << "?";
+	}
+	//std::string channel = ViewerInfo::nameWithVariant();
+	//std::string version = ViewerInfo::versionNumbers4();
+	std::string skin = gSavedSettings.getString("SkinCurrent");
+	//char* curl_channel = curl_escape(channel.c_str(), 0);
+	//char* curl_version = curl_escape(version.c_str(), 0);
+	char* curl_skin    = curl_escape(skin.c_str(), 0);
+	//full_url << "&channel=" << curl_channel;
+	full_url << "&version=" << curl_version;
+	full_url << "&skin="    << curl_skin;
+	//curl_free(curl_channel);
+	curl_free(curl_version);
+	curl_free(curl_skin);
+	LL_DEBUGS("NewsBar")<< "news bar setup to navigate to: " << full_url.str() << LL_ENDL;
+	news_bar->navigateTo( full_url.str() );
+	return true;
 }

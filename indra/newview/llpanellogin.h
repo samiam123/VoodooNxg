@@ -64,7 +64,8 @@ public:
 		void* callback_data);
 
 	// Remember password checkbox is set via gSavedSettings "RememberPassword"
-
+	//static void setFields(const std::string& firstname, const std::string& lastname, const std::string& password);
+	//static void setFields(const std::string& username, const std::string& password);
 	/**
 	 * @brief	Set the values of the displayed fields.
 	 * @param	firstname	First name value.
@@ -94,6 +95,7 @@ public:
 
 	void setSiteIsAlive( bool alive );
 
+	//static void loadLoginForm();
 	void updateGridCombo();
 
 	static void loadLoginPage();	
@@ -105,18 +107,22 @@ public:
 	// inherited from LLViewerMediaObserver
 	/*virtual*/ void handleMediaEvent(LLPluginClassMedia* self, EMediaEvent event);
 
+	/// Load the news bar web page, return true if successful.
+	bool loadNewsBar();
 private:
 	static void onClickConnect(void*);
+	//static void onClickGrid(void*);
 	static void onClickNewAccount(void*);
 	static bool newAccountAlertCallback(const LLSD& notification, const LLSD& response);
 	static void onClickGrids(void*);
 	static void onSelectGrid(LLUICtrl *ctrl, void*);
 	static void onClickQuit(void*);
 	static void onClickVersion(void*);
+	static void onPasswordChanged(LLUICtrl* caller, void* user_data);
 	static void onClickForgotPassword(void*);
 	static void onPassKey(LLLineEditor* caller, void* user_data);
-	//static void onSelectServer(LLUICtrl*, void*);
-	//static void onServerComboLostFocus(LLFocusableElement*, void*);
+	static void onSelectServer(LLUICtrl*, void*);
+	static void onServerComboLostFocus(LLFocusableElement*, void*);
 	static void onSelectLoginEntry(LLUICtrl*, void*);
 	static void onLoginComboLostFocus(LLFocusableElement* fe, void*);
 	static void onNameCheckChanged(LLUICtrl* ctrl, void* data);

@@ -38,8 +38,9 @@
 
 #include "lluuid.h"
 #include "llfloater.h"
+//#include "llmultifloater.h"
 #include <map>
-#include "llevent.h"
+//#include "llevent.h"
 class LLUICtrl;
 class LLTextBox;
 class LLScrollListCtrl;
@@ -48,8 +49,9 @@ class LLButton;
 //class lggPanelIRC : public LLPanel//,public LLSimpleListener
 class lggPanelIRC : public LLPanel , public LLOldEvents::LLSimpleListener
 {
-public:lggPanelIRC();
-virtual ~lggPanelIRC();
+public:
+    lggPanelIRC();
+    virtual ~lggPanelIRC();
 
 void newList();
 
@@ -58,8 +60,6 @@ protected:
 	BOOL postBuild();
 	/*virtual*/ bool handleEvent(LLPointer<LLOldEvents::LLEvent> event, const LLSD& userdata);
 	///*virtual*/ bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata);
-	//virtual bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata);
-	//virtual bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata) = 0;
 	// highlight_id is a group id to highlight
 	void enableButtons();
 

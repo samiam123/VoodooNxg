@@ -19,10 +19,23 @@ HippoLimits::HippoLimits()
 
 void HippoLimits::setLimits()
 {
-	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_SECONDLIFE) {
+	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_SECONDLIFE)
+	{
 		setSecondLifeLimits();
-	} else {
+	}
+	//else
+	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA)
+	{
+		setAuroraLimits();
+	}
+	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_OPENSIM)
+	{
+		//setAuroraLimits();
 		setOpenSimLimits();
+	}
+	else
+	{
+      setOpenSimLimits();
 	}
 }
 
@@ -30,20 +43,87 @@ void HippoLimits::setLimits()
 void HippoLimits::setOpenSimLimits()
 {
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
-	if (mMaxAgentGroups < 0) mMaxAgentGroups = 50;
-	mMaxPrimScale = 256.0f;
+	if (mMaxAgentGroups < 0)
+	{
+	mMaxAgentGroups = 50;
+	}
+	mMaxPrimScale = 512.0f;
+	mMinPrimScale = 0.001f;
+	mMinPrimXPos = 0;
+	mMinPrimYPos = 0;
+	mMinPrimZPos = 0;
+	mMaxPrimXPos = F32_MAX;
+	mMaxPrimYPos = F32_MAX;
+	mMaxPrimZPos = F32_MAX;
 	mMaxHeight = 10000.0f;
+	mMaxLinkedPrims = 1000;
+	mMaxPhysLinkedPrims = 38;
+	//mMaxPhysLinkedPrims = S32_MAX;
+	mAllowParcelWindLight = TRUE;
+	mAllowMinimap = TRUE;
+	mMaxInventoryItemsTransfer = 68;
+	mRenderName = 2;
+	mAllowPhysicalPrims = TRUE;
+	skyUseClassicClouds = TRUE;
+	mEnableTeenMode = FALSE;
+	mEnforceMaxBuild = FALSE;
+	mRenderWater = TRUE;
+	mVoiceConnector = "SLVoice";
+	mMaxSelectDistance = 192.0f;
 	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
 		llinfos << "Using rendering compatible OpenSim limits." << llendl;
 		mMinHoleSize = 0.05f;
 		mMaxHollow = 0.95f;
-	} else {
+	}
+	else
+	{
 		llinfos << "Using Hippo OpenSim limits." << llendl;
 		mMinHoleSize = 0.01f;
 		mMaxHollow = 0.99f;
 	}
 }
-
+void HippoLimits::setAuroraLimits()
+{
+	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
+	if (mMaxAgentGroups < 0)
+	{
+	mMaxAgentGroups = 50;
+	}
+	mMaxPrimScale = 512.0f;
+	mMinPrimScale = 0.001f;
+	mMinPrimXPos = 0;
+	mMinPrimYPos = 0;
+	mMinPrimZPos = 0;
+	mMaxPrimXPos = F32_MAX;
+	mMaxPrimYPos = F32_MAX;
+	mMaxPrimZPos = F32_MAX;
+	mMaxHeight = 10000.0f;
+	mMaxLinkedPrims = 1000;
+	mMaxPhysLinkedPrims = 38;
+	//mMaxPhysLinkedPrims = S32_MAX;
+	mAllowParcelWindLight = TRUE;
+	mAllowMinimap = TRUE;
+	mMaxInventoryItemsTransfer = 68;
+	mRenderName = 2;
+	mAllowPhysicalPrims = TRUE;
+	skyUseClassicClouds = TRUE;
+	mEnableTeenMode = FALSE;
+	mEnforceMaxBuild = FALSE;
+	mRenderWater = TRUE;
+	mVoiceConnector = "SLVoice";
+	mMaxSelectDistance = 192.0f;
+	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
+		llinfos << "Using rendering compatible Aurora limits." << llendl;
+		mMinHoleSize = 0.05f;
+		mMaxHollow = 0.95f;
+	}
+	else
+	{
+		llinfos << "Using Hippo Auora limits." << llendl;
+		mMinHoleSize = 0.01f;
+		mMaxHollow = 0.99f;
+	}
+}
 void HippoLimits::setSecondLifeLimits()
 {
 	llinfos << "Using Second Life limits." << llendl;
@@ -56,7 +136,7 @@ void HippoLimits::setSecondLifeLimits()
 	{
 		mMaxAgentGroups = DEFAULT_MAX_AGENT_GROUPS;
 	}
-	
+	mMaxLinkedPrims = 255;
 	mMaxHeight = 4096.0f;
 	mMinHoleSize = 0.05f;
 	mMaxHollow = 0.95f;

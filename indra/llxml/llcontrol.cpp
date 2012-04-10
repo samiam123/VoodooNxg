@@ -1544,7 +1544,7 @@ void test_cached_control()
 	TEST_LLCC(LLColor3, LLColor3(1.0f, 0.f, 0.5f));
 //There's no LLSD comparsion for LLCC yet. TEST_LLCC(LLSD, test_llsd); 
 
-	if((std::string)test_BrowserHomePage != "http://www.Voodoo.org") llerrs << "Fail BrowserHomePage" << llendl;
+	if((std::string)test_BrowserHomePage != "http://grid.kicks-ass.net") llerrs << "Fail BrowserHomePage" << llendl;
 }
 #endif // TEST_CACHED_CONTROL
 

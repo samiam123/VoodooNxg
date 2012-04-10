@@ -57,6 +57,7 @@ public:
 	}
 	
 	bool isOpenSimulator();
+	bool isAurora();
 	bool isSecondLife();
 	bool isInProductionGrid();
 	bool nameEditted(void) const { return mNameEditted; }

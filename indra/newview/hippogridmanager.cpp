@@ -77,7 +77,10 @@ bool HippoGridInfo::isOpenSimulator() const
 {
 	return (mPlatform == HippoGridInfo::PLATFORM_OPENSIM);
 }
-
+bool HippoGridInfo::isAurora() const
+{
+	return (mPlatform == HippoGridInfo::PLATFORM_AURORA);
+}
 bool HippoGridInfo::isSecondLife() const
 {
 	return (mPlatform == HippoGridInfo::PLATFORM_SECONDLIFE);
@@ -619,7 +622,7 @@ std::string HippoGridInfo::sanitizeUri(std::string &uri)
 
 void HippoGridInfo::initFallback()
 {
-	FALLBACK_GRIDINFO.setPlatform(PLATFORM_OPENSIM);
+	FALLBACK_GRIDINFO.setPlatform(PLATFORM_AURORA);
 	FALLBACK_GRIDINFO.setGridName("Local Host");
 	FALLBACK_GRIDINFO.setLoginUri("http://127.0.0.1:9000/");
 	FALLBACK_GRIDINFO.setHelperUri("http://127.0.0.1:9000/");

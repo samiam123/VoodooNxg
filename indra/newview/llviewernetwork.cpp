@@ -69,7 +69,10 @@ bool LLViewerLogin::isOpenSimulator()
 {
 	return gHippoGridManager->getConnectedGrid()->isOpenSimulator();
 }
-
+bool LLViewerLogin::isAurora()
+{
+	return gHippoGridManager->getConnectedGrid()->isAurora();
+}
 bool LLViewerLogin::isSecondLife()
 {
 	return gHippoGridManager->getConnectedGrid()->isSecondLife();

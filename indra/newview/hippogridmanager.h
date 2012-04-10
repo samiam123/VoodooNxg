@@ -38,6 +38,7 @@ public:
 
 	Platform           getPlatform();
 	bool isOpenSimulator() const;
+	bool isAurora() const;
 	bool isSecondLife() const;
 	const std::string& getGridName()        const;
 	const std::string& getGridOwner()       const;	

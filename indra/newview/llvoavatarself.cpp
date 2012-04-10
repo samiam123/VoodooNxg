@@ -50,13 +50,13 @@
 #include "llmeshrepository.h"
 #include "llvovolume.h"
 LLVOAvatarSelf *gAgentAvatarp = NULL;
-//BOOL isAgentAvatarValid()
-//{
-	//return (gAgentAvatarp &&
-	//		(gAgentAvatarp->getRegion() != NULL) &&
-	//		(!gAgentAvatarp->isDead()));
-//}
-
+/*BOOL isAgentAvatarValid()
+{
+	return (gAgentAvatarp &&
+			(gAgentAvatarp->getRegion() != NULL) &&
+			(!gAgentAvatarp->isDead()));
+}
+*/
 /*********************************************************************************
  **                                                                             **
  ** Begin LLVOAvatarSelf Constructor routines

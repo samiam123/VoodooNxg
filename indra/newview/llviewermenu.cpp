@@ -245,6 +245,7 @@
 // <edit>
 #include "dofloaterhex.h"
 #include "hgfloatertexteditor.h"
+//#include "llfloatermessagelog.h"
 #include "llfloatervfs.h"
 #include "llfloatervfsexplorer.h"
 #include "shfloatermediaticker.h"
@@ -481,6 +482,7 @@ void handle_phantom_avatar(void*);
 void handle_hide_typing_notification(void*);
 void handle_close_all_notifications(void*);
 void handle_reopen_with_hex_editor(void*);
+// uncomment one line below orginaly commented out
 //void handle_open_message_log(void*);
 void handle_edit_ao(void*);
 void handle_local_assets(void*);
@@ -821,6 +823,7 @@ void init_menus()
 										(void*)"ReSit"));
 	menu->appendSeparator();
 	menu->append(new LLMenuItemCallGL(	"Object Area Search", &handle_area_search, NULL));
+	// un-commented one line below was commented out orginaly
 	//menu->append(new LLMenuItemCallGL(  "Message Log", &handle_open_message_log, NULL));	
 
 	menu->append(new LLMenuItemCallGL(	"Sound Explorer",
@@ -1580,16 +1583,16 @@ void init_debug_rendering_menu(LLMenuGL* menu)
 	item = new LLMenuItemCheckGL("Audit Texture", menu_toggle_control, NULL, menu_check_control, (void*)"AuditTexture");
 	menu->append(item);
 
-//#ifndef LL_RELEASE_FOR_DOWNLOAD
-//	menu->appendSeparator();
-//	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-//#else
-//	if(gSavedSettings.getBOOL("QAMode"))
-//	{
-//		menu->appendSeparator();
-//		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
-//	}
-//#endif
+#ifndef LL_RELEASE_FOR_DOWNLOAD
+	menu->appendSeparator();
+	menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+#else
+	if(gSavedSettings.getBOOL("QAMode"))
+	{
+		menu->appendSeparator();
+		menu->append(new LLMenuItemCallGL("Memory Leaking Simulation", LLFloaterMemLeak::show, NULL, NULL));
+	}
+#endif
 	
 	menu->createJumpKeys();
 }
@@ -1797,12 +1800,12 @@ void init_server_menu(LLMenuGL* menu)
 	menu->append(new LLMenuItemCallGL("Save Region State", 
 		&LLPanelRegionTools::onSaveState, &enable_god_customer_service, NULL));
 
-//	menu->append(new LLMenuItemCallGL("Force Join Group", handle_force_join_group));
-//
-//	menu->appendSeparator();
-//
-//	menu->append(new LLMenuItemCallGL( "OverlayTitle",
-//		&handle_show_overlay_title, &enable_god_customer_service, NULL));
+	//menu->append(new LLMenuItemCallGL("Force Join Group", handle_force_join_group));
+
+	//menu->appendSeparator();
+
+	menu->append(new LLMenuItemCallGL( "OverlayTitle",
+		&handle_show_overlay_title, &enable_god_customer_service, NULL));
 	menu->createJumpKeys();
 }
 
@@ -3124,8 +3127,8 @@ class LLAvatarEnableDebug : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
 	{
-		//bool new_value = gAgent.isGodlike();
-		//gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
+		bool new_value = gAgent.isGodlike();
+		gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
 		return true;
 	}
 };
@@ -3626,7 +3629,7 @@ class LLSelfEnableSitOrStand : public view_listener_t
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
 	{
 		bool new_value = gAgentAvatarp && !gAgent.getFlying();
-//		gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
+		gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
 
 		std::string label;
 		std::string sit_text;
@@ -3765,10 +3768,10 @@ void handle_reopen_with_hex_editor(void*)
 
 }
 
-/*void handle_open_message_log(void*)
-{
-	LLFloaterMessageLog::show();
-}*/
+//void handle_open_message_log(void*)
+//{
+//	LLFloaterMessageLog::show();
+//}
 
 void handle_edit_ao(void*)
 {
@@ -4473,7 +4476,12 @@ void handle_object_owner_self(void*)
 // Shortcut to set owner permissions to not editable.
 void handle_object_lock(void*)
 {
-	LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, FALSE, PERM_MODIFY);
+    //if(gAgent.isGodlike())
+	//{
+	LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, TRUE, PERM_MODIFY);
+    //}
+	//else
+	//LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, FALSE, PERM_MODIFY);
 }
 
 void handle_object_asset_ids(void*)
@@ -4542,29 +4550,29 @@ void handle_god_request_havok(void *)
 	}
 }
 
-//void handle_god_request_foo(void *)
-//{
-//	if (gAgent.isGodlike())
-//	{
-//		LLSelectMgr::getInstance()->sendGodlikeRequest(GOD_WANTS_FOO);
-//	}
-//}
+void handle_god_request_foo(void *)
+{
+	//if (gAgent.isGodlike())
+	//{
+	//	LLSelectMgr::getInstance()->sendGodlikeRequest(GOD_WANTS_FOO);
+	//}
+}
 
-//void handle_god_request_terrain_save(void *)
-//{
-//	if (gAgent.isGodlike())
-//	{
-//		LLSelectMgr::getInstance()->sendGodlikeRequest("terrain", "save");
-//	}
-//}
+void handle_god_request_terrain_save(void *)
+{
+	if (gAgent.isGodlike())
+	{
+		LLSelectMgr::getInstance()->sendGodlikeRequest("terrain", "save");
+	}
+}
 
-//void handle_god_request_terrain_load(void *)
-//{
-//	if (gAgent.isGodlike())
-//	{
-//		LLSelectMgr::getInstance()->sendGodlikeRequest("terrain", "load");
-//	}
-//}
+void handle_god_request_terrain_load(void *)
+{
+	if (gAgent.isGodlike())
+	{
+		LLSelectMgr::getInstance()->sendGodlikeRequest("terrain", "load");
+	}
+}
 
 
 // HACK for easily testing new avatar geometry
@@ -4656,9 +4664,9 @@ void derez_objects(EDeRezDestination dest, const LLUUID& dest_id)
 
 		default:
 			// <edit>
-			//if((node->mPermissions->allowTransferTo(gAgent.getID())
-			//	&& object->permCopy())
-			//   || gAgent.isGodlike())
+			if((node->mPermissions->allowTransferTo(gAgent.getID())
+				&& object->permCopy())
+			   || gAgent.isGodlike())
 			if(1)
 			// </edit>
 			{
@@ -5173,7 +5181,7 @@ void show_buy_currency(const char* extra)
 
 void handle_buy_currency(void*)
 {
-//	LLFloaterBuyCurrency::buyCurrency();
+	LLFloaterBuyCurrency::buyCurrency();
 }
 
 void handle_buy(void*)
@@ -5476,7 +5484,7 @@ class LLToolsEnableReleaseKeys : public view_listener_t
 		gMenuHolder->findControl(userdata["control"].asString())->setValue( 
 			gAgent.anyControlGrabbed() && ((!rlv_handler_t::isEnabled()) || (!gRlvAttachmentLocks.hasLockedAttachmentPoint(RLV_LOCK_REMOVE))) );
 // [/RLVa:KB]
-		//gMenuHolder->findControl(userdata["control"].asString())->setValue( gAgent.anyControlGrabbed() );
+		gMenuHolder->findControl(userdata["control"].asString())->setValue( gAgent.anyControlGrabbed() );
 		return true;
 	}
 };
@@ -6510,6 +6518,10 @@ class LLShowFloater : public view_listener_t
 		}
 		else if (floater_name == "about land")
 		{
+			if (LLViewerParcelMgr::getInstance()->selectionEmpty())
+			{
+				LLViewerParcelMgr::getInstance()->selectParcelAt(gAgent.getPositionGlobal());
+			}
 			LLFloaterLand::showInstance();
 		}
 		else if (floater_name == "buy land")
@@ -7454,6 +7466,9 @@ class LLAvatarSendIM : public view_listener_t
 			//EInstantMessage type = have_agent_callingcard(gLastHitObjectID)
 			//	? IM_SESSION_ADD : IM_SESSION_CARDLESS_START;
 			gIMMgr->addSession(LLCacheName::cleanFullName(name),IM_NOTHING_SPECIAL,avatar->getID());
+			gIMMgr->addSession(name,
+								IM_NOTHING_SPECIAL,
+								avatar->getID());
 		}
 		return true;
 	}
@@ -8093,23 +8108,24 @@ BOOL enable_not_thirdperson(void*)
 }
 
 
-// BOOL enable_export_selected(void *)
-// {
-// 	if (LLSelectMgr::getInstance()->getSelection()->isEmpty())
-// 	{
-// 		return FALSE;
-// 	}
-// 	if (!gExporterRequestID.isNull())
-// 	{
-// 		return FALSE;
-// 	}
-// 	if (!LLUploadDialog::modalUploadIsFinished())
-// 	{
-// 		return FALSE;
-// 	}
-// 	return TRUE;
-// }
-
+/* 
+BOOL enable_export_selected(void *)
+ {
+ 	if (LLSelectMgr::getInstance()->getSelection()->isEmpty())
+ 	{
+ 		return FALSE;
+ 	}
+ 	if (!gExporterRequestID.isNull())
+ 	{
+ 		return FALSE;
+ 	}
+ 	if (!LLUploadDialog::modalUploadIsFinished())
+ 	{
+ 		return FALSE;
+ 	}
+ 	return TRUE;
+ }
+*/
 class LLViewEnableMouselook : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
@@ -9323,6 +9339,7 @@ class LLWorldEnvSettings : public view_listener_t
 // [/RLVa:KB]
 
 		std::string tod = userdata.asString();
+		LLVector3 sun_direction;
 		
 		if (tod == "editor")
 		{

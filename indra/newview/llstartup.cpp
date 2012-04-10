@@ -1057,8 +1057,9 @@ bool idle_startup()
 		else
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
-				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
-			gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getCurrentGridNick(), firstname, lastname);
+			//gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getCurrentGridNick(), 			
+			gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+			gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), firstname, lastname);
 		}
 		LLFile::mkdir(gDirUtilp->getChatLogsDir());
 		LLFile::mkdir(gDirUtilp->getPerAccountChatLogsDir());
@@ -1622,6 +1623,7 @@ bool idle_startup()
 
 				LLSavedLogins history_data = LLSavedLogins::loadFile(history_file);
 				std::string grid_nick = gHippoGridManager->getConnectedGrid()->getGridName();
+				//std::string grid_nick = gHippoGridManager->getCurrentGridNick();
 				history_data.deleteEntry(firstname, lastname, grid_nick);
 				if (gSavedSettings.getBOOL("RememberLogin"))
 				{

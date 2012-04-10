@@ -202,7 +202,7 @@ void LLPrefsIMImpl::apply()
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
 				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
-        gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getCurrentGridNick(), 
+        gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
 	            gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
 		}
 		

@@ -53,9 +53,9 @@ Ok, here is how this is suposed to work.
 #include "lggIrcThread.h"
 #include "llimpanel.h"
 #include "llviewercontrol.h"
-#include "IRC.h"
+//#include "IRC.h"
 
-#include "llthread.h"
+//#include "llthread.h"
 #include "linden_common.h"
 #include "llapp.h"
 

@@ -788,14 +788,27 @@ LLVOAvatar::LLVOAvatar(const LLUUID& id,
 
 	mNumJoints = 0;
 	mSkeleton = NULL;
-
+	//mScreenp = NULL;
+//Added one line above
 	mNumCollisionVolumes = 0;
 	mCollisionVolumes = NULL;
 
 	// set up animation variables
 	mSpeed = 0.f;
 	setAnimationData("Speed", &mSpeed);
-
+/*---------------- added this block temp ----------------
+	if (id == gAgentID)
+	{
+		mIsSelf = TRUE;
+		gAgent.setAvatarObject(this);
+		gAgentWearables.setAvatarObject(this);
+		lldebugs << "Marking avatar as self " << id << llendl;
+	}
+	else
+	{
+		mIsSelf = FALSE;
+	}
+*/
 	mNeedsImpostorUpdate = TRUE;
 	mNeedsAnimUpdate = TRUE;
 
@@ -846,9 +859,23 @@ LLVOAvatar::LLVOAvatar(const LLUUID& id,
 LLVOAvatar::~LLVOAvatar()
 {
 	lldebugs << "LLVOAvatar Destructor (0x" << this << ") id:" << mID << llendl;
-
+// added 3 lines below -----------------------
+//	if (isSelf())
+//	{
+//		gAgent.setAvatarObject(NULL);
+//	}
+//---------------------------------------------
 	mRoot.removeAllChildren();
+//---------------- added block below -----------
+	//delete [] mSkeleton;
+	//mSkeleton = NULL;
 
+	//delete mScreenp;
+	//mScreenp = NULL;
+    //deleteAndClearArray(mScreenp);	
+	//delete [] mCollisionVolumes;
+	//mCollisionVolumes = NULL;
+//-----------------------------------------------
 	deleteAndClearArray(mSkeleton);
 	deleteAndClearArray(mCollisionVolumes);
 
@@ -2444,7 +2471,8 @@ U32 LLVOAvatar::processUpdateMessage(LLMessageSystem *mesgsys,
 
 	if(retval & LLViewerObject::INVALID_UPDATE)
 	{
-		if(isSelf())
+		if(this == gAgentAvatarp)
+		//if(isSelf())
 		{
 			//tell sim to cancel this update
 			gAgent.teleportViaLocation(gAgent.getPositionGlobal());
@@ -2588,7 +2616,17 @@ BOOL LLVOAvatar::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 	{
 		return TRUE;
 	}
-
+//------ added one block below -----------------
+	//Emerald performs some force-bakes stuff here. Added it in because we noticed slow responses with client tag ident. -HgB
+	if(isSelf())
+	{
+		for(U8 i=0;i<getNumTEs();++i)
+		{
+			LLViewerTexture* te = getTEImage(i);
+			te->forceActive();
+		}
+	}
+//------------------------------------------------
 	idleUpdateVoiceVisualizer( voice_enabled );
 	idleUpdateMisc( detailed_update );
 	idleUpdateAppearanceAnimation();
