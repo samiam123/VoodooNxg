@@ -25,7 +25,7 @@ endif()
 if(GIT_REV_LIST)
   list(LENGTH GIT_REV_LIST vBUILD)
 else()
-  set(vBUILD 00)
+  set(vBUILD 01)
 endif()
 
 configure_file(

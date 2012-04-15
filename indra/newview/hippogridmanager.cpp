@@ -40,7 +40,7 @@ HippoGridInfo HippoGridInfo::FALLBACK_GRIDINFO("");
 // Initialize
 
 HippoGridInfo::HippoGridInfo(const std::string& gridName) :
-	mPlatform(PLATFORM_OPENSIM),
+	mPlatform(PLATFORM_AURORA),
 	mGridName(gridName),
 	mGridNick(LLStringUtil::null),
 	mLoginUri(LLStringUtil::null),
@@ -91,11 +91,16 @@ const std::string& HippoGridInfo::getGridName() const
 	return mGridName;
 }
 
-const std::string& HippoGridInfo::getGridOwner() const {
-	if(isSecondLife()) {
+const std::string& HippoGridInfo::getGridOwner() const
+{
+	if(isSecondLife()
+) 
+	{
 		static const std::string ll = "Linden Lab";
 		return ll;
-	} else {
+	} 
+	else
+	{
 		return this->getGridName();
 	}	
 }
@@ -353,7 +358,8 @@ std::string HippoGridInfo::getSearchUrl(SearchType ty, bool is_web) const
 			if (ty == SEARCH_ALL_EMPTY) 
 			{
 				return gSavedSettings.getString("SearchURLDefaultOpenSim");
-			} 
+			}
+			// the 2 below are not in xml need to add them
 			else if (ty == SEARCH_ALL_QUERY) 
 			{
 				return gSavedSettings.getString("SearchURLQueryOpenSim");
@@ -813,9 +819,9 @@ void HippoGridManager::setDefaultGrid(const std::string& grid)
 	{
 		mDefaultGrid = grid;
 	} 
-	else if (mGridInfo.find("Second life") != mGridInfo.end()) 
+	else if (mGridInfo.find("Talon") != mGridInfo.end()) 
 	{
-		mDefaultGrid = "Second Life";
+		mDefaultGrid = "Talon";
 	} 
 	else if (!mGridInfo.empty()) 
 	{

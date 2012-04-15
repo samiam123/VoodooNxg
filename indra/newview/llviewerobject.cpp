@@ -101,6 +101,7 @@
 #include "llviewernetwork.h"
 #include "llvowlsky.h"
 #include "llmanip.h"
+#include "hippolimits.h"
 
 // [RLVa:KB]
 #include "rlvhandler.h"
@@ -830,7 +831,8 @@ U32 LLViewerObject::processUpdateMessage(LLMessageSystem *mesgsys,
 #endif
 	U16	*val;
 	const F32 size = LLWorld::getInstance()->getRegionWidthInMeters();	
-	const F32 MAX_HEIGHT = LLWorld::getInstance()->getRegionMaxHeight();
+	//const F32 MAX_HEIGHT = LLWorld::getInstance()->getRegionMaxHeight();
+	const F32 MAX_HEIGHT = gHippoLimits->getMaxHeight();
 	const F32 MIN_HEIGHT = LLWorld::getInstance()->getRegionMinHeight();
 	S32 length;
 	S32	count;

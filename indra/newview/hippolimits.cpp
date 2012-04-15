@@ -22,21 +22,25 @@ void HippoLimits::setLimits()
 	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_SECONDLIFE)
 	{
 		setSecondLifeLimits();
+		return;
 	}
-	//else
+
 	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA)
 	{
 		setAuroraLimits();
+		return;
 	}
+
 	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_OPENSIM)
 	{
-		//setAuroraLimits();
+
 		setOpenSimLimits();
+		return;
 	}
-	else
-	{
-      setOpenSimLimits();
-	}
+	//else
+	//{
+    //  setOpenSimLimits();
+	//}
 }
 
 
@@ -56,7 +60,7 @@ void HippoLimits::setOpenSimLimits()
 	mMaxPrimYPos = F32_MAX;
 	mMaxPrimZPos = F32_MAX;
 	mMaxHeight = 10000.0f;
-	mMaxLinkedPrims = 1000;
+	mMaxLinkedPrims = 255;
 	mMaxPhysLinkedPrims = 38;
 	//mMaxPhysLinkedPrims = S32_MAX;
 	mAllowParcelWindLight = TRUE;
@@ -97,7 +101,7 @@ void HippoLimits::setAuroraLimits()
 	mMaxPrimXPos = F32_MAX;
 	mMaxPrimYPos = F32_MAX;
 	mMaxPrimZPos = F32_MAX;
-	mMaxHeight = 10000.0f;
+	mMaxHeight = 8192.0f;
 	mMaxLinkedPrims = 1000;
 	mMaxPhysLinkedPrims = 38;
 	//mMaxPhysLinkedPrims = S32_MAX;
@@ -111,18 +115,18 @@ void HippoLimits::setAuroraLimits()
 	mEnforceMaxBuild = FALSE;
 	mRenderWater = TRUE;
 	mVoiceConnector = "SLVoice";
-	mMaxSelectDistance = 192.0f;
-	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
-		llinfos << "Using rendering compatible Aurora limits." << llendl;
-		mMinHoleSize = 0.05f;
-		mMaxHollow = 0.95f;
-	}
-	else
-	{
-		llinfos << "Using Hippo Auora limits." << llendl;
-		mMinHoleSize = 0.01f;
-		mMaxHollow = 0.99f;
-	}
+	mMaxSelectDistance = 1024.0f;
+	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
+	//	llinfos << "Using rendering compatible Aurora limits." << llendl;
+	//	mMinHoleSize = 0.05f;
+	//	mMaxHollow = 0.95f;
+	//}
+	//else
+	//{
+	//	llinfos << "Using Hippo Auora limits." << llendl;
+	mMinHoleSize = 0.01f;
+	mMaxHollow = 0.99f;
+	//}
 }
 void HippoLimits::setSecondLifeLimits()
 {
@@ -134,7 +138,7 @@ void HippoLimits::setSecondLifeLimits()
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
 	if (mMaxAgentGroups <= 0)
 	{
-		mMaxAgentGroups = DEFAULT_MAX_AGENT_GROUPS;
+		mMaxAgentGroups = 25;
 	}
 	mMaxLinkedPrims = 255;
 	mMaxHeight = 4096.0f;

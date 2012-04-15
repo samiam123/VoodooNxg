@@ -66,7 +66,7 @@
 #include <queue>
 #include <map>
 #include <cstring>
-
+#include "hippolimits.h"
 //
 // Globals
 //
@@ -88,6 +88,7 @@ const F32 LLWorld::mScale = 1.f;
 //U32 LLWorld::mScale = 256; // for var
 //const F32 LLWorld::mWidthInMeters = mWidth * mScale; // non var
 F32 LLWorld::mWidthInMeters = mWidth * mScale;
+//F32   mMaxHeight;
 //
 // Functions
 //
@@ -407,7 +408,8 @@ LLVector3d	LLWorld::clipToVisibleRegions(const LLVector3d &start_pos, const LLVe
 	final_region_pos.mdV[VY] = llclamp(final_region_pos.mdV[VY], 0.0,
 									   (F64)(region_width - F_ALMOST_ZERO));
 	final_region_pos.mdV[VZ] = llclamp(final_region_pos.mdV[VZ], 0.0,
-									   (F64)(LLWorld::getInstance()->getRegionMaxHeight() - F_ALMOST_ZERO));
+		(F64)(gHippoLimits->getMaxHeight() - F_ALMOST_ZERO));//from hippo limits
+                                       //(F64)(LLWorld::getInstance()-> gHippoLimits->getMaxHeight() - F_ALMOST_ZERO));//from hippo limits
 	return regionp->getPosGlobalFromRegion(LLVector3(final_region_pos));
 }
 

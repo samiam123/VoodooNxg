@@ -46,6 +46,7 @@
 #include "llviewerinventory.h"
 #include "llinventorymodel.h"
 #include "v3dmath.h"
+#include "hippolimits.h"
 
 #include <boost/signals2.hpp>
 

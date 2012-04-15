@@ -340,7 +340,7 @@
 			     bottom="-66" drop_shadow_visible="true" follows="left|top"
 			     font="SansSerifSmall" h_pad="0" halign="left" height="16" left_delta="78"
 			     mouse_opaque="true" name="Creator Name" v_pad="0" width="88">
-		        Thrax Linden
+		        Voodoo Sam
       		</text>
       		<button bottom="-66" follows="top|right" font="SansSerifSmall" halign="center"
 			     height="16" label="Profile..." label_selected="Profile..." left_delta="94"
@@ -356,7 +356,7 @@
 			     bottom="-86" drop_shadow_visible="true" follows="left|top"
 			     font="SansSerifSmall" h_pad="0" halign="left" height="16" left_delta="78"
 			     mouse_opaque="true" name="Owner Name" v_pad="0" width="88">
-		        Thrax Linden
+		        Voodoo Sam
 		    </text>
 		    <button bottom="-86" follows="top|right" font="SansSerifSmall" halign="center"
 			    height="16" label="Profile..." label_selected="Profile..." left_delta="94"
@@ -372,7 +372,7 @@
 				bottom_delta="0" drop_shadow_visible="true" follows="left|top"
 				font="SansSerifSmall" h_pad="0" halign="left" height="16" left_delta="78"
 				mouse_opaque="true" name="Last Owner Name" v_pad="0" width="88">
-				Thrax Linden
+				Voodoo Sam
 			</text>
 			<button bottom_delta="0" follows="top|right" font="SansSerifSmall" halign="center"
 				height="16" label="Profile..." label_selected="Profile..." left_delta="94"
@@ -630,7 +630,7 @@
 			     text_enabled_color="0, 100, 40, 255" width="87" />
 			<spinner bottom_delta="-18" decimal_digits="4" follows="left|top" height="16"
 			     increment="0.01" initial_val="0" label="Z" label_width="10" left_delta="0"
-			     max_val="4096" min_val="-3.5" mouse_opaque="true" name="Pos Z"
+			     max_val="8192" min_val="-3.5" mouse_opaque="true" name="Pos Z"
 			     text_enabled_color="0, 67, 132, 255" width="87" />
 			<button bottom_delta="35" follows="top|right" font="SansSerifSmall" halign="center"
 				 height="18" label="C" left_delta="90" mouse_opaque="true" name="copypos" enabled="true"
@@ -651,15 +651,15 @@
 			</text>
 			<spinner bottom_delta="-22" decimal_digits="5" follows="left|top" height="16"
 			     increment="0.01" initial_val="0" label="X" label_width="10" left_delta="0"
-			     max_val="256" min_val="0.01" mouse_opaque="true" name="Scale X"
+			     max_val="8192" min_val="0.01" mouse_opaque="true" name="Scale X"
 			     text_enabled_color="1, 1, 1, 1" width="87" />
 			<spinner bottom_delta="-18" decimal_digits="5" follows="left|top" height="16"
 			     increment="0.01" initial_val="0" label="Y" label_width="10" left_delta="0"
-			     max_val="256" min_val="0.01" mouse_opaque="true" name="Scale Y"
+			     max_val="8192" min_val="0.01" mouse_opaque="true" name="Scale Y"
 			     text_enabled_color="1, 1, 1, 1" width="87" />
 			<spinner bottom_delta="-18" decimal_digits="5" follows="left|top" height="16"
 			     increment="0.01" initial_val="0" label="Z" label_width="10" left_delta="0"
-			     max_val="256" min_val="0.01" mouse_opaque="true" name="Scale Z"
+			     max_val="8192" min_val="0.01" mouse_opaque="true" name="Scale Z"
 			     text_enabled_color="1, 1, 1, 1" width="87" />
 			<button bottom_delta="35" follows="top|right" font="SansSerifSmall" halign="center"
 			     height="18" label="C" left_delta="90" mouse_opaque="true" name="copysize"  enabled="true"
@@ -1544,7 +1544,7 @@
 		Attachment
 	</string>
   <string name="status_selectprimequiv">
-    , Cost: [SEL_WEIGHT]
+    Cost: [SEL_WEIGHT]
   </string>
   <string name="status_selectcount">
     Primitives: [COUNT][PE_STRING]

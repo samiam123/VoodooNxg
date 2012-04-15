@@ -772,9 +772,9 @@ MediaPluginQuickTime::MediaPluginQuickTime(
 	LLPluginInstance* plugin_instance) :
 	MediaPluginBase(send_message_function, plugin_instance),
 	mMinWidth( 0 ),
-	mMaxWidth( 2048 ),
+	mMaxWidth( 2048 ),//huh why?
 	mMinHeight( 0 ),
-	mMaxHeight( 2048 )
+	mMaxHeight( 2048 )//huh why again ?
 {
 //	std::cerr << "MediaPluginQuickTime constructor" << std::endl;
 

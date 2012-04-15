@@ -63,7 +63,7 @@
 #include "llviewerwindow.h"
 #include "llvoavatar.h"
 #include "llworld.h"
-
+#include "hippolimits.h"
 // [RLVa:KB]
 #include "rlvhandler.h"
 // [/RLVa:KB]
@@ -643,9 +643,10 @@ void LLToolGrab::handleHoverActive(S32 x, S32 y, MASK mask)
 			}
 
 			// For safety, cap heights where objects can be dragged
-			if (grab_point_global.mdV[VZ] > MAX_OBJECT_Z)
+			//if (grab_point_global.mdV[VZ] > mMaxHeight)
+				if (grab_point_global.mdV[VZ] > gHippoLimits->getMaxHeight())
 			{
-				grab_point_global.mdV[VZ] = MAX_OBJECT_Z;
+				grab_point_global.mdV[VZ] = gHippoLimits->getMaxHeight();
 			}
 
 			grab_point_global = LLWorld::getInstance()->clipToVisibleRegions(mDragStartPointGlobal, grab_point_global);

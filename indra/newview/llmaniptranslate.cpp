@@ -66,7 +66,7 @@
 #include "llworld.h"
 #include "llui.h"
 #include "pipeline.h"
-
+#include "hippolimits.h"
 // [RLVa:KB]
 #include "rlvhandler.h"
 // [/RLVa:KB]
@@ -83,6 +83,7 @@ const F32 PLANE_TICK_SIZE = 0.4f;
 const F32 MANIPULATOR_SCALE_HALF_LIFE = 0.07f;
 const F32 SNAP_ARROW_SCALE = 0.7f;
 
+//S32   mMaxHeight;
 static LLPointer<LLViewerTexture> sGridTex = NULL ;
 
 const LLManip::EManipPart MANIPULATOR_IDS[9] = 
@@ -750,9 +751,11 @@ BOOL LLManipTranslate::handleHover(S32 x, S32 y, MASK mask)
 				}
 
 				// For safety, cap heights where objects can be dragged
-				if (new_position_global.mdV[VZ] > MAX_OBJECT_Z)
+				//if (new_position_global.mdV[VZ] > MAX_OBJECT_Z)
+					if (new_position_global.mdV[VZ] > gHippoLimits->getMaxHeight())
 				{
-					new_position_global.mdV[VZ] = MAX_OBJECT_Z;
+					//new_position_global.mdV[VZ] = MAX_OBJECT_Z;
+                    new_position_global.mdV[VZ] = gHippoLimits->getMaxHeight();
 				}
 
 				// Grass is always drawn on the ground, so clamp its position to the ground

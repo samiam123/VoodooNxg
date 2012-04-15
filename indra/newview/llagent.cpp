@@ -97,6 +97,7 @@
 #include "llfloaterland.h"
 #include "llfloatersnapshot.h"
 #include "llfloaterchat.h"
+#include "hippolimits.h"
 
 #include "lluictrlfactory.h" //For LLUICtrlFactory::getLayeredXMLNode
 #include "lltpresponder.h"
