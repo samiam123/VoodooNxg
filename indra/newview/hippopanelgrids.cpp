@@ -199,7 +199,8 @@ void HippoPanelGridsImpl::refresh()
 	childSetEnabled("btn_default", (mState == NORMAL) && (selectIndex > 0));
 	childSetEnabled("gridname", (mState == ADD_NEW) || (mState == ADD_COPY));
 	
-	if (childGetValue("platform").asString() == "SecondLife") {
+	if (childGetValue("platform").asString() == "SecondLife")
+	{
 		// disable platform selector, if logged into the grid edited and it is SL
 		// so object export restrictions cannot be circumvented by changing the platform
 		bool enablePlatform = (LLStartUp::getStartupState() < STATE_LOGIN_CLEANUP) ||
@@ -209,8 +210,13 @@ void HippoPanelGridsImpl::refresh()
 		childSetText("search", LLStringExplicit(""));
 		childSetEnabled("render_compat", false);
 		childSetValue("render_compat", false);
-	} else {
-		childSetEnabled("platform", true);
+	} 
+	else
+	{
+		bool enablePlatform = (LLStartUp::getStartupState() < STATE_LOGIN_CLEANUP) ||
+			(mCurGrid != gHippoGridManager->getConnectedGrid()->getGridName());
+		//childSetEnabled("platform", true);
+		childSetEnabled("platform", enablePlatform);// nahh why just sl? do it for all of them sams voodoo
 		childSetEnabled("search", true);
 		childSetText("search", gHippoGridManager->getConnectedGrid()->getSearchUrl());
 		childSetEnabled("render_compat", true);

@@ -213,6 +213,7 @@
 //#include "llactivation.h"
 #include "wlfPanel_AdvSettings.h" //Lower right Windlight and Rendering options
 #include "lldaycyclemanager.h"
+#include "llwindlightsettingresponder.h"
 #include "llfloaterblacklist.h"
 #include "scriptcounter.h"
 #include "shfloatermediaticker.h"
@@ -2197,6 +2198,7 @@ bool idle_startup()
 			display_startup();
 			init_stat_view();
 		}
+		//IMPEnvironmentSettings::getInstance()->init();
 
 		display_startup();
 		//

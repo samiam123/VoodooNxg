@@ -720,7 +720,7 @@ void LLFloaterTools::updatePopup(LLCoordGL center, MASK mask)
 	// Create buttons
 	BOOL create_visible = (tool == LLToolCompCreate::getInstance());
 
-	mBtnCreate	->setToggleState(	tool == LLToolCompCreate::getInstance() );
+	mBtnCreate	->setToggleState(tool == LLToolCompCreate::getInstance() );
 
 	updateTreeGrassCombo(create_visible);
 

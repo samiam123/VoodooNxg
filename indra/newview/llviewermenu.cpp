@@ -108,7 +108,7 @@
 #include "llfloaterbump.h"
 #include "llfloaterbuy.h"
 #include "llfloaterbuycontents.h"
-#include "llfloaterbuycurrency.h"
+//#include "llfloaterbuycurrency.h"
 #include "llfloaterbuyland.h"
 #include "llfloatercamera.h"
 #include "llfloaterchat.h"
@@ -5181,7 +5181,7 @@ void show_buy_currency(const char* extra)
 
 void handle_buy_currency(void*)
 {
-	LLFloaterBuyCurrency::buyCurrency();
+	//LLFloaterBuyCurrency::buyCurrency();
 }
 
 void handle_buy(void*)
@@ -9359,22 +9359,27 @@ class LLWorldEnvSettings : public view_listener_t
 		
 		if (tod == "sunrise")
 		{
+
 			LLEnvManagerNew::instance().setUseSkyPreset("Sunrise", gSavedSettings.getBOOL("PhoenixInterpolateSky"));
 		}
 		else if (tod == "noon")
 		{
+
 			LLEnvManagerNew::instance().setUseSkyPreset("Midday", gSavedSettings.getBOOL("PhoenixInterpolateSky"));
 		}
 		else if (tod == "sunset")
 		{
+
 			LLEnvManagerNew::instance().setUseSkyPreset("Sunset", gSavedSettings.getBOOL("PhoenixInterpolateSky"));
 		}
 		else if (tod == "midnight")
 		{
+
 			LLEnvManagerNew::instance().setUseSkyPreset("Midnight", gSavedSettings.getBOOL("PhoenixInterpolateSky"));
 		}
 		else // Use Region Environment Settings
 		{
+
 			LLEnvManagerNew::instance().setUseRegionSettings(true, gSavedSettings.getBOOL("PhoenixInterpolateSky"));
 		}
 

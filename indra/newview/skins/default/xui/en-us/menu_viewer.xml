@@ -801,18 +801,18 @@
 			     <on_enable function="EditableSelected" />
 		     </menu_item_call>
 		</menu>
-		<menu_item_call bottom="-468" enabled="false" height="19" label="Reset Scripts in Selection"
+		<menu_item_call bottom="-468" enabled="true" height="19" label="Reset Scripts in Selection"
 		     left="0" mouse_opaque="true" name="Reset Scripts in Selection" width="250">
 			<on_click function="Tools.SelectedScriptAction" userdata="reset" />
 			<on_enable function="EditableSelected" />
 		</menu_item_call>
-		<menu_item_call bottom="-487" enabled="false" height="19"
+		<menu_item_call bottom="-487" enabled="true" height="19"
 		     label="Set Scripts to Running in Selection" left="0" mouse_opaque="true"
 		     name="Set Scripts to Running in Selection" width="250">
 			<on_click function="Tools.SelectedScriptAction" userdata="start" />
 			<on_enable function="EditableSelected" />
 		</menu_item_call>
-		<menu_item_call bottom="-506" enabled="false" height="19"
+		<menu_item_call bottom="-506" enabled="true" height="19"
 		     label="Set Scripts to Not Running in Selection" left="0"
 		     mouse_opaque="true" name="Set Scripts to Not Running in Selection"
 		     width="250">
@@ -827,20 +827,20 @@
       <on_enable function="Tools.EnableScriptDelete" />
     </menu_item_call>
 	</menu>
-	<menu bottom="219" create_jump_keys="true" drop_shadow="true" enabled="true"
+	<menu bottom="219" create_jump_keys="true" drop_shadow="true" enabled="false"
 	     height="317" label="Help" left="227" mouse_opaque="false" name="Help"
 	     opaque="true" tear_off="true" width="166">
-		<menu_item_call bottom="-29" enabled="true" height="19" label="Second Life Help" left="0"
+		<menu_item_call bottom="-29" enabled="false" height="19" label="Second Life Help" left="0"
 		     mouse_opaque="true" name="Second Life Help" shortcut="F1" width="166">
 			<on_click function="ShowFloater" userdata="help f1" />
 		</menu_item_call>
-		<menu_item_call bottom="-48" enabled="true" height="19" label="Tutorial" left="0"
+		<menu_item_call bottom="-48" enabled="false" height="19" label="Tutorial" left="0"
 		     mouse_opaque="true" name="Tutorial" width="166">
 			<on_click function="ShowFloater" userdata="help tutorial" />
 		</menu_item_call>
 		<menu_item_separator bottom="-75" enabled="true" height="8" label="-----------" left="0"
 		     mouse_opaque="true" name="separator" width="166" />
-		<menu_item_call bottom="-94" enabled="true" height="19" label="Official Linden Blog..."
+		<menu_item_call bottom="-94" enabled="false" height="19" label="Official Linden Blog..."
 		     left="0" mouse_opaque="true" name="Official Linden Blog..." width="166">
 			<on_click function="PromptShowURL" name="OfficialLindenBlog_url"
 			     userdata="WebLaunchSupportWiki,http://blog.secondlife.com/" />
@@ -868,55 +868,55 @@
 		</menu_item_call>
 		<menu_item_separator bottom="-411" enabled="true" height="8" label="-----------" left="0"
 		     mouse_opaque="true" name="separator7" width="250" />
-		<menu bottom="-554" create_jump_keys="true" drop_shadow="true" enabled="true"
+		<menu bottom="-554" create_jump_keys="true" drop_shadow="true" enabled="false"
 		     height="109" label="Bug Reporting" left="0" mouse_opaque="false"
 		     name="Bug Reporting" opaque="true" tear_off="true" width="118">
-			<menu_item_call bottom="-94" enabled="true" height="19" label="Public Issue Tracker..."
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Public Issue Tracker..."
 			     left="0" mouse_opaque="true" name="Public Issue Tracker..." width="166">
 				<on_click function="PromptShowURL" name="PublicIssueTracker_url"
 				     userdata="WebLaunchPublicIssue,http://jira.secondlife.com" />
 			</menu_item_call>
-			<menu_item_call bottom="-94" enabled="true" height="19" label="Public Issue Tracker Help..."
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Public Issue Tracker Help..."
 			     left="0" mouse_opaque="true" name="Publc Issue Tracker Help..." width="166">
 				<on_click function="PromptShowURL" name="PublicIssueTrackerHelp_url"
 				     userdata="WebLaunchPublicIssueHelp,http://wiki.secondlife.com/wiki/Issue_tracker" />
 			</menu_item_call>
-			<menu_item_call bottom="-94" enabled="true" height="19" label="Singularity Issue Tracker..."
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Singularity Issue Tracker..."
 			     left="0" mouse_opaque="true" name="Singularity Issue Tracker..." width="166">
 				<on_click function="PromptShowURL" name="SinguIssueTracker_url"
 						userdata="WebLaunchSinguIssue,http://code.google.com/p/singularity-viewer/issues/list" />
 			</menu_item_call>
 			<menu_item_separator bottom="-411" enabled="true" height="8" label="-----------" left="0"
 			     mouse_opaque="true" name="separator7" width="250" />
-			<menu_item_call bottom="-94" enabled="true" height="19" label="Bug Reporting 101..." left="0"
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Bug Reporting 101..." left="0"
 			     mouse_opaque="true" name="Bug Reporting 101..." width="166">
 				<on_click function="PromptShowURL" name="BugReporting101_url"
 				     userdata="WebLaunchBugReport101,http://wiki.secondlife.com/wiki/Bug_Reporting_101" />
 			</menu_item_call>
-			<menu_item_call bottom="-94" enabled="true" height="19" label="Security Issues..." left="0"
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Security Issues..." left="0"
 			     mouse_opaque="true" name="Security Issues..." width="166">
 				<on_click function="PromptShowURL" name="SecurityIssues_url"
 				     userdata="WebLaunchSecurityIssues,http://wiki.secondlife.com/wiki/Security_issues" />
 			</menu_item_call>
-			<menu_item_call bottom="-94" enabled="true" height="19" label="QA Wiki..." left="0"
+			<menu_item_call bottom="-94" enabled="false" height="19" label="QA Wiki..." left="0"
 			     mouse_opaque="true" name="QA Wiki..." width="166">
 				<on_click function="PromptShowURL" name="QAWiki_url"
 				     userdata="WebLaunchQAWiki,http://wiki.secondlife.com/wiki/QA_Portal" />
 			</menu_item_call>
 			<menu_item_separator bottom="-411" enabled="true" height="8" label="-----------" left="0"
 			     mouse_opaque="true" name="separator9" width="250" />
-			<menu_item_call bottom="-240" enabled="true" height="19" label="Report Bug..." left="0"
+			<menu_item_call bottom="-240" enabled="false" height="19" label="Report Bug..." left="0"
 			     mouse_opaque="true" name="Report Bug..." width="166">
 				<on_click function="PromptShowURL" name="ReportBug_url"
 				     userdata="WebLaunchPublicIssue,http://jira.secondlife.com" />
 			</menu_item_call>
-			<menu_item_call bottom="-240" enabled="true" height="19" label="Report Singularity Bug..." left="0"
+			<menu_item_call bottom="-240" enabled="false" height="19" label="Report Singularity Bug..." left="0"
 			     mouse_opaque="true" name="Report Singularity Bug..." width="166">
 				<on_click function="PromptShowURL" name="ReportSinguBug_url"
 						userdata="WebLaunchSinguIssue,http://code.google.com/p/singularity-viewer/issues/entry" />
 			</menu_item_call>
 		</menu>
-		<menu_item_call bottom="-313" enabled="true" height="19" label="About Singularity..." left="0"
+		<menu_item_call bottom="-313" enabled="false" height="19" label="About Singularity..." left="0"
 		     mouse_opaque="true" name="About Second Life..." width="166">
 			<on_click function="ShowFloater" userdata="about" />
 		</menu_item_call>

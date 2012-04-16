@@ -88,6 +88,7 @@ void LLFloaterEnvSettings::initCallbacks(void)
 
 	// WL Top
 	childSetAction("EnvAdvancedSkyButton", onOpenAdvancedSky, NULL);
+	//childSetAction("EnvDayCycleButton", onOpenDayCycleEditor, NULL);
 	childSetAction("EnvAdvancedWaterButton", onOpenAdvancedWater, NULL);
 	childSetAction("EnvSubmitWindlight", onSubmitWindlight, NULL);
 	childSetAction("EnvUseEstateTimeButton", onUseEstateTime, NULL);
@@ -199,6 +200,7 @@ bool LLFloaterEnvSettings::isOpen()
 	if (sEnvSettings != NULL) 
 	{
 		return sEnvSettings->getVisible();
+		//return true;
 	}
 	return false;
 }
@@ -281,6 +283,10 @@ void LLFloaterEnvSettings::onOpenAdvancedSky(void* userData)
 	LLFloaterWindLight::show();
 }
 
+//void LLFloaterEnvSettings::onOpenDayCycleEditor(void* userData)
+//{
+//	LLFloaterDayCycle::show();
+//}
 void LLFloaterEnvSettings::onOpenAdvancedWater(void* userData)
 {
 	LLFloaterWater::show();
@@ -302,7 +308,7 @@ void LLFloaterEnvSettings::onSubmitWindlight(void* userData)
 	send_generic_message("Windlight", strings);
 	//*/
 	// Added auora WL seetings sams voodoo
-//LLWLParamManager::instance()->SendSettings();
+    //LLWLParamManager::getInstance()->SendSettings();
 
 
 }
@@ -319,6 +325,8 @@ void LLFloaterEnvSettings::onUseEstateTime(void* userData)
 
 	LLWLParamManager::getInstance()->mAnimator.activate(LLWLAnimator::TIME_LINDEN);
 	LLEnvManagerNew::instance().setUseDayCycle(LLEnvManagerNew::instance().getDayCycleName());
+	//LLWLParamManager::getInstance()->mAnimator.mIsRunning = true;
+	//LLWLParamManager::getInstance()->mAnimator.mUseLindenTime = true;
 }
 
 std::string LLFloaterEnvSettings::timeToString(F32 curTime)

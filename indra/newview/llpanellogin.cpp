@@ -113,6 +113,8 @@ static bool nameSplit(const std::string& full, std::string& first, std::string& 
 	{
 		if (gHippoGridManager->getConnectedGrid()->isSecondLife())
 			last = "resident";
+		//{
+
 		else
 			last = "";
 	}

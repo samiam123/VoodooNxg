@@ -92,9 +92,11 @@ LLWLParamManager::LLWLParamManager() :
 
 	mBlueHorizon(0.25f, 0.25f, 1.0f, 1.0f, "blue_horizon", "WLBlueHorizon"),
 	mHazeDensity(1.0f, "haze_density"),
+	//mHazeDensity(1.0f, 1.0f, 1.0f, 0.5f, "haze_density"),
 	mBlueDensity(0.25f, 0.25f, 0.25f, 1.0f, "blue_density", "WLBlueDensity"),
 	mDensityMult(1.0f, "density_multiplier", 1000),
 	mHazeHorizon(1.0f, "haze_horizon"),
+	//mHazeHorizon(1.0f, 1.0f, 1.0f, 0.5f, "haze_horizon"),
 	mMaxAlt(4000.0f, "max_y"),
 
 	// Lighting
@@ -839,8 +841,8 @@ bool LLWLParamManager::loadPresetXML(const LLWLParamKey& key, std::istream& pres
 		"enable_cloud_scroll",
 		"gamma",
 		"glow",
-		"haze_density",
-		"haze_horizon",
+		//"haze_density",
+		//"haze_horizon",
 		"lightnorm",
 		"max_y",
 		"star_brightness",

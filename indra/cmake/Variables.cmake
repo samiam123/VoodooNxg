@@ -124,10 +124,10 @@ endif(WINDOWS)
 # Default deploy grid
 set(GRID agni CACHE STRING "Target Grid")
 
-set(VIEWER ON CACHE BOOL "Build Second Life viewer.")
+set(VIEWER ON CACHE BOOL "Build Voodoo.")
 set(VIEWER_CHANNEL "Voodoo" CACHE STRING "Viewer Channel Name")
 set(VIEWER_LOGIN_CHANNEL ${VIEWER_CHANNEL} CACHE STRING "Fake login channel for A/B Testing")
-set(VIEWER_BRANDING_ID "Voodoo" CACHE STRING "Viewer branding id (currently secondlife|snowglobe)")
+set(VIEWER_BRANDING_ID "Voodoo" CACHE STRING "Viewer branding id (currently secondlife|snowglobe|voodoo)")
 
 # *TODO: break out proper Branding-secondlife.cmake, Branding-snowglobe.cmake, etc
 set(VIEWER_BRANDING_NAME "Voodoo")
