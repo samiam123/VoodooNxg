@@ -146,16 +146,17 @@ LLViewerParcelMgr::LLViewerParcelMgr()
 	//Buzz added one block below for var ----------------------------------------------------------------------------
     mBlockedImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrylines.j2c");
     mPassImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrypasslines.j2c");
-    init(256); // for var and memleak fix
-} 
+    //init(256); // for var and memleak fix
+//} 
     //moved this stuff out of the constructor and into a function that we can call again after we get the region size.
     //LLViewerParcelMgr needs to be changed so we either get an instance per region, or it handles various region sizes
     //on a single grid properly - Patrick Sapinski (2/10/2011)
-    void LLViewerParcelMgr::init(F32 region_size)
-{
+    //void LLViewerParcelMgr::init(F32 region_size)
+//{
 	//-----------------------------------------------------------------------------------------------------------------
 	//mParcelsPerEdge = S32(	REGION_WIDTH_METERS / PARCEL_GRID_STEP_METERS ); //non var
-     mParcelsPerEdge = S32(  region_size / PARCEL_GRID_STEP_METERS ); // for var
+    F32 region_size = 8192.f; //aurora max region size, 8192
+    mParcelsPerEdge = S32(  region_size / PARCEL_GRID_STEP_METERS ); // for var
 	mHighlightSegments = new U8[(mParcelsPerEdge+1)*(mParcelsPerEdge+1)];
 	resetSegments(mHighlightSegments);
 
@@ -181,13 +182,18 @@ LLViewerParcelMgr::LLViewerParcelMgr()
 	{
 		mAgentParcelOverlay[i] = 0;
 	}
+	mParcelsPerEdge = S32(	REGION_WIDTH_METERS / PARCEL_GRID_STEP_METERS );
 
 	mTeleportInProgress = TRUE; // the initial parcel update is treated like teleport
-}
+    }
 
+    void LLViewerParcelMgr::init(F32 region_size)
+    {
+	mParcelsPerEdge = S32(	region_size / PARCEL_GRID_STEP_METERS );
+    }
 
-LLViewerParcelMgr::~LLViewerParcelMgr()
-{
+    LLViewerParcelMgr::~LLViewerParcelMgr()
+    {
 	mCurrentParcelSelection->setParcel(NULL);
 	mCurrentParcelSelection = NULL;
 
