@@ -181,6 +181,15 @@ BOOL LLFloaterRegionInfo::postBuild()
 	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_general.xml");
 	mTab->addTabPanel(panel, panel->getLabel(), TRUE);
 
+	// We only use this panel on Aurora-based sims -- MC
+	std::string url = gAgent.getRegion()->getCapability("DispatchOpenRegionSettings");
+	if (!url.empty())
+	{
+		panel = new LLPanelRegionOpenSettingsInfo;
+		mInfoPanels.push_back(panel);
+		LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_open_region_settings.xml");
+		mTab->addTabPanel(panel, panel->getLabel(), FALSE);
+	}
 	panel = new LLPanelRegionDebugInfo;
 	mInfoPanels.push_back(panel);
 	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_debug.xml");
@@ -238,6 +247,7 @@ void LLFloaterRegionInfo::requestRegionInfo()
 	tab->getChild<LLPanel>("Debug")->setCtrlsEnabled(FALSE);
 	tab->getChild<LLPanel>("Terrain")->setCtrlsEnabled(FALSE);
 	tab->getChild<LLPanel>("Estate")->setCtrlsEnabled(FALSE);
+	tab->getChild<LLPanel>("RegionSettings")->setCtrlsEnabled(FALSE);
 
 	// Must allow anyone to request the RegionInfo data
 	// so non-owners/non-gods can see the values. 
@@ -359,6 +369,9 @@ void LLFloaterRegionInfo::processRegionInfo(LLMessageSystem* msg)
 	panel->childSetEnabled("access_combo", gAgent.isGodlike() || (region && region->canManageEstate() && !teen_grid));
 	panel->setCtrlsEnabled(allow_modify);
 	
+	// RegionSettings PANEL
+	panel = tab->getChild<LLPanel>("RegionSettings");
+	panel->setCtrlsEnabled(allow_modify);
 
 	// DEBUG PANEL
 	panel = tab->getChild<LLPanel>("Debug");
@@ -407,6 +420,21 @@ LLPanelEstateCovenant* LLFloaterRegionInfo::getPanelCovenant()
 	return panel;
 }
 
+// static
+LLPanelRegionOpenSettingsInfo* LLFloaterRegionInfo::getPanelOpenSettings()
+{
+	LLFloaterRegionInfo* floater = LLFloaterRegionInfo::getInstance();
+	if (floater) 
+	{
+		LLTabContainer* tab = floater->getChild<LLTabContainer>("region_panels");
+		LLPanelRegionOpenSettingsInfo* panel = (LLPanelRegionOpenSettingsInfo*)tab->getChild<LLPanel>("RegionSettings", FALSE, FALSE);
+		if (panel)
+		{
+			return panel;
+		}
+	}
+	return NULL;
+}
 void LLFloaterRegionInfo::refreshFromRegion(LLViewerRegion* region)
 {
 	// call refresh from region on all panels
@@ -598,6 +626,7 @@ BOOL LLPanelRegionGeneralInfo::postBuild()
 	initCtrl("access_combo");
 	initCtrl("restrict_pushobject");
 	initCtrl("block_parcel_search_check");
+	//initCtrl("minimum_agent_age");
 
 	initHelpBtn("terraform_help",		"HelpRegionBlockTerraform");
 	initHelpBtn("fly_help",				"HelpRegionBlockFly");
@@ -609,6 +638,7 @@ BOOL LLPanelRegionGeneralInfo::postBuild()
 	initHelpBtn("land_resell_help",	"HelpRegionLandResell");
 	initHelpBtn("parcel_changes_help", "HelpParcelChanges");
 	initHelpBtn("parcel_search_help", "HelpRegionSearch");
+	//initHelpBtn("minimum_agent_age_help",	"HelpRegionMinimumAge");
 
 	childSetAction("kick_btn", onClickKick, this);
 	childSetAction("kick_all_btn", onClickKickAll, this);
@@ -759,6 +789,7 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 		body["restrict_pushobject"] = childGetValue("restrict_pushobject");
 		body["allow_parcel_changes"] = childGetValue("allow_parcel_changes_check");
 		body["block_parcel_search"] = childGetValue("block_parcel_search_check");
+		//body["minimum_agent_age"] = childGetValue("minimum_agent_age");
 
 		LLHTTPClient::post(url, body, new LLHTTPClient::Responder());
 	}
@@ -808,6 +839,124 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 	}	
 
 	return TRUE;
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// LLPanelRegionOpenSettingsInfo
+//
+bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
+{
+	// Data gets filled in by hippo manager
+	BOOL allow_modify = gAgent.isGodlike() || (region && region->canManageEstate());
+	
+	//childSetValue("draw_distance", gAgent.mDrawDistance);
+	//childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
+	childSetValue("allow_minimap", LLSD(gHippoLimits->mAllowMinimap));
+	childSetValue("allow_physical_prims", (gHippoLimits->mAllowPhysicalPrims == 1 ? TRUE : FALSE));
+	childSetValue("max_drag_distance", LLSD(gHippoLimits->mMaxDragDistance));
+	childSetValue("min_hole_size", LLSD(gHippoLimits->mMinHoleSize));
+	childSetValue("max_hollow_size", LLSD(gHippoLimits->mMaxHollow));
+	childSetValue("max_inventory_items_transfer", LLSD(gHippoLimits->mMaxInventoryItemsTransfer));
+	childSetValue("max_link_count", LLSD(gHippoLimits->mMaxLinkedPrims));
+	childSetValue("max_link_count_phys", LLSD(gHippoLimits->mMaxPhysLinkedPrims));
+	childSetValue("max_phys_prim_scale", LLSD(gHippoLimits->mMaxPrimScale));//Todo:Fix
+	childSetValue("max_prim_scale", LLSD(gHippoLimits->mMaxPrimScale));
+	childSetValue("min_prim_scale", LLSD(gHippoLimits->mMinPrimScale));
+	childSetValue("render_water", LLSD(gHippoLimits->mRenderWater));
+	childSetValue("show_tags", LLSD(gHippoLimits->mRenderName));
+	childSetValue("max_groups", LLSD(gHippoLimits->mMaxAgentGroups));
+	childSetValue("allow_parcel_windlight", LLSD(gHippoLimits->mAllowParcelWindLight));
+	childSetValue("enable_teen_mode", LLSD(gHippoLimits->mEnableTeenMode));
+	childSetValue("enforce_max_build", LLSD(gHippoLimits->mEnforceMaxBuild));
+
+	setCtrlsEnabled(allow_modify);
+ 
+	return LLPanelRegionInfo::refreshFromRegion(region);
+}
+
+BOOL LLPanelRegionOpenSettingsInfo::postBuild()
+{
+	// Enable the "Apply" button if something is changed. JC
+	initCtrl("draw_distance");
+	initCtrl("force_draw_distance");
+	initCtrl("max_drag_distance");
+	initCtrl("max_prim_scale");
+	initCtrl("min_prim_scale");
+	initCtrl("max_phys_prim_scale");
+	initCtrl("max_hollow_size");
+	initCtrl("min_hole_size");
+	initCtrl("max_link_count");
+	initCtrl("max_link_count_phys");
+	initCtrl("max_inventory_items_transfer");
+	initCtrl("max_groups");
+	initCtrl("render_water");
+	initCtrl("allow_minimap");
+	initCtrl("allow_physical_prims");
+	initCtrl("enable_teen_mode");
+	initCtrl("show_tags");
+	initCtrl("allow_parcel_windlight");
+
+	initHelpBtn("force_draw_distance_help",		"HelpForceDrawDistance");
+	initHelpBtn("max_inventory_items_transfer_help",				"HelpMaxInventoryItemsTransfer");
+	initHelpBtn("max_groups_help",			"HelpMaxGroups");
+	initHelpBtn("render_water_help",		"HelpRenderWater");
+	initHelpBtn("allow_minimap_help",	"HelpAllowMinimap");
+	initHelpBtn("allow_physical_prims_help",			"HelpAllowPhysicalPrims");
+	initHelpBtn("enable_teen_mode_help",		"HelpEnableTeenMode");
+	initHelpBtn("show_tags_help",	"HelpShowTags");
+	initHelpBtn("allow_parcel_windlight_help", "HelpAllowParcelWindLight");
+
+	childSetAction("apply_ors_btn", onClickOrs, this);
+
+	refreshFromRegion(gAgent.getRegion());
+
+	return LLPanelRegionInfo::postBuild();
+}
+
+// setregioninfo
+// strings[0] = 'Y' - block terraform, 'N' - not
+// strings[1] = 'Y' - block fly, 'N' - not
+// strings[2] = 'Y' - allow damage, 'N' - not
+// strings[3] = 'Y' - allow land sale, 'N' - not
+// strings[4] = agent limit
+// strings[5] = object bonus
+// strings[6] = sim access (0 = unknown, 13 = PG, 21 = Mature, 42 = Adult)
+// strings[7] = restrict pushobject
+// strings[8] = 'Y' - allow parcel subdivide, 'N' - not
+// strings[9] = 'Y' - block parcel search, 'N' - allow
+void LLPanelRegionOpenSettingsInfo::onClickOrs(void* userdata)
+{
+	LLPanelRegionOpenSettingsInfo* self;
+	self = (LLPanelRegionOpenSettingsInfo*)userdata;
+	
+	llinfos << "LLPanelRegionOpenSettingsInfo::onClickOrs()" << llendl;
+
+	LLSD body;
+	std::string url = gAgent.getRegion()->getCapability("DispatchOpenRegionSettings");
+	if (!url.empty())
+	{
+		body["draw_distance"] = self->childGetValue("draw_distance");
+		body["force_draw_distance"] = self->childGetValue("force_draw_distance");
+		body["allow_minimap"] = self->childGetValue("allow_minimap");
+		body["allow_physical_prims"] = self->childGetValue("allow_physical_prims");
+		body["max_drag_distance"] = self->childGetValue("max_drag_distance");
+		body["min_hole_size"] = self->childGetValue("min_hole_size");
+		body["max_hollow_size"] = self->childGetValue("max_hollow_size");
+		body["max_inventory_items_transfer"] = self->childGetValue("max_inventory_items_transfer");
+		body["max_link_count"] = self->childGetValue("max_link_count");
+		body["max_link_count_phys"] = self->childGetValue("max_link_count_phys");
+		body["max_phys_prim_scale"] = self->childGetValue("max_phys_prim_scale");
+		body["max_prim_scale"] = self->childGetValue("max_prim_scale");
+		body["min_prim_scale"] = self->childGetValue("min_prim_scale");
+		body["render_water"] = self->childGetValue("render_water");
+		body["show_tags"] = self->childGetValue("show_tags");
+		body["max_groups"] = self->childGetValue("max_groups");
+		body["allow_parcel_windlight"] = self->childGetValue("allow_parcel_windlight");
+		body["enable_teen_mode"] = self->childGetValue("enable_teen_mode");
+		body["enforce_max_build"] = self->childGetValue("enforce_max_build");
+
+		LLHTTPClient::post(url, body, new LLHTTPClient::Responder());
+	}
 }
 
 /////////////////////////////////////////////////////////////////////////////

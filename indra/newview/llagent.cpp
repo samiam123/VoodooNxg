@@ -188,6 +188,7 @@ void LLAgentFriendObserver::changed(U32 mask)
 // LLAgent()
 //-----------------------------------------------------------------------------
 LLAgent::LLAgent() :
+	//mDrawDistance( DEFAULT_FAR_PLANE ),
 	mGroupPowers(0),
 	mHideGroupTitle(FALSE),
 	mGroupID(),
@@ -267,9 +268,12 @@ LLAgent::LLAgent() :
 //-----------------------------------------------------------------------------
 void LLAgent::init()
 {
+	//mDrawDistance = gSavedSettings.getF32("RenderFarClip");
+	//mLockedDrawDistance = FALSE;
 
 	setFlying( gSavedSettings.getBOOL("FlyingAtExit") );
 
+	//LLViewerCamera::getInstance()->setFar(mDrawDistance);
 
 
 //	LLDebugVarMessageBox::show("Camera Lag", &CAMERA_FOCUS_HALF_LIFE, 0.5f, 0.01f);

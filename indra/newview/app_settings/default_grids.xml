@@ -18,7 +18,7 @@
       <key>loginpage</key>
       <string>http://grid.kicks-ass.net/loginscreen/</string>
       <key>search</key>
-      <string>http://grid.kicks-ass.net:8080/</string>
+      <string>http://grid.kicks-ass.net</string>
       <key>support</key>
       <string>http://grid.kicks-ass.net/index.php?page=chat</string>
       <key>website</key>
@@ -28,9 +28,33 @@
       <key>register</key>
       <string>http://grid.kicks-ass.net/index.php?page=register</string>
       <key>render_compat</key>
-      <boolean>0</boolean>
+      <boolean>1</boolean>
     </map>
-    
+ <!-- Gay Nations -->
+    <map>
+      <key>gridname</key>
+      <string>Gay Nations</string>
+      <key>platform</key>
+      <string>Aurora</string>
+      <key>loginuri</key>
+      <string>http://GayNations.org:8002/</string>
+      <key>helperuri</key>
+      <string>http://209.160.29.45:9000/</string>
+      <key>loginpage</key>
+      <string>http://gaysanfrancisco.us.com/loginscreen/</string>
+      <key>search</key>
+      <string>http://GayNations.org/search.php?</string>
+      <key>support</key>
+      <string>http://gaynations.org/help.php</string>
+      <key>website</key>
+      <string>http://GayNations.org/index.php</string>
+      <key>password</key>
+      <string>http://GayNations.org/password.php</string>
+      <key>register</key>
+      <string>http://gaynations.org/register.php</string>
+      <key>render_compat</key>
+      <boolean>1</boolean>
+    </map>   
     <!-- Local Host -->
     <map>
       <key>gridname</key>

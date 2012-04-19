@@ -98,6 +98,7 @@ set(viewer_SOURCE_FILES
     ascentprefschat.cpp
     ascentprefssys.cpp
     ascentprefsvan.cpp
+    astraopenregionsettings.cpp
     dhparam.cpp
     dsaparam.cpp
     emeraldboobutils.cpp
@@ -551,7 +552,7 @@ set(viewer_SOURCE_FILES
     llworldmapview.cpp
     llxmlrpctransaction.cpp
     noise.cpp
-    pipeline.cpp
+    pipeline.cpp    
     scriptcounter.cpp
     wlfPanel_AdvSettings.cpp
     rlvhandler.cpp

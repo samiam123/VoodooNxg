@@ -45,7 +45,7 @@
 #include "llmutelist.h"
 #include "llviewerobjectlist.h"
 #include "llvoavatarself.h"
-
+#include "llworld.h"
 // MAX ITEMS is based on (sizeof(uuid)+2) * count must be < MTUBYTES
 // or 18 * count < 1200 => count < 1200/18 => 66. I've cut it down a
 // bit from there to give some pad.
@@ -271,6 +271,7 @@ void LLGiveInventory::doGiveInventoryCategory(const LLUUID& to_agent,
 	}
  	count = items.count() + cats.count();
  	if(count > MAX_ITEMS)
+	//if (count > LLWorld::getInstance()->getMaxInventoryItemsTransfer())
   	{
 		LLNotificationsUtil::add("TooManyItems");
   		return;
@@ -467,6 +468,7 @@ if(!cat) return;
 	// 66. I've cut it down a bit from there to give some pad.
  	S32 count = items.count() + cats.count();
  	if(count > MAX_ITEMS)
+	//if (count > LLWorld::getInstance()->getMaxInventoryItemsTransfer())
   	{
 		LLNotificationsUtil::add("TooManyItems");
   		return;

@@ -62,11 +62,12 @@
 #include "pipeline.h"
 #include "llappviewer.h"		// for do_disconnect()
 
+#include "hippolimits.h"
 #include <deque>
 #include <queue>
 #include <map>
 #include <cstring>
-#include "hippolimits.h"
+
 //
 // Globals
 //
@@ -409,7 +410,7 @@ LLVector3d	LLWorld::clipToVisibleRegions(const LLVector3d &start_pos, const LLVe
 									   (F64)(region_width - F_ALMOST_ZERO));
 	final_region_pos.mdV[VZ] = llclamp(final_region_pos.mdV[VZ], 0.0,
 		(F64)(gHippoLimits->getMaxHeight() - F_ALMOST_ZERO));//from hippo limits
-                                       //(F64)(LLWorld::getInstance()-> gHippoLimits->getMaxHeight() - F_ALMOST_ZERO));//from hippo limits
+      //(F64)(LLWorld::getInstance()-> gHippoLimits->getMaxHeight() - F_ALMOST_ZERO));//from hippo limits
 	return regionp->getPosGlobalFromRegion(LLVector3(final_region_pos));
 }
 
@@ -866,6 +867,16 @@ void LLWorld::setLandFarClip(const F32 far_clip)
 		updateWaterObjects();
 	}
 }
+/*
+// added this block from impru sams voodooo
+void LLWorld::rebuildClouds(LLViewerRegion *regionp)
+{
+	regionp->mCloudLayer.destroy();
+	regionp->mCloudLayer.create(regionp);
+	regionp->mCloudLayer.setWidth((F32)mWidth);
+	regionp->mCloudLayer.setWindPointer(&regionp->mWind);
+}
+*/
 
 // Some region that we're connected to, but not the one we're in, gave us
 // a (possibly) new water height. Update it in our local copy.

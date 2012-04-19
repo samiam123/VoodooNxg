@@ -265,6 +265,7 @@ void HippoPanelGridsImpl::loadCurGrid()
 		childSetText("support", gridInfo->getSupportUrl());
 		childSetText("register", gridInfo->getRegisterUrl());
 		childSetText("password", gridInfo->getPasswordUrl());
+		childSetText("search", gridInfo->getSearchUrl());
 		childSetValue("render_compat", gridInfo->isRenderCompat());
 	} else {
 		std::string empty = "";
@@ -278,6 +279,7 @@ void HippoPanelGridsImpl::loadCurGrid()
 		childSetText("support", empty);
 		childSetText("register", empty);
 		childSetText("password", empty);
+		childSetText("search", empty);
 		childSetEnabled("render_compat", true);
 		childSetValue("render_compat", true);
 	}

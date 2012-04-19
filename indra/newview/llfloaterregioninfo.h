@@ -54,6 +54,8 @@ class LLTextBox;
 class AIFilePicker;
 
 class LLPanelRegionGeneralInfo;
+class LLPanelRegionOpenSettingsInfo;
+
 class LLPanelRegionDebugInfo;
 class LLPanelRegionTextureInfo;
 class LLPanelRegionTerrainInfo;
@@ -85,6 +87,7 @@ public:
 	static LLPanelEstateInfo* getPanelEstate();
 	static LLPanelEstateCovenant* getPanelCovenant();
 
+	static LLPanelRegionOpenSettingsInfo* getPanelOpenSettings();
 	// from LLPanel
 	virtual void refresh();
 	
@@ -147,6 +150,21 @@ protected:
 
 /////////////////////////////////////////////////////////////////////////////
 // Actual panels start here
+/////////////////////////////////////////////////////////////////////////////
+
+class LLPanelRegionOpenSettingsInfo : public LLPanelRegionInfo
+{
+public:
+	LLPanelRegionOpenSettingsInfo()
+		:	LLPanelRegionInfo()	{}
+	~LLPanelRegionOpenSettingsInfo() {}
+	virtual bool refreshFromRegion(LLViewerRegion* region);
+	// LLPanel
+	virtual BOOL postBuild();
+protected:
+	static void onClickOrs(void* userdata);
+	static void onClickHelp(void* data);
+};
 /////////////////////////////////////////////////////////////////////////////
 
 class LLPanelRegionGeneralInfo : public LLPanelRegionInfo
