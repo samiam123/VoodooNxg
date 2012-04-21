@@ -1000,6 +1000,7 @@ bool idle_startup()
 		
 		gHippoGridManager->setCurrentGridAsConnected();
 		gHippoLimits->setLimits();
+		
 		if(!gHippoGridManager->getConnectedGrid()->isSecondLife())
 		{
 			LLTrans::setDefaultArg("[CURRENCY]",gHippoGridManager->getConnectedGrid()->getCurrencySymbol());	//replace [CURRENCY] with OS$, not L$ for instance.
@@ -1007,7 +1008,7 @@ bool idle_startup()
 			LLTrans::setDefaultArg("[SECOND_LIFE_GRID]", gHippoGridManager->getConnectedGrid()->getGridName() + " Grid");
 			LLTrans::setDefaultArg("[GRID_OWNER]", gHippoGridManager->getConnectedGrid()->getGridOwner());
 		}
-
+        
 		// create necessary directories
 		// *FIX: these mkdir's should error check
 		if (gHippoGridManager->getCurrentGrid()->isSecondLife()) 

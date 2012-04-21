@@ -4315,10 +4315,13 @@ void LLPipeline::renderDebug()
 			gGL.begin(LLRender::POINTS);
 			// Draw the composition layer for the region that I'm in.
 			for (x = 0; x <= 260; x++)
+				//for (x = 0; x <= 8192; x++)
 			{
 				for (y = 0; y <= 260; y++)
+					//for (y = 0; y <= 8192; y++)
 				{
 					if ((x > 255) || (y > 255))
+						//if ((x > 8177) || (y > 8177))
 					{
 						gGL.color4f(1.f, 0.f, 0.f, 1.f);
 					}

@@ -140,6 +140,7 @@ public:
 
 	void setWaterHeight(F32 water_level);
 	F32 getWaterHeight() const;
+    void rebuildWater();
 
 	BOOL isVoiceEnabled() const;
 
@@ -270,7 +271,7 @@ public:
 	LLVector3	getPosAgentFromRegion(const LLVector3 &region_pos) const;
 	LLVector3d	getPosGlobalFromRegion(const LLVector3 &offset) const;
 
-	LLVLComposition *getComposition() const;
+	LLVLComposition* getComposition() const;
 	F32 getCompositionXY(const S32 x, const S32 y) const;
 
 	BOOL isOwnedSelf(const LLVector3& pos);
@@ -371,6 +372,8 @@ public:
 	LLDynamicArray<U32> mMapAvatars;
 	LLDynamicArray<LLUUID> mMapAvatarIDs;
 
+	// The surfaces and other layers
+	LLSurface*	mLandp;
 private:
 	LLViewerRegionImpl * mImpl;
 

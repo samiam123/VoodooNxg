@@ -1982,7 +1982,7 @@ void LLLiveLSLEditor::loadAsset(BOOL is_new)
 			{
 				mScriptEd->mEditor->setEnabled(FALSE);
 			}
-			
+			//Buzzz check this out later
 			// This is commented out, because we don't completely
 			// handle script exports yet.
 			/*

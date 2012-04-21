@@ -21,7 +21,7 @@
 	<check_box bottom_delta="0" follows="top" height="16" initial_value="false" label="Hide All Group Titles" left="101" name="show_all_title_checkbox"/>
 	<check_box bottom_delta="-18" follows="top" height="16" initial_value="false" label="Hide My Group Title" left="101" name="show_my_title_checkbox"/>
 	<text bottom="-180" height="12" left="10" name="UI Size:">UI Size:</text>
-	<slider bottom="-180" can_edit_text="true" height="16" increment="0.025" initial_val="1" left="98" max_val="1.4" min_val="0.75" name="ui_scale_slider" value="1" width="227" />
+	<slider bottom="-180" can_edit_text="true" height="16" increment="0.025" initial_val="1" left="98" max_val="1.4" min_val="0.75" name="ui_scale_slider" value="1" width="227"/>
 	<check_box bottom="-195" height="16" initial_value="false" label="Use resolution independent scale" left="101" name="ui_auto_scale"/>
 	<spinner bottom="-220" decimal_digits="0" height="16" increment="1" initial_val="300" label="Away Timeout:" label_width="91" left="10" max_val="600" min_val="0" name="afk_timeout_spinner" width="137"/>
 	<check_box bottom="-257" height="16" initial_value="false" label="Notify when in-world currency is spent or received" left="10" name="notify_money_change_checkbox"/>
@@ -38,8 +38,7 @@
 	<text bottom="-214" height="10" left="150" name="seconds_textbox">seconds</text>
 	<text bottom="-331" height="18" left="10" name="crash_report_textbox">Crash reports:</text>
 	<text bottom="-363" height="18" name="language_textbox">Language:</text>
-	<text bottom_delta="6" follows="top" height="18" left_delta="243" name="language_textbox2">(Requires restart for full effect)
-          *Uses English UI</text>
+	<text bottom_delta="6" follows="top" height="18" left_delta="243" name="language_textbox2">(Requires restart for full effect)*Uses English UI</text>
 	<combo_box allow_text_entry="true" bottom="-361" follows="top" height="16" left="103" name="language_combobox" max_chars="32" width="140">
 		<combo_item name="System Default Language" value="default">System Default</combo_item>
 		<combo_item name="English" value="en-us">English</combo_item>		

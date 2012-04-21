@@ -72,7 +72,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gHippoLimits->mAllowPhysicalPrims = body["AllowPhysicalPrims"].asInteger() == 1;
 			limitschanged = TRUE;
 		}
-		/*
+		///*
 		if ( body.has("DrawDistance") )
 		{
 			F32 distance = body["DrawDistance"].asReal();
@@ -81,23 +81,26 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 				gAgent.mDrawDistance = distance;
 			}
 		}
+		
 		if ( body.has("ForceDrawDistance") )
 		{
 			gAgent.mLockedDrawDistance = body["ForceDrawDistance"].asInteger() == 1;
 		}
-		*/
+		//*/
 		if ( body.has("LSLFunctions") )
 		{
 			//IMPLEMENT ME
 		}
-	  /*if ( body.has("TerrainDetailScale") )
+      /*
+	  if ( body.has("TerrainDetailScale") )
 		{
 			gAgent.getRegion()->getComposition()->setScaleParams(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
 
 			gHippoLimits->mTerrainScale = body["TerrainDetailScale"].asReal();
 			gSavedSettings.setF32("RenderTerrainScale", body["TerrainDetailScale"].asReal());
 			LLDrawPoolTerrain::sDetailScale = 1.f/body["TerrainDetailScale"].asReal();
-		}*/
+		}
+        */
 		if ( body.has("MaxDragDistance") )
 		{
 			gHippoLimits->mMaxDragDistance = body["MaxDragDistance"].asReal();
@@ -168,13 +171,13 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gSavedSettings.setBOOL("TimeOffsetDST", body["OffsetOfUTCDST"].asInteger() == 1 ? TRUE : FALSE);
 			ViewerTime::sTimeOffsetDST = gSavedSettings.getBOOL("TimeOffsetDST");
 		}
-		
+		*/
 		if ( body.has("RenderWater") )
 		{
 			gHippoLimits->mRenderWater = body["RenderWater"].asInteger() == 1 ? TRUE : FALSE;
-			gAgent.getRegion()->rebuildWater();
+		//	gAgent.getRegion()->rebuildWater();
 		}
-		
+		/*
 		if ( body.has("SayDistance") )
 		{
 			gSavedSettings.setU32("ChatDistance", body["SayDistance"].asReal());

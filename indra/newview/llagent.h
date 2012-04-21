@@ -727,6 +727,8 @@ public:
 	BOOL 			setGroupContribution(const LLUUID& group_id, S32 contribution);
 	BOOL 			setUserGroupFlags(const LLUUID& group_id, BOOL accept_notices, BOOL list_in_profile);
 	const std::string &getGroupName() const 	{ return mGroupName; }
+	F32				mDrawDistance;
+	BOOL            mLockedDrawDistance;
 private:
 	std::string		mGroupName;
 	LLUUID			mGroupID;

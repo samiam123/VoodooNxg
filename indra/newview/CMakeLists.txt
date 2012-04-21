@@ -511,6 +511,7 @@ set(viewer_SOURCE_FILES
     llviewervisualparam.cpp
     llviewerwindow.cpp
     llvlcomposition.cpp
+    #viewertime.cpp
     llvlmanager.cpp
     llvoavatar.cpp
     llvoavatardefines.cpp
@@ -965,6 +966,7 @@ set(viewer_HEADER_FILES
     lltpresponder.h
     lltracker.h
     lltranslate.h
+    #lltrans.h
     lluiconstants.h
     lluploaddialog.h
 	lluploadfloaterobservers.h
@@ -1086,6 +1088,7 @@ set(viewer_HEADER_FILES
     rlvviewer2.h
     shcommandhandler.h
 	shfloatermediaticker.h
+	#viewertime.h
     )
 
 source_group("CMake Rules" FILES ViewerInstall.cmake)
