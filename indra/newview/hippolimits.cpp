@@ -71,7 +71,7 @@ void HippoLimits::setOpenSimLimits()
 	skyUseClassicClouds = TRUE;
 	mEnableTeenMode = FALSE;
 	mEnforceMaxBuild = FALSE;
-	mRenderWater = FALSE;
+	mRenderWater = TRUE;
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 192.0f;
 	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
@@ -110,10 +110,10 @@ void HippoLimits::setAuroraLimits()
 	mMaxInventoryItemsTransfer = 68;
 	mRenderName = 2;
 	mAllowPhysicalPrims = TRUE;
-	skyUseClassicClouds = TRUE;
+	skyUseClassicClouds = FALSE;
 	mEnableTeenMode = FALSE;
 	mEnforceMaxBuild = FALSE;
-	mRenderWater = FALSE;
+	mRenderWater = TRUE;
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 1024.0f;
 	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
