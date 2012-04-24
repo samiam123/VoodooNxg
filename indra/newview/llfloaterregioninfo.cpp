@@ -82,6 +82,7 @@
 #include "llviewerwindow.h"
 #include "llvlcomposition.h"
 #include "llagentui.h"
+#include "hippolimits.h"
 // [RLVa:KB]
 #include "rlvhandler.h"
 // [/RLVa:KB]
@@ -626,7 +627,7 @@ BOOL LLPanelRegionGeneralInfo::postBuild()
 	initCtrl("access_combo");
 	initCtrl("restrict_pushobject");
 	initCtrl("block_parcel_search_check");
-	//initCtrl("minimum_agent_age");
+	initCtrl("minimum_agent_age");
 
 	initHelpBtn("terraform_help",		"HelpRegionBlockTerraform");
 	initHelpBtn("fly_help",				"HelpRegionBlockFly");
@@ -638,7 +639,7 @@ BOOL LLPanelRegionGeneralInfo::postBuild()
 	initHelpBtn("land_resell_help",	"HelpRegionLandResell");
 	initHelpBtn("parcel_changes_help", "HelpParcelChanges");
 	initHelpBtn("parcel_search_help", "HelpRegionSearch");
-	//initHelpBtn("minimum_agent_age_help",	"HelpRegionMinimumAge");
+	initHelpBtn("minimum_agent_age_help",	"HelpRegionMinimumAge");
 
 	childSetAction("kick_btn", onClickKick, this);
 	childSetAction("kick_all_btn", onClickKickAll, this);
@@ -789,7 +790,7 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 		body["restrict_pushobject"] = childGetValue("restrict_pushobject");
 		body["allow_parcel_changes"] = childGetValue("allow_parcel_changes_check");
 		body["block_parcel_search"] = childGetValue("block_parcel_search_check");
-		//body["minimum_agent_age"] = childGetValue("minimum_agent_age");
+		body["minimum_agent_age"] = childGetValue("minimum_agent_age");
 
 		LLHTTPClient::post(url, body, new LLHTTPClient::Responder());
 	}
@@ -849,8 +850,8 @@ bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 	// Data gets filled in by hippo manager
 	BOOL allow_modify = gAgent.isGodlike() || (region && region->canManageEstate());
 	
-	//childSetValue("draw_distance", gAgent.mDrawDistance);
-	//childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
+	childSetValue("draw_distance", gAgent.mDrawDistance);
+	childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
 	childSetValue("allow_minimap", LLSD(gHippoLimits->mAllowMinimap));
 	childSetValue("allow_physical_prims", (gHippoLimits->mAllowPhysicalPrims == 1 ? TRUE : FALSE));
 	childSetValue("max_drag_distance", LLSD(gHippoLimits->mMaxDragDistance));
@@ -1309,7 +1310,8 @@ BOOL LLPanelRegionTextureInfo::validateTextureSizes()
 			return FALSE;
 		}
 
-		if (width > 512 || height > 512)
+		//if (width > 512 || height > 512) // was this non var
+		if (width > 8192 || height > 8192) // trying this for vars
 		{
 
 			LLSD args;

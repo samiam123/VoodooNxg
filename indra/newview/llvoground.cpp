@@ -62,10 +62,12 @@ BOOL LLVOGround::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 		return TRUE;
 	}
 	
-	/*if (mDrawable)
+	/*
+	if (mDrawable)
 	{
 		gPipeline.markRebuild(mDrawable, LLDrawable::REBUILD_VOLUME, TRUE);
-	}*/
+	}
+	*/
 	return TRUE;
 }
 

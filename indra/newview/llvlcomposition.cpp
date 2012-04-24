@@ -77,7 +77,7 @@ LLVLComposition::LLVLComposition(LLSurface *surfacep, const U32 width, const F32
 	setDetailTextureID(2, TERRAIN_MOUNTAIN_DETAIL);
 	setDetailTextureID(3, TERRAIN_ROCK_DETAIL);
 
-	static const LLCachedControl<F32> terrain_color_start_height("TerrainColorStartHeight", 20.f); 
+	static const LLCachedControl<F32> terrain_color_start_height("TerrainColorStartHeight", 10.f); 
 	static const LLCachedControl<F32> terrain_color_height_range("TerrainColorHeightRange", 60.f); 
 
 	// Initialize the texture matrix to defaults.
@@ -218,6 +218,7 @@ BOOL LLVLComposition::generateHeights(const F32 x, const F32 y,
 }
 
 static const U32 BASE_SIZE = 128;
+//static const U32 BASE_SIZE = 8192;
 
 BOOL LLVLComposition::generateComposition()
 {

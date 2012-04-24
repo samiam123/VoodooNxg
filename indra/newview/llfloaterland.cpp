@@ -2122,7 +2122,7 @@ void LLPanelLandOptions::refresh()
 				}
 				else if (regionp->getSimAccess() == SIM_ACCESS_ADULT)
 				{
-					mMatureCtrl->setEnabled(FALSE);
+					mMatureCtrl->setEnabled(TRUE);
 					mMatureCtrl->set(TRUE);
 					mMatureCtrl->setLabel(getString("mature_check_adult"));
 					mMatureCtrl->setToolTip(getString("mature_check_adult_tooltip"));

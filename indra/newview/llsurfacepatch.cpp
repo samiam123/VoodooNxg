@@ -239,6 +239,9 @@ void LLSurfacePatch::eval(const U32 x, const U32 y, const U32 stride, LLVector3 
 					fmod((F32)(mOriginGlobal.mdV[0] + x)*xyScaleInv, 256.f),
 					fmod((F32)(mOriginGlobal.mdV[1] + y)*xyScaleInv, 256.f),
 					0.f
+					//fmod((F32)(mOriginGlobal.mdV[0] + x)*xyScaleInv, 8192.f),
+					//fmod((F32)(mOriginGlobal.mdV[1] + y)*xyScaleInv, 8192.f),
+					//0.f
 				};
 	F32 rand_val = llclamp(noise2(vec)* 0.75f + 0.5f, 0.f, 1.f);
 	tex1->mV[1] = rand_val;
@@ -811,6 +814,7 @@ void LLSurfacePatch::setOriginGlobal(const LLVector3d &origin_global)
 
 	mVisInfo.mbIsVisible = FALSE;
 	mVisInfo.mDistance = 512.0f;
+	//mVisInfo.mDistance = 8192.0f;
 	mVisInfo.mRenderLevel = 0;
 	mVisInfo.mRenderStride = mSurfacep->getGridsPerPatchEdge();
 	

@@ -8046,7 +8046,7 @@
       <key>Type</key>
       <string>Boolean</string>
       <key>Value</key>
-      <integer>0</integer>
+      <integer>1</integer>
     </map>
   <key>MemoryFailurePreventionEnabled</key>
   <map>
@@ -8212,7 +8212,7 @@
       <key>Type</key>
       <string>F32</string>
       <key>Value</key>
-      <real>256.0</real>
+      <real>40.0</real>
     </map>
     <key>MiniMapCenter</key>
     <map>
@@ -11829,7 +11829,7 @@
       <key>Type</key>
       <string>Boolean</string>
       <key>Value</key>
-      <integer>0</integer>
+      <integer>1</integer>
     </map>
     <key>SearchURLDefault</key>
     <map>
@@ -14505,7 +14505,7 @@
       <key>Type</key>
       <string>String</string>
       <key>Value</key>
-      <string />
+      <string/>C:\Program Files (x86)\Notepad++\notepad++.exe
     </map>
     <key>YawFromMousePosition</key>
     <map>

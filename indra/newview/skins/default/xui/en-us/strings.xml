@@ -30,7 +30,7 @@
 	<string name="StartupClearingCache">Clearing cache...</string>
 	<string name="StartupInitializingTextureCache">Initializing Texture Cache...</string>
 	<string name="StartupInitializingVFS">Initializing VFS...</string>
-    <string name="StartupRequireDriverUpdate">Graphics Initialization Failed. Please Update Your Graphics Driver!</string>
+  <string name="StartupRequireDriverUpdate">Graphics Initialization Failed. Please Update Your Graphics Driver!</string>
 
 	<!--  progress -->
 	<string name="ProgressRestoring">Restoring...</string>
@@ -44,7 +44,7 @@
 	<string name="LoginPrecaching">Loading world...</string>
 	<string name="LoginInitializingBrowser">Initializing embedded web browser...</string>
 	<string name="LoginInitializingMultimedia">Initializing multimedia...</string>
-    <string name="LoginInitializingFonts">Loading fonts...</string>
+  <string name="LoginInitializingFonts">Loading fonts...</string>
 	<string name="LoginVerifyingCache">Verifying cache files (can take 60-90 seconds)...</string>
 	<string name="LoginProcessingResponse">Processing Response...</string>
 	<string name="LoginInitializingWorld">Initializing World...</string>
