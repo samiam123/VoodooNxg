@@ -1368,10 +1368,7 @@ LLFloaterIMPanel::~LLFloaterIMPanel()
 	mVoiceChannel = NULL;
 
 	//delete focus lost callback
-	if(mInputEditor)
-	{
-		mInputEditor->setFocusLostCallback( NULL );
-	}
+	mFocusLostSignal.disconnect();
 }
 
 BOOL LLFloaterIMPanel::postBuild() 
@@ -1384,8 +1381,8 @@ BOOL LLFloaterIMPanel::postBuild()
 		mRPMode = false;
 
 		mInputEditor = getChild<LLLineEditor>("chat_editor");
-		mInputEditor->setFocusReceivedCallback( onInputEditorFocusReceived, this );
-		mInputEditor->setFocusLostCallback( onInputEditorFocusLost, this );
+		mInputEditor->setFocusReceivedCallback( boost::bind(&LLFloaterIMPanel::onInputEditorFocusReceived, this) );
+		mFocusLostSignal = mInputEditor->setFocusLostCallback( boost::bind(&LLFloaterIMPanel::onInputEditorFocusLost, this) );
 		mInputEditor->setKeystrokeCallback( onInputEditorKeystroke );
 		mInputEditor->setCommitCallback( onCommitChat );
 		mInputEditor->setCallbackUserData(this);
@@ -2051,18 +2048,14 @@ void LLFloaterIMPanel::onCommitChat(LLUICtrl* caller, void* userdata)
 	self->sendMsg();
 }
 
-// static
-void LLFloaterIMPanel::onInputEditorFocusReceived( LLFocusableElement* caller, void* userdata )
+void LLFloaterIMPanel::onInputEditorFocusReceived()
 {
-	LLFloaterIMPanel* self= (LLFloaterIMPanel*) userdata;
-	self->mHistoryEditor->setCursorAndScrollToEnd();
+	mHistoryEditor->setCursorAndScrollToEnd();
 }
 
-// static
-void LLFloaterIMPanel::onInputEditorFocusLost(LLFocusableElement* caller, void* userdata)
+void LLFloaterIMPanel::onInputEditorFocusLost()
 {
-	LLFloaterIMPanel* self = (LLFloaterIMPanel*) userdata;
-	self->setTyping(FALSE);
+	setTyping(FALSE);
 }
 
 // static

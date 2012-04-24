@@ -265,8 +265,13 @@ public:
 								  BOOL remove_contribution);
 		// callers responsibility to call deleteParcelBuy() on return value
 	void sendParcelBuy(ParcelBuyInfo*);
+<<<<<<< HEAD
 	void deleteParcelBuy(ParcelBuyInfo* *); //this
 	//void deleteParcelBuy(ParcelBuyInfo*&); //or voodoo					   
+=======
+	void deleteParcelBuy(ParcelBuyInfo* *info);
+					   
+>>>>>>> remotes/multiware/V2MultiWear
 	void sendParcelDeed(const LLUUID& group_id);
 
 	// Send the ParcelRelease message

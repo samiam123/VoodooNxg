@@ -128,6 +128,7 @@ BOOL PreventSetUnhandledExceptionFilter()
 	memcpy( &newJump[ 1 ], &dwRelativeAddr, sizeof( pNewFunc ) );
 	//SIZE_T bytesWritten;
 	//BOOL bRet = WriteProcessMemory( GetCurrentProcess(), pOrgEntry, newJump, sizeof( pNewFunc ) + 1, &bytesWritten );
+<<<<<<< HEAD
 	//return bRet;
     DWORD oldProtect; 
     BOOL bRet = VirtualProtect(pOrgEntry, sizeof(pNewFunc) + 1, PAGE_READWRITE, &oldProtect); 
@@ -135,6 +136,14 @@ BOOL PreventSetUnhandledExceptionFilter()
     memcpy(pOrgEntry, newJump, sizeof(pNewFunc) + 1); 
     VirtualProtect(pOrgEntry, sizeof(pNewFunc) + 1, oldProtect, &oldProtect); 
     return TRUE; 
+=======
+	DWORD oldProtect;
+	BOOL bRet = VirtualProtect(pOrgEntry, sizeof(pNewFunc) + 1, PAGE_READWRITE, &oldProtect);
+	if (!bRet) return FALSE;
+	memcpy(pOrgEntry, newJump, sizeof(pNewFunc) + 1);
+	VirtualProtect(pOrgEntry, sizeof(pNewFunc) + 1, oldProtect, &oldProtect);
+	return TRUE;
+>>>>>>> remotes/multiware/V2MultiWear
 #else
 	return FALSE;
 #endif

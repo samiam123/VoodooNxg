@@ -79,7 +79,6 @@ void LLPanel::init()
 	mBorder = NULL;
 	mDefaultBtn = NULL;
 	setIsChrome(FALSE); //is this a decorator to a live window or a form?
-	mLastTabGroup = 0;
 
 	mPanelHandle.bind(this);
 	setTabStop(FALSE);
@@ -267,20 +266,6 @@ void LLPanel::setDefaultBtn(const std::string& id)
 	{
 		setDefaultBtn(NULL);
 	}
-}
-
-void LLPanel::addCtrl( LLUICtrl* ctrl, S32 tab_group)
-{
-	mLastTabGroup = tab_group;
-
-	LLView::addCtrl(ctrl, tab_group);
-}
-
-void LLPanel::addCtrlAtEnd( LLUICtrl* ctrl, S32 tab_group)
-{
-	mLastTabGroup = tab_group;
-
-	LLView::addCtrlAtEnd(ctrl, tab_group);
 }
 
 BOOL LLPanel::handleKeyHere( KEY key, MASK mask )
@@ -491,7 +476,8 @@ LLView* LLPanel::fromXML(LLXMLNodePtr node, LLView* parent, LLUICtrlFactory *fac
 	}
 	else
 	{
-		panelp->initPanelXML(node, parent, factory);
+		if(!factory->builtPanel(panelp))
+			panelp->initPanelXML(node, parent, factory);
 	}
 
 	return panelp;
@@ -757,16 +743,6 @@ BOOL LLPanel::childHasFocus(const std::string& id)
 	{
 		childNotFound(id);
 		return FALSE;
-	}
-}
-
-
-void LLPanel::childSetFocusChangedCallback(const std::string& id, void (*cb)(LLFocusableElement*, void*), void* user_data)
-{
-	LLUICtrl* child = getChild<LLUICtrl>(id, true);
-	if (child)
-	{
-		child->setFocusChangedCallback(cb, user_data);
 	}
 }
 
@@ -1199,9 +1175,13 @@ void LLLayoutStack::draw()
 	}
 }
 
-void LLLayoutStack::removeCtrl(LLUICtrl* ctrl)
+void LLLayoutStack::removeChild(LLView* ctrl)
 {
-	LLEmbeddedPanel* embedded_panelp = findEmbeddedPanel((LLPanel*)ctrl);
+	LLView::removeChild(ctrl);
+	LLPanel* panel = dynamic_cast<LLPanel*>(ctrl);
+	if(!panel)
+		return;
+	LLEmbeddedPanel* embedded_panelp = findEmbeddedPanel(panel);
 
 	if (embedded_panelp)
 	{
@@ -1210,10 +1190,8 @@ void LLLayoutStack::removeCtrl(LLUICtrl* ctrl)
 	}
 
 	// need to update resizebars
-
+	
 	calcMinExtents();
-
-	LLView::removeCtrl(ctrl);
 }
 
 LLXMLNodePtr LLLayoutStack::getXML(bool save_children) const

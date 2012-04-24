@@ -53,6 +53,8 @@ BOOL get_is_category_removable(const LLInventoryModel* model, const LLUUID& id);
 
 BOOL get_is_category_renameable(const LLInventoryModel* model, const LLUUID& id);
 
+void show_item_profile(const LLUUID& item_uuid);
+
 void change_item_parent(LLInventoryModel* model,
 									 LLViewerInventoryItem* item,
 									 const LLUUID& new_parent_id,
@@ -68,6 +70,15 @@ void rename_category(LLInventoryModel* model, const LLUUID& cat_id, const std::s
 
 // Generates a string containing the path to the item specified by item_id.
 void append_path(const LLUUID& id, std::string& path);
+
+void copy_item_to_outbox(LLInventoryItem* inv_item, LLUUID dest_folder, const LLUUID& top_level_folder, S32 operation_id);
+void move_item_within_outbox(LLInventoryItem* inv_item, LLUUID dest_folder, S32 operation_id);
+
+void copy_folder_to_outbox(LLInventoryCategory* inv_cat, const LLUUID& dest_folder, const LLUUID& top_level_folder, S32 operation_id);
+
+/**                    Miscellaneous global functions
+ **                                                                            **
+ *******************************************************************************/
 
 /********************************************************************************
  **                                                                            **
@@ -263,6 +274,77 @@ protected:
 };
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Class LLFindCOFValidItems
+//
+// Collects items that can be legitimately linked to in the COF.
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class LLFindCOFValidItems : public LLInventoryCollectFunctor
+{
+public:
+	LLFindCOFValidItems() {}
+	virtual ~LLFindCOFValidItems() {}
+	virtual bool operator()(LLInventoryCategory* cat,
+							LLInventoryItem* item);
+	
+};
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Class LLFindByMask
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class LLFindByMask : public LLInventoryCollectFunctor
+{
+public:
+	LLFindByMask(U64 mask)
+		: mFilterMask(mask)
+	{}
+
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item)
+	{
+		//converting an inventory type to a bitmap filter mask
+		if(item && (mFilterMask & (1LL << item->getInventoryType())) )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+private:
+	U64 mFilterMask;
+};
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// Class LLFindNonLinksByMask
+//
+//
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class LLFindNonLinksByMask : public LLInventoryCollectFunctor
+{
+public:
+	LLFindNonLinksByMask(U64 mask)
+		: mFilterMask(mask)
+	{}
+
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item)
+	{
+		if(item && !item->getIsLinkType() && (mFilterMask & (1LL << item->getInventoryType())) )
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	void setFilterMask(U64 mask)
+	{
+		mFilterMask = mask;
+	}
+
+private:
+	U64 mFilterMask;
+};
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Class LLFindWearables
 //
 // Collects wearables based on item type.
@@ -290,6 +372,52 @@ public:
 private:
 	bool mIncludeBodyParts;
 	bool mIsWorn;
+};
+
+//Inventory collect functor collecting wearables of a specific wearable type
+class LLFindWearablesOfType : public LLInventoryCollectFunctor
+{
+public:
+	LLFindWearablesOfType(LLWearableType::EType type) : mWearableType(type) {}
+	virtual ~LLFindWearablesOfType() {}
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item);
+	void setType(LLWearableType::EType type);
+
+private:
+	LLWearableType::EType mWearableType;
+};
+
+/** Filter out wearables-links */
+class LLFindActualWearablesOfType : public LLFindWearablesOfType
+{
+public:
+	LLFindActualWearablesOfType(LLWearableType::EType type) : LLFindWearablesOfType(type) {}
+	virtual ~LLFindActualWearablesOfType() {}
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item)
+	{
+		if (item && item->getIsLinkType()) return false;
+		return LLFindWearablesOfType::operator()(cat, item);
+	}
+};
+
+/* Filters out items of a particular asset type */
+class LLIsTypeActual : public LLIsType
+{
+public:
+	LLIsTypeActual(LLAssetType::EType type) : LLIsType(type) {}
+	virtual ~LLIsTypeActual() {}
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item)
+	{
+		if (item && item->getIsLinkType()) return false;
+		return LLIsType::operator()(cat, item);
+	}
+};
+
+// Collect non-removable folders and items.
+class LLFindNonRemovableObjects : public LLInventoryCollectFunctor
+{
+public:
+	virtual bool operator()(LLInventoryCategory* cat, LLInventoryItem* item);
 };
 
 /**                    Inventory Collector Functions

@@ -64,7 +64,7 @@
 #include "llviewerobjectlist.h"
 #include "llviewerparcelmgr.h"
 #include "llviewerwindow.h"
-#include "llvoavatar.h"
+#include "llvoavatarself.h"
 #include "llvograss.h"
 #include "llworld.h"
 #include "pipeline.h"
@@ -87,6 +87,7 @@
 
 // [RLVa:KB]
 #include "rlvhandler.h"
+#include "rlvlocks.h"
 // [/RLVa:KB]
 
 LLPointer<LLViewerTexture> gDisconnectedImagep = NULL;
@@ -152,6 +153,8 @@ void display_startup()
 
 	LLGLState::checkStates();
 	LLGLState::checkTextureChannels();
+
+	gViewerWindow->updateUI(); // Fix ui flicker.
 
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	LLGLSUIDefault gls_ui;
@@ -966,12 +969,13 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot, boo
 			stop_glerror();
 		}
 
-		for (U32 i = 0; i < (U32)gGLManager.mNumTextureImageUnits; i++)
+		//Reversed this. disabling a texunit sets its index as current.. randomly breaking LLRender::matrixMode(U32 mode). Make sure unit0 is the 'current' unit.
+		for (S32 i = gGLManager.mNumTextureImageUnits-1; i >= 0; --i)
 		{ //dummy cleanup of any currently bound textures
-			if (gGL.getTexUnit(i)->getCurrType() != LLTexUnit::TT_NONE)
+			if (gGL.getTexUnit((U32)i)->getCurrType() != LLTexUnit::TT_NONE)
 			{
-				gGL.getTexUnit(i)->unbind(gGL.getTexUnit(i)->getCurrType());
-				gGL.getTexUnit(i)->disable();
+				gGL.getTexUnit((U32)i)->unbind(gGL.getTexUnit((U32)i)->getCurrType());
+				gGL.getTexUnit((U32)i)->disable();
 			}
 		}
 		LLAppViewer::instance()->pingMainloopTimeout("Display:RenderFlush");		

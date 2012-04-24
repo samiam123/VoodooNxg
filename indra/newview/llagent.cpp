@@ -2,31 +2,25 @@
  * @file llagent.cpp
  * @brief LLAgent class implementation
  *
- * $LicenseInfo:firstyear=2001&license=viewergpl$
- * 
- * Copyright (c) 2001-2009, Linden Research, Inc.
- * 
+ * $LicenseInfo:firstyear=2001&license=viewerlgpl$
  * Second Life Viewer Source Code
- * The source code in this file ("Source Code") is provided by Linden Lab
- * to you under the terms of the GNU General Public License, version 2.0
- * ("GPL"), unless you have obtained a separate licensing agreement
- * ("Other License"), formally executed by you and Linden Lab.  Terms of
- * the GPL can be found in doc/GPL-license.txt in this distribution, or
- * online at http://secondlifegrid.net/programs/open_source/licensing/gplv2
+ * Copyright (C) 2010, Linden Research, Inc.
  * 
- * There are special exceptions to the terms and conditions of the GPL as
- * it is applied to this Source Code. View the full text of the exception
- * in the file doc/FLOSS-exception.txt in this software distribution, or
- * online at
- * http://secondlifegrid.net/programs/open_source/licensing/flossexception
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation;
+ * version 2.1 of the License only.
  * 
- * By copying, modifying or distributing this software, you acknowledge
- * that you have read and understood your obligations described above,
- * and agree to abide by those obligations.
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  * 
- * ALL LINDEN LAB SOURCE CODE IS PROVIDED "AS IS." LINDEN LAB MAKES NO
- * WARRANTIES, EXPRESS, IMPLIED OR OTHERWISE, REGARDING ITS ACCURACY,
- * COMPLETENESS OR PERFORMANCE.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ * 
+ * Linden Research, Inc., 945 Battery Street, San Francisco, CA  94111  USA
  * $/LicenseInfo$
  */
 
@@ -172,6 +166,14 @@ void LLAgentFriendObserver::changed(U32 mask)
 	}
 }
 
+// static
+void LLAgent::parcelChangedCallback()
+{
+	bool can_edit = LLToolMgr::getInstance()->canEdit();
+
+	gAgent.mCanEditParcel = can_edit;
+}
+
 // ************************************************************
 // Enabled this definition to compile a 'hacked' viewer that
 // locally believes the end user has godlike powers.
@@ -199,7 +201,10 @@ LLAgent::LLAgent() :
 	mDoubleTapRunMode(DOUBLETAP_NONE),
 
 	mbAlwaysRun(false),
-	mbRunning(false),
+//	mbRunning(false),
+// [RLVa:KB] - Checked: 2011-05-11 (RLVa-1.3.0i) | Added: RLVa-1.3.0i
+	mbTempRun(false),
+// [/RLVa:KB]
 	mbTeleportKeepsLookAt(false),
 
 	mAgentAccess(new LLAgentAccess(gSavedSettings)),
@@ -282,7 +287,9 @@ void LLAgent::init()
 
 	gSavedSettings.getControl("PreferredMaturity")->getValidateSignal()->connect(boost::bind(&LLAgent::validateMaturity, this, _2));
 	gSavedSettings.getControl("PreferredMaturity")->getSignal()->connect(boost::bind(&LLAgent::handleMaturity, this, _2));
-	
+
+	LLViewerParcelMgr::getInstance()->addAgentParcelChangedCallback(boost::bind(&LLAgent::parcelChangedCallback));
+
 	mInitialized = TRUE;
 }
 
@@ -498,7 +505,7 @@ void LLAgent::movePitch(F32 mag)
 // Does this parcel allow you to fly?
 BOOL LLAgent::canFly()
 {
-// [RLVa:KB] - Checked: 2009-07-05 (RLVa-1.0.0c)
+// [RLVa:KB] - Checked: 2010-03-02 (RLVa-1.2.0d) | Modified: RLVa-1.0.0c
 	if (gRlvHandler.hasBehaviour(RLV_BHVR_FLY)) return FALSE;
 // [/RLVa:KB]
 	if (isGodlike()) return TRUE;
@@ -576,7 +583,7 @@ void LLAgent::setFlying(BOOL fly)
 
 	if (fly)
 	{
-// [RLVa:KB] - Checked: 2009-07-05 (RLVa-1.0.0c)
+// [RLVa:KB] - Checked: 2010-03-02 (RLVa-1.2.0d) | Modified: RLVa-1.0.0c
 		if (gRlvHandler.hasBehaviour(RLV_BHVR_FLY))
 		{
 			return;
@@ -635,7 +642,14 @@ bool LLAgent::enableFlying()
 
 void LLAgent::standUp()
 {
-	setControlFlags(AGENT_CONTROL_STAND_UP);
+//	setControlFlags(AGENT_CONTROL_STAND_UP);
+// [RLVa:KB] - Checked: 2010-03-07 (RLVa-1.2.0c) | Added: RLVa-1.2.0a
+	// RELEASE-RLVa: [SL-2.0.0] Check this function's callers since usually they require explicit blocking
+	if ( (!rlv_handler_t::isEnabled()) || (gRlvHandler.canStand()) )
+	{
+		setControlFlags(AGENT_CONTROL_STAND_UP);
+	}
+// [/RLVa:KB]
 }
 
 void LLAgent::togglePhantom()
@@ -955,7 +969,14 @@ LLVector3d LLAgent::getPosGlobalFromAgent(const LLVector3 &pos_agent) const
 
 void LLAgent::sitDown()
 {
-	setControlFlags(AGENT_CONTROL_SIT_ON_GROUND);
+//	setControlFlags(AGENT_CONTROL_SIT_ON_GROUND);
+// [RLVa:KB] - Checked: 2010-08-28 (RLVa-1.2.1a) | Added: RLVa-1.2.1a
+	// RELEASE-RLVa: [SL-2.0.0] Check this function's callers since usually they require explicit blocking
+	if ( (!rlv_handler_t::isEnabled()) || ((gRlvHandler.canStand()) && (!gRlvHandler.hasBehaviour(RLV_BHVR_SIT))) )
+	{
+		setControlFlags(AGENT_CONTROL_SIT_ON_GROUND);
+	}
+// [/RLVa:KB]
 }
 
 
@@ -2240,8 +2261,8 @@ void LLAgent::onAnimStop(const LLUUID& id)
 	}
 	else if (id == ANIM_AGENT_AWAY)
 	{
-		//clearAFK();
-// [RLVa:KB] - Checked: 2009-10-19 (RLVa-1.1.0g) | Added: RLVa-1.1.0g
+//		clearAFK();
+// [RLVa:KB] - Checked: 2010-05-03 (RLVa-1.2.0g) | Added: RLVa-1.1.0g
 #ifdef RLV_EXTENSION_CMD_ALLOWIDLE
 		if (!gRlvHandler.hasBehaviour(RLV_BHVR_ALLOWIDLE))
 			clearAFK();
@@ -2689,7 +2710,36 @@ void LLAgent::sendAnimationRequest(const LLUUID &anim_id, EAnimRequest request)
 	sendReliableMessage();
 }
 
-void LLAgent::sendWalkRun(bool running)
+// [RLVa:KB] - Checked: 2011-05-11 (RLVa-1.3.0i) | Added: RLVa-1.3.0i
+void LLAgent::setAlwaysRun()
+{
+	mbAlwaysRun = true;//(!rlv_handler_t::isEnabled()) || (!gRlvHandler.hasBehaviour(RLV_BHVR_ALWAYSRUN));
+	sendWalkRun();
+}
+
+void LLAgent::setTempRun()
+{
+	mbTempRun = true;//(!rlv_handler_t::isEnabled()) || (!gRlvHandler.hasBehaviour(RLV_BHVR_TEMPRUN));
+	sendWalkRun();
+}
+
+void LLAgent::clearAlwaysRun()
+{
+	mbAlwaysRun = false;
+	sendWalkRun();
+}
+
+void LLAgent::clearTempRun()
+{
+	mbTempRun = false;
+	sendWalkRun();
+}
+// [/RLVa:KB]
+
+//void LLAgent::sendWalkRun(bool running)
+// [RLVa:KB] - Checked: 2011-05-11 (RLVa-1.3.0i) | Added: RLVa-1.3.0i
+void LLAgent::sendWalkRun()
+// [/RLVa:KB]
 {
 	LLMessageSystem* msgsys = gMessageSystem;
 	if (msgsys)
@@ -2698,7 +2748,10 @@ void LLAgent::sendWalkRun(bool running)
 		msgsys->nextBlockFast(_PREHASH_AgentData);
 		msgsys->addUUIDFast(_PREHASH_AgentID, getID());
 		msgsys->addUUIDFast(_PREHASH_SessionID, getSessionID());
-		msgsys->addBOOLFast(_PREHASH_AlwaysRun, BOOL(running) );
+//		msgsys->addBOOLFast(_PREHASH_AlwaysRun, BOOL(running) );
+// [RLVa:KB] - Checked: 2011-05-11 (RLVa-1.3.0i) | Added: RLVa-1.3.0i
+		msgsys->addBOOLFast(_PREHASH_AlwaysRun, BOOL(getRunning()) );
+// [/RLVa:KB]
 		sendReliableMessage();
 	}
 }
@@ -3296,7 +3349,7 @@ void LLAgent::processAgentCachedTextureResponse(LLMessageSystem *mesgsys, void *
 		return;
 	}
 
-	if (isAgentAvatarValid() && gAgentCamera.cameraCustomizeAvatar())
+	if (isAgentAvatarValid() && !gAgentAvatarp->isUsingBakedTextures())
 	{
 		// ignore baked textures when in customize mode
 		return;
@@ -3346,6 +3399,7 @@ void LLAgent::processAgentCachedTextureResponse(LLMessageSystem *mesgsys, void *
 	}
 
 	llinfos << "Received cached texture response for " << num_results << " textures." << llendl;
+	gAgentAvatarp->outputRezTiming("Fetched agent wearables textures from cache. Will now load them");
 
 	gAgentAvatarp->updateMeshTextures();
 
@@ -3600,12 +3654,14 @@ void LLAgent::teleportRequest(
 // Landmark ID = LLUUID::null means teleport home
 void LLAgent::teleportViaLandmark(const LLUUID& landmark_asset_id)
 {
-// [RLVa:KB] - Checked: 2009-07-07 (RLVa-1.0.0d)
+// [RLVa:KB] - Checked: 2010-08-22 (RLVa-1.2.1a) | Modified: RLVa-1.2.1a
+	// NOTE: we'll allow teleporting home unless both @tplm=n *and* @tploc=n restricted
 	if ( (rlv_handler_t::isEnabled()) &&
-		 ( (gRlvHandler.hasBehaviour(RLV_BHVR_TPLM)) || 
-		   ((gRlvHandler.hasBehaviour(RLV_BHVR_UNSIT)) && (gAgentAvatarp) && (gAgentAvatarp->isSitting())) ))
+		 ( ( (landmark_asset_id.notNull()) ? gRlvHandler.hasBehaviour(RLV_BHVR_TPLM)
+		                                   : gRlvHandler.hasBehaviour(RLV_BHVR_TPLM) && gRlvHandler.hasBehaviour(RLV_BHVR_TPLOC) ) ||
+		   ((gRlvHandler.hasBehaviour(RLV_BHVR_UNSIT)) && (isAgentAvatarValid()) && (gAgentAvatarp->isSitting())) ))
 	{
-		RlvNotifications::notifyBlockedTeleport();
+		RlvUtil::notifyBlocked(RLV_STRING_BLOCKED_TELEPORT);
 		return;
 	}
 // [/RLVa:KB]
@@ -3674,18 +3730,20 @@ void LLAgent::teleportCancel()
 
 void LLAgent::teleportViaLocation(const LLVector3d& pos_global)
 {
-	if(!isAgentAvatarValid())
-		return;
-// [RLVa:KB] - Alternate: Snowglobe-1.2.4 | Checked: 2010-03-02 (RLVa-1.1.1a) | Modified: RLVa-1.2.0a
-	if (rlv_handler_t::isEnabled()) 
+// [RLVa:KB] - Checked: 2010-03-02 (RLVa-1.2.0c) | Modified: RLVa-1.2.0a
+	if ( (rlv_handler_t::isEnabled()) && (!RlvUtil::isForceTp()) )
 	{
 		// If we're getting teleported due to @tpto we should disregard any @tploc=n or @unsit=n restrictions from the same object
 		if ( (gRlvHandler.hasBehaviourExcept(RLV_BHVR_TPLOC, gRlvHandler.getCurrentObject())) ||
+<<<<<<< HEAD
 		     ( (gAgentAvatarp) && (gAgentAvatarp->isSitting()) &&
 			 
+=======
+		     ( (isAgentAvatarValid()) && (gAgentAvatarp->isSitting()) && 
+>>>>>>> remotes/multiware/V2MultiWear
 			   (gRlvHandler.hasBehaviourExcept(RLV_BHVR_UNSIT, gRlvHandler.getCurrentObject()))) )
 		{
-			RlvNotifications::notifyBlockedTeleport();
+			RlvUtil::notifyBlocked(RLV_STRING_BLOCKED_TELEPORT);
 			return;
 		}
 
@@ -3752,7 +3810,7 @@ void LLAgent::teleportViaLocationLookAt(const LLVector3d& pos_global)
 	if ( (rlv_handler_t::isEnabled()) && (!RlvUtil::isForceTp()) && 
 		 ((gRlvHandler.hasBehaviour(RLV_BHVR_SITTP)) || (!gRlvHandler.canStand())) )
 	{
-		RlvNotifications::notifyBlockedTeleport();
+		RlvUtil::notifyBlocked(RLV_STRING_BLOCKED_TELEPORT);
 		return;
 	}
 // [/RLVa:KB]
@@ -3800,12 +3858,6 @@ void LLAgent::setTeleportState(ETeleportState state)
 		default:
 			break;
 	}
-// [RLVa:KB] - Alternate: Snowglobe-1.2.4 | Version: 1.23.4 | Checked: 2009-07-07 (RLVa-1.0.0d) | Added: RLVa-0.2.0b
-	if ( (rlv_handler_t::isEnabled()) && (TELEPORT_NONE == mTeleportState) )
-	{
-		gRlvHandler.setCanCancelTp(true);
-	}
-// [/RLVa:KB]
 }
 
 void LLAgent::stopCurrentAnimations()
@@ -3942,11 +3994,10 @@ void LLAgent::sendAgentSetAppearance()
 {
 	if (!isAgentAvatarValid()) return;
 
-	if (gAgentQueryManager.mNumPendingQueries > 0 && (isAgentAvatarValid() && !gAgentCamera.cameraCustomizeAvatar())) 
+	if (gAgentQueryManager.mNumPendingQueries > 0 && (isAgentAvatarValid() && gAgentAvatarp->isUsingBakedTextures())) 
 	{
 		return;
 	}
-
 
 	llinfos << "TAT: Sent AgentSetAppearance: " << gAgentAvatarp->getBakedStatusForPrintout() << llendl;
 	//dumpAvatarTEs( "sendAgentSetAppearance()" );
@@ -3964,9 +4015,15 @@ void LLAgent::sendAgentSetAppearance()
 	// to tweak this number again
 	LLVector3 body_size = gAgentAvatarp->mBodySize;
 
+// [RLVa:KB] - Checked: 2010-10-11 (RLVa-1.2.0e) | Added: RLVa-1.2.0e
+	F32 offset_z = RlvSettings::getAvatarOffsetZ();
+	if(fabs(offset_z) < .1)
+		offset_z = gSavedSettings.getF32("AscentAvatarZModifier");
+// [/RLVa:KB]
+
 	body_size.mV[VX] = body_size.mV[VX] + gSavedSettings.getF32("AscentAvatarXModifier");
 	body_size.mV[VY] = body_size.mV[VY] + gSavedSettings.getF32("AscentAvatarYModifier");
-	body_size.mV[VZ] = body_size.mV[VZ] + gSavedSettings.getF32("AscentAvatarZModifier");
+	body_size.mV[VZ] = body_size.mV[VZ] + offset_z;
 
 	msg->addVector3Fast(_PREHASH_Size, body_size);	
 
@@ -3977,7 +4034,7 @@ void LLAgent::sendAgentSetAppearance()
 
 	// is texture data current relative to wearables?
 	// KLW - TAT this will probably need to check the local queue.
-	BOOL textures_current = !gAgentAvatarp->hasPendingBakedUploads() && gAgentWearables.areWearablesLoaded();
+	BOOL textures_current = gAgentAvatarp->areTexturesCurrent();
 
 	for(U8 baked_index = 0; baked_index < BAKED_NUM_INDICES; baked_index++ )
 	{
@@ -3989,8 +4046,8 @@ void LLAgent::sendAgentSetAppearance()
 			continue;
 		}
 
-		// IMG_DEFAULT_AVATAR means not baked
-		if (!gAgentAvatarp->isTextureDefined(texture_index))
+		// IMG_DEFAULT_AVATAR means not baked. 0 index should be ignored for baked textures
+		if (!gAgentAvatarp->isTextureDefined(texture_index, 0))
 		{
 			textures_current = FALSE;
 			break;
@@ -4003,12 +4060,17 @@ void LLAgent::sendAgentSetAppearance()
 		llinfos << "TAT: Sending cached texture data" << llendl;
 		for (U8 baked_index = 0; baked_index < BAKED_NUM_INDICES; baked_index++)
 		{
+			BOOL generate_valid_hash = TRUE;
+			if (isAgentAvatarValid() && !gAgentAvatarp->isBakedTextureFinal((LLVOAvatarDefines::EBakedTextureIndex)baked_index))
+			{
+				generate_valid_hash = FALSE;
+				llinfos << "Not caching baked texture upload for " << (U32)baked_index << " due to being uploaded at low resolution." << llendl;
+			}
 
-			const LLUUID hash = gAgentWearables.computeBakedTextureHash((EBakedTextureIndex) baked_index, true);		
+			const LLUUID hash = gAgentWearables.computeBakedTextureHash((EBakedTextureIndex) baked_index, generate_valid_hash);
 			if (hash.notNull())
 			{
-				const ETextureIndex texture_index = LLVOAvatarDictionary::bakedToLocalTextureIndex((EBakedTextureIndex)baked_index);
-
+				ETextureIndex texture_index = LLVOAvatarDictionary::bakedToLocalTextureIndex((EBakedTextureIndex) baked_index);
 				msg->nextBlockFast(_PREHASH_WearableData);
 				msg->addUUIDFast(_PREHASH_CacheID, hash);
 				msg->addU8Fast(_PREHASH_TextureIndex, (U8)texture_index);

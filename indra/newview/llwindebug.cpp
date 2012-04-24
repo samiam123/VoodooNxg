@@ -689,6 +689,7 @@ LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(
 	
 	return gFilterFunc;
 }
+<<<<<<< HEAD
 /*
 BOOL PreventSetUnhandledExceptionFilter()
 {
@@ -715,6 +716,9 @@ BOOL PreventSetUnhandledExceptionFilter()
 	return bRet;
 }
 */
+=======
+
+>>>>>>> remotes/multiware/V2MultiWear
 // static
 void  LLWinDebug::initExceptionHandler(LPTOP_LEVEL_EXCEPTION_FILTER filter_func)
 {
@@ -764,9 +768,6 @@ void  LLWinDebug::initExceptionHandler(LPTOP_LEVEL_EXCEPTION_FILTER filter_func)
 
     LPTOP_LEVEL_EXCEPTION_FILTER prev_filter;
 	prev_filter = SetUnhandledExceptionFilter(filter_func);
-
-	// *REMOVE:Mani
-	//PreventSetUnhandledExceptionFilter();
 
 	if(prev_filter != gFilterFunc)
 	{

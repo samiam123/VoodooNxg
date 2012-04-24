@@ -289,6 +289,7 @@
     </array>
   </map>
 
+<<<<<<< HEAD
 	<key>SianaJ2CSizeExponent</key>
 	<map>
 		<key>Comment</key>
@@ -312,6 +313,8 @@
 		<integer>0</integer>
 	</map>
 
+=======
+>>>>>>> remotes/multiware/V2MultiWear
 	<key>SianaLegacyJ2CSize</key>
 	<map>
 		<key>Comment</key>
@@ -2087,6 +2090,28 @@
       <key>Value</key>
       <integer>2</integer>
     </map>
+    <key>AvatarBakedTextureUploadTimeout</key>
+    <map>
+      <key>Comment</key>
+      <string>Specifes the maximum time in seconds to wait before sending your baked textures for avatar appearance.  Set to 0 to disable and wait until all baked textures are at highest resolution.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>U32</string>
+      <key>Value</key>
+      <integer>60</integer>
+    </map>
+    <key>AvatarBakedLocalTextureUpdateTimeout</key>
+    <map>
+      <key>Comment</key>
+      <string>Specifes the maximum time in seconds to wait before updating your appearance during appearance mode.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>U32</string>
+      <key>Value</key>
+      <integer>10</integer>
+    </map>
     <key>AvatarPhysics</key>
     <map>
       <key>Comment</key>
@@ -2909,10 +2934,10 @@
         <real>6.0</real>
       </array>
     </map>
-    <key>CameraOffsetDefault</key>
+    <key>CameraOffsetRearView</key>
     <map>
       <key>Comment</key>
-      <string>Default camera offset from avatar</string>
+      <string>Initial camera offset from avatar in Rear View</string>
       <key>Persist</key>
       <integer>1</integer>
       <key>Type</key>
@@ -2922,6 +2947,36 @@
         <real>-3.0</real>
         <real>0.0</real>
         <real>0.75</real>
+      </array>
+    </map>
+    <key>CameraOffsetFrontView</key>
+    <map>
+      <key>Comment</key>
+      <string>Initial camera offset from avatar in Front View</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Vector3</string>
+      <key>Value</key>
+      <array>
+        <real>2.2</real>
+        <real>0.0</real>
+        <real>0.0</real>
+      </array>
+    </map>
+    <key>CameraOffsetGroupView</key>
+    <map>
+      <key>Comment</key>
+      <string>Initial camera offset from avatar in Group View</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Vector3</string>
+      <key>Value</key>
+      <array>
+        <real>-1.0</real>
+        <real>0.7</real>
+        <real>0.5</real>
       </array>
     </map>
     <key>CameraOffsetScale</key>
@@ -2961,6 +3016,18 @@
       <key>Value</key>
       <real>1.0</real>
     </map>
+    <key>CameraPreset</key>
+    <map>
+      <key>Comment</key>
+      <string>Preset camera position - view (0 - rear, 1 - front, 2 - group)</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>U32</string>
+      <key>Value</key>
+      <integer>0</integer>
+    </map>
+
   <key>CameraFocusTransitionTime</key>
   <map>
     <key>Comment</key>
@@ -4005,8 +4072,30 @@
       <key>Type</key>
       <string>String</string>
       <key>Value</key>
-      <string/>
+      <string />
     </map>
+	<key>DebugAvatarRezTime</key>
+	<map>
+		<key>Comment</key>
+		<string>Display times for avatars to resolve.</string>
+		<key>Persist</key>
+		<integer>1</integer>
+		<key>Type</key>
+		<string>Boolean</string>
+		<key>Value</key>
+		<integer>0</integer>
+	</map>
+  <key>DebugAvatarLocalTexLoadedTime</key>
+  <map>
+    <key>Comment</key>
+    <string>Display time for loading avatar local textures.</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>Boolean</string>
+    <key>Value</key>
+    <integer>0</integer>
+  </map>
     <key>DebugBeaconLineWidth</key>
     <map>
       <key>Comment</key>
@@ -5045,6 +5134,28 @@
     <map>
       <key>Comment</key>
       <string>1 = normal behavior, 0 = disable display of swirling lights when scripts communicate</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>1</integer>
+    </map>
+    <key>EnableGestureSounds</key>
+    <map>
+      <key>Comment</key>
+      <string>Play sounds from gestures</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>1</integer>
+    </map>
+    <key>EnableGestureSoundsSelf</key>
+    <map>
+      <key>Comment</key>
+      <string>Play sounds from your gestures when EnableGestureSounds is false. (Useless otherewise)</string>
       <key>Persist</key>
       <integer>1</integer>
       <key>Type</key>
@@ -6635,18 +6746,48 @@
       <key>Value</key>
       <integer>0</integer>
     </map>
-    <key>FocusOffsetDefault</key>
+    <key>FocusOffsetRearView</key>
     <map>
       <key>Comment</key>
-      <string>Default focus point offset relative to avatar (x-axis is forward)</string>
+      <string>Initial focus point offset relative to avatar for the camera preset Rear View (x-axis is forward)</string>
       <key>Persist</key>
       <integer>1</integer>
       <key>Type</key>
-      <string>Vector3</string>
+      <string>Vector3D</string>
       <key>Value</key>
       <array>
         <real>1.0</real>
         <real>0.0</real>
+        <real>1.0</real>
+      </array>
+    </map>
+    <key>FocusOffsetFrontView</key>
+    <map>
+      <key>Comment</key>
+      <string>Initial focus point offset relative to avatar for the camera preset Front View</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Vector3D</string>
+      <key>Value</key>
+      <array>
+        <real>0.0</real>
+        <real>0.0</real>
+        <real>0.0</real>
+      </array>
+    </map>
+    <key>FocusOffsetGroupView</key>
+    <map>
+      <key>Comment</key>
+      <string>Initial focus point offset relative to avatar for the camera preset Group View</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Vector3D</string>
+      <key>Value</key>
+      <array>
+        <real>1.5</real>
+        <real>0.7</real>
         <real>1.0</real>
       </array>
     </map>
@@ -6719,6 +6860,17 @@
       <string>Boolean</string>
       <key>Value</key>
       <integer>0</integer>
+    </map>
+    <key>ForceAssetFail</key>
+    <map>
+      <key>Comment</key>
+      <string>Force wearable fetches to fail for this asset type.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>U32</string>
+      <key>Value</key>
+      <integer>255</integer>
     </map>
     <key>ForceShowGrid</key>
     <map>
@@ -7960,6 +8112,17 @@
       <key>Value</key>
       <real>128.0</real>
     </map>
+    <key>MaxWearableWaitTime</key>
+    <map>
+      <key>Comment</key>
+      <string>Max seconds to wait for wearable assets to fetch.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>F32</string>
+      <key>Value</key>
+      <real>60.0</real>
+    </map>
     <key>MeanCollisionBump</key>
     <map>
       <key>Comment</key>
@@ -8420,8 +8583,19 @@
       <key>Type</key>
       <string>Boolean</string>
       <key>Value</key>
-      <integer>1</integer>
+      <integer>0</integer>
     </map>
+	<key>MyOutfitsAutofill</key>
+	<map>
+		<key>Comment</key>
+		<string>Always autofill My Outfits from library when empty (else happens just once).</string>
+		<key>Persist</key>
+		<integer>1</integer>
+		<key>Type</key>
+		<string>Boolean</string>
+		<key>Value</key>
+		<integer>0</integer>
+	</map>
     <key>NearMeRange</key>
     <map>
       <key>Comment</key>
@@ -14704,6 +14878,17 @@
       <string>U32</string>
       <key>Value</key>
       <integer>1</integer>
+    </map>
+    <key>OutfitOperationsTimeout</key>
+    <map>
+      <key>Comment</key>
+      <string>Timeout for outfit related operations.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>S32</string>
+      <key>Value</key>
+      <integer>180</integer>
     </map>
     <key>UseHTTPInventory</key>
     <map>

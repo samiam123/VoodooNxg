@@ -51,6 +51,8 @@
 #include "llagentwearables.h"
 #include "llwindow.h"
 #include "llviewerstats.h"
+//#include "llmarketplacefunctions.h"
+#include "llmarketplacenotifications.h"
 #include "llmd5.h"
 #include "llmeshrepository.h"
 #include "llpumpio.h"
@@ -162,7 +164,7 @@
 #include "llsurface.h"
 #include "llvosky.h"
 #include "llvotree.h"
-#include "llvoavatar.h"
+#include "llvoavatarself.h"
 #include "llfolderview.h"
 #include "lltoolbar.h"
 #include "llframestats.h"
@@ -723,6 +725,8 @@ bool LLAppViewer::init()
 				&LLURLDispatcher::dispatchFromTextEditor,
 				&LLURLDispatcher::dispatchFromTextEditor);
 	
+	LLToolMgr::getInstance(); // Initialize tool manager if not already instantiated
+		
 	/////////////////////////////////////////////////
 	//
 	// Load settings files
@@ -1375,6 +1379,8 @@ extern void cleanup_pose_stand(void);
 
 bool LLAppViewer::cleanup()
 {
+	//ditch LLVOAvatarSelf instance
+	gAgentAvatarp = NULL;
 	cleanup_pose_stand();
 
 	//flag all elements as needing to be destroyed immediately
@@ -3584,7 +3590,7 @@ void LLAppViewer::badNetworkHandler()
 	std::string grid_support_msg = "";
 	if (!gHippoGridManager->getCurrentGrid()->getSupportUrl().empty())
 	{
-		grid_support_msg = "\n\nOr visit the gird support page at: \n " 
+		grid_support_msg = "\n\nOr visit the grid support page at: \n " 
 			+ gHippoGridManager->getCurrentGrid()->getSupportUrl();
 	}
 	std::ostringstream message;
@@ -3916,7 +3922,7 @@ void LLAppViewer::idle()
 		return;
     }
 
-	gViewerWindow->handlePerFrameHover();
+	gViewerWindow->updateUI();
 
 	///////////////////////////////////////
 	// Agent and camera movement
@@ -4082,6 +4088,10 @@ void LLAppViewer::idle()
 
 	// update media focus
 	LLViewerMediaFocus::getInstance()->update();
+	
+	// Update marketplace
+	//LLMarketplaceInventoryImporter::update();
+	LLMarketplaceInventoryNotifications::update();
 
 	// objects and camera should be in sync, do LOD calculations now
 	{
@@ -4643,13 +4653,9 @@ void LLAppViewer::handleLoginComplete()
 	{
 		gDebugInfo["MainloopTimeoutState"] = LLAppViewer::instance()->mMainloopTimeout->getState();
 	}
-	writeDebugInfo();
 
-// [RLVa:KB] - Checked: 2010-09-27 (RLVa-1.1.3b) | Modified: RLVa-1.1.3b
-	if (rlv_handler_t::isEnabled())
-	{
-		gRlvHandler.onLoginComplete();
-	}
-// [/RLVa:KB]
+	mOnLoginCompleted();
+
+	writeDebugInfo();
 }
 
