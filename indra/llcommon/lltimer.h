@@ -165,6 +165,7 @@ LL_COMMON_API BOOL is_daylight_savings();
 // utc_time = time_corrected();
 // struct tm* internal_time = utc_to_pacific_time(utc_time, gDaylight);
 LL_COMMON_API struct tm* utc_to_pacific_time(time_t utc_time, BOOL pacific_daylight_time);
+LL_COMMON_API struct tm* utc_to_offset_time(time_t utc_time, S32 offset, BOOL DST);
 
 LL_COMMON_API void microsecondsToTimecodeString(U64 current_time, std::string& tcstring);
 LL_COMMON_API void secondsToTimecodeString(F32 current_time, std::string& tcstring);

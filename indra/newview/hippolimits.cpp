@@ -110,7 +110,7 @@ void HippoLimits::setAuroraLimits()
 	mMaxInventoryItemsTransfer = 68;
 	mRenderName = 2;
 	mAllowPhysicalPrims = TRUE;
-	skyUseClassicClouds = TRUE;
+	skyUseClassicClouds = FALSE;
 	mEnableTeenMode = FALSE;
 	mEnforceMaxBuild = FALSE;
 	mRenderWater = FALSE;

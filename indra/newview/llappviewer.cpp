@@ -717,7 +717,7 @@ bool LLAppViewer::init()
 	LLWeb::initClass();			  // do this after LLUI
 
 	LLUICtrlFactory::getInstance()->setupPaths(); // update paths with correct language set
-	LLTrans::parseStrings("strings.xml", default_trans_args);
+//	LLTrans::parseStrings("strings.xml", default_trans_args);
 
 	LLTextEditor::setURLCallbacks(&LLWeb::loadURL,
 				&LLURLDispatcher::dispatchFromTextEditor,
