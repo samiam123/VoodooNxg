@@ -689,7 +689,7 @@ LPTOP_LEVEL_EXCEPTION_FILTER WINAPI MyDummySetUnhandledExceptionFilter(
 	
 	return gFilterFunc;
 }
-
+/*
 BOOL PreventSetUnhandledExceptionFilter()
 {
 	HMODULE hKernel32 = LoadLibrary(_T("kernel32.dll"));
@@ -714,7 +714,7 @@ BOOL PreventSetUnhandledExceptionFilter()
 	pOrgEntry, newJump, sizeof(pNewFunc) + 1, &bytesWritten);
 	return bRet;
 }
-
+*/
 // static
 void  LLWinDebug::initExceptionHandler(LPTOP_LEVEL_EXCEPTION_FILTER filter_func)
 {
