@@ -48,7 +48,7 @@ public:
 	F32		mMinPrimYPos;
 	F32		mMinPrimZPos;
 	F32		mMaxSelectDistance;
-
+	F32     mTerrainScale;
 	S32     mRenderName;
 
 	F32		mMaxInventoryItemsTransfer;

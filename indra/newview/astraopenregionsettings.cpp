@@ -32,6 +32,7 @@
 #include "llviewerobject.h"
 #include "llfloaterregioninfo.h"
 #include "llfloaterworldmap.h"
+#include "lldrawpoolterrain.h"
 //#include "viewertime.h"
 
 //DEBUG includes
@@ -91,16 +92,17 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		{
 			//IMPLEMENT ME
 		}
-      /*
+      ///*
 	  if ( body.has("TerrainDetailScale") )
 		{
-			gAgent.getRegion()->getComposition()->setScaleParams(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
+			//gAgent.getRegion()->getComposition()->setScaleParams(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
+			//gAgent.getRegion()->getComposition()-> DETAIL_SCALE(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
 
 			gHippoLimits->mTerrainScale = body["TerrainDetailScale"].asReal();
 			gSavedSettings.setF32("RenderTerrainScale", body["TerrainDetailScale"].asReal());
 			LLDrawPoolTerrain::sDetailScale = 1.f/body["TerrainDetailScale"].asReal();
 		}
-        */
+        //*/
 		if ( body.has("MaxDragDistance") )
 		{
 			gHippoLimits->mMaxDragDistance = body["MaxDragDistance"].asReal();

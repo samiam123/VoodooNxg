@@ -74,6 +74,7 @@ void HippoLimits::setOpenSimLimits()
 	mRenderWater = FALSE;
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 192.0f;
+	mTerrainScale = 16.0f;
 	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
 		llinfos << "Using rendering compatible OpenSim limits." << llendl;
 		mMinHoleSize = 0.05f;
@@ -116,6 +117,7 @@ void HippoLimits::setAuroraLimits()
 	mRenderWater = FALSE;
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 1024.0f;
+	mTerrainScale = 16.0f;
 	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
 	//	llinfos << "Using rendering compatible Aurora limits." << llendl;
 	//	mMinHoleSize = 0.05f;
