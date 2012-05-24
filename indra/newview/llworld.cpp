@@ -230,21 +230,43 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host,
 	F32 width = getRegionWidthInMeters();
 
 	LLViewerRegion *neighborp;
+	LLViewerRegion *last_neighborp;
+
 	from_region_handle(region_handle, &region_x, &region_y);
 
 	// Iterate through all directions, and connect neighbors if there.
 	S32 dir;
 	for (dir = 0; dir < 8; dir++)
 	{
+		last_neighborp = NULL;
 		adj_x = region_x + width * gDirAxes[dir][0];
 		adj_y = region_y + width * gDirAxes[dir][1];
-		to_region_handle(adj_x, adj_y, &adj_handle);
 
-		neighborp = getRegionFromHandle(adj_handle);
-		if (neighborp)
+		if(gDirAxes[dir][0] < 0) adj_x = region_x - WORLD_PATCH_SIZE;
+		if(gDirAxes[dir][1] < 0) adj_y = region_y - WORLD_PATCH_SIZE;
+		for(S32 offset = 0; offset < width; offset += WORLD_PATCH_SIZE)
 		{
 			//llinfos << "Connecting " << region_x << ":" << region_y << " -> " << adj_x << ":" << adj_y << llendl;
+
+			to_region_handle(adj_x, adj_y, &adj_handle);
+			neighborp = getRegionFromHandle(adj_handle);
+
+			if (neighborp && last_neighborp != neighborp)
+			{
 			regionp->connectNeighbor(neighborp, dir);
+				last_neighborp = neighborp;
+			}
+
+			if(dir == NORTHEAST ||
+			   dir == NORTHWEST ||
+			   dir == SOUTHWEST ||
+			   dir == SOUTHEAST)
+			{
+				break;
+			}
+
+			if(dir == NORTH || dir == SOUTH) adj_x += WORLD_PATCH_SIZE;
+			if(dir == EAST || dir == WEST) adj_y += WORLD_PATCH_SIZE;
 		}
 	}
 
