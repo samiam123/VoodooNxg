@@ -415,7 +415,7 @@ To buy direct, visit the land and click on the place name in the title bar.
 				<combo_item name="AnyCategory" value="any">
 					Any Category
 				</combo_item>
-				<combo_item name="LindenLocation" value="linden">
+				<combo_item name="GridOpLocation" value="GridOp">
 					Official Location
 				</combo_item>
 				<combo_item name="Arts&amp;Culture" value="arts">
@@ -460,7 +460,7 @@ To buy direct, visit the land and click on the place name in the title bar.
 				<combo_item name="AnyCategory" value="any">
 					Any Category
 				</combo_item>
-				<combo_item name="LindenLocation" value="linden">
+				<combo_item name="GridOpLocation" value="GridOp">
 					Linden Location
 				</combo_item>
 				<combo_item name="Adult" value="adult">

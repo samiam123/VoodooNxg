@@ -1527,7 +1527,11 @@ void LLCurl::cleanupClass()
 	delete sHandleMutexp ;
 	sHandleMutexp = NULL ;
 
-	llassert(Easy::sActiveHandles.empty());
+	//llassert(Easy::sActiveHandles.empty());
+    if (!Easy::sActiveHandles.empty())
+	{
+	llwarns << "List of active CURL handles not empty: " << Easy::sActiveHandles.size() << " handles still active" << llendl;
+        }
 }
 
 //static 

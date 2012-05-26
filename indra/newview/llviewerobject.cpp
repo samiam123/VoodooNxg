@@ -149,7 +149,13 @@ LLViewerObject *LLViewerObject::createObject(const LLUUID &id, const LLPCode pco
 			}
 			else 
 			{
-				gAgentAvatarp->updateRegion(regionp);
+				//fix possable login crash by adding a check here
+
+				if (isAgentAvatarValid())
+				{
+                gAgentAvatarp->updateRegion(regionp);
+				}
+
 			}
 			res = gAgentAvatarp;
 		}

@@ -66,7 +66,7 @@ static const std::string PARCEL_OWNERSHIP_STATUS_STRING[LLParcel::OS_COUNT+1] =
 static const std::string PARCEL_CATEGORY_STRING[LLParcel::C_COUNT] =
 {
     "none",
-    "linden",
+    "GridOp",
     "adult",
     "arts",
     "store", // "business" legacy name

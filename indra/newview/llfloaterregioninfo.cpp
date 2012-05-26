@@ -1309,9 +1309,8 @@ BOOL LLPanelRegionTextureInfo::validateTextureSizes()
 			LLNotificationsUtil::add("InvalidTerrainBitDepth", args);
 			return FALSE;
 		}
-
-		//if (width > 512 || height > 512) // was this non var
-		if (width > 8192 || height > 8192) // trying this for vars
+        //Allow terrain textures up to 1024x1024 pixels
+        if (width > 1024 || height > 1024)		
 		{
 
 			LLSD args;

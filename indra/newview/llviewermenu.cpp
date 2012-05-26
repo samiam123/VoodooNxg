@@ -2541,7 +2541,7 @@ class LLObjectEnableMute : public view_listener_t
 			{
 				// It's an avatar
 				LLNameValue *lastname = avatar->getNVPair("LastName");
-				BOOL is_linden = lastname && !LLStringUtil::compareStrings(lastname->getString(), "Linden");
+				BOOL is_linden = lastname && !LLStringUtil::compareStrings(lastname->getString(), "GridOp");
 				BOOL is_self = avatar->isSelf();
 				new_value = !is_linden && !is_self;
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | OK

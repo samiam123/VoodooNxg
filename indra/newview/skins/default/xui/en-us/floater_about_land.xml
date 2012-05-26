@@ -649,7 +649,7 @@ Only large parcels can be listed in search.
 				<combo_item name="AnyCategory" value="any">
 					Any Category
 				</combo_item>
-				<combo_item name="LindenLocation" value="linden">
+				<combo_item name="GridOpLocation" value="GridOp">
 					Linden Location
 				</combo_item>
 				<combo_item name="Adult" value="adult">
@@ -699,7 +699,7 @@ Only large parcels can be listed in search.
 				<combo_item name="AnyCategory" value="any">
 					Any Category
 				</combo_item>
-				<combo_item name="LindenLocation" value="linden">
+				<combo_item name="GridOpLocation" value="GridOp">
 					Linden Location
 				</combo_item>
 				<combo_item name="Arts&amp;Culture" value="arts">

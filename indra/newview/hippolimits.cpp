@@ -117,7 +117,8 @@ void HippoLimits::setAuroraLimits()
 	mRenderWater = FALSE;
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 1024.0f;
-	mTerrainScale = 30.0f;
+	//mTerrainScale = 30.0f;
+	mTerrainScale ;
 	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
 	//	llinfos << "Using rendering compatible Aurora limits." << llendl;
 	//	mMinHoleSize = 0.05f;
