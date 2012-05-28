@@ -866,6 +866,7 @@ bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 	childSetValue("render_water", LLSD(gHippoLimits->mRenderWater));
 	childSetValue("show_tags", LLSD(gHippoLimits->mRenderName));
 	childSetValue("max_groups", LLSD(gHippoLimits->mMaxAgentGroups));
+	childSetValue("terraindetailscale", LLSD(gHippoLimits->mTerrainScale));
 	childSetValue("allow_parcel_windlight", LLSD(gHippoLimits->mAllowParcelWindLight));
 	childSetValue("enable_teen_mode", LLSD(gHippoLimits->mEnableTeenMode));
 	childSetValue("enforce_max_build", LLSD(gHippoLimits->mEnforceMaxBuild));
@@ -890,6 +891,7 @@ BOOL LLPanelRegionOpenSettingsInfo::postBuild()
 	initCtrl("max_link_count_phys");
 	initCtrl("max_inventory_items_transfer");
 	initCtrl("max_groups");
+	initCtrl("terrain_detail_scale");
 	initCtrl("render_water");
 	initCtrl("allow_minimap");
 	initCtrl("allow_physical_prims");
@@ -897,15 +899,16 @@ BOOL LLPanelRegionOpenSettingsInfo::postBuild()
 	initCtrl("show_tags");
 	initCtrl("allow_parcel_windlight");
 
-	initHelpBtn("force_draw_distance_help",		"HelpForceDrawDistance");
-	initHelpBtn("max_inventory_items_transfer_help",				"HelpMaxInventoryItemsTransfer");
-	initHelpBtn("max_groups_help",			"HelpMaxGroups");
-	initHelpBtn("render_water_help",		"HelpRenderWater");
-	initHelpBtn("allow_minimap_help",	"HelpAllowMinimap");
-	initHelpBtn("allow_physical_prims_help",			"HelpAllowPhysicalPrims");
-	initHelpBtn("enable_teen_mode_help",		"HelpEnableTeenMode");
-	initHelpBtn("show_tags_help",	"HelpShowTags");
-	initHelpBtn("allow_parcel_windlight_help", "HelpAllowParcelWindLight");
+	initHelpBtn("force_draw_distance_help","HelpForceDrawDistance");
+	initHelpBtn("max_inventory_items_transfer_help","HelpMaxInventoryItemsTransfer");
+	initHelpBtn("max_groups_help","HelpMaxGroups");
+	initHelpBtn("terrain_detail_scale","HelpTerrainScale");
+	initHelpBtn("render_water_help","HelpRenderWater");
+	initHelpBtn("allow_minimap_help","HelpAllowMinimap");
+	initHelpBtn("allow_physical_prims_help","HelpAllowPhysicalPrims");
+	initHelpBtn("enable_teen_mode_help","HelpEnableTeenMode");
+	initHelpBtn("show_tags_help","HelpShowTags");
+	initHelpBtn("allow_parcel_windlight_help","HelpAllowParcelWindLight");
 
 	childSetAction("apply_ors_btn", onClickOrs, this);
 
@@ -950,6 +953,7 @@ void LLPanelRegionOpenSettingsInfo::onClickOrs(void* userdata)
 		body["max_prim_scale"] = self->childGetValue("max_prim_scale");
 		body["min_prim_scale"] = self->childGetValue("min_prim_scale");
 		body["render_water"] = self->childGetValue("render_water");
+		body["terrain_detail_scale"] = (LLSD::Real)self->childGetValue("terraindetailscale");
 		body["show_tags"] = self->childGetValue("show_tags");
 		body["max_groups"] = self->childGetValue("max_groups");
 		body["allow_parcel_windlight"] = self->childGetValue("allow_parcel_windlight");
@@ -1482,6 +1486,7 @@ void LLPanelRegionTerrainInfo::onClickDownloadRaw(void* data)
 	AIFilePicker* filepicker = AIFilePicker::create();
 	filepicker->open("terrain.raw", FFSAVE_RAW);
 	filepicker->run(boost::bind(&LLPanelRegionTerrainInfo::onClickUploadRaw_continued, self, filepicker));
+	
 }
 
 void LLPanelRegionTerrainInfo::onClickDownloadRaw_continued(AIFilePicker* filepicker)
@@ -2905,7 +2910,7 @@ bool LLPanelEstateCovenant::estateUpdate(LLMessageSystem* msg)
 // virtual 
 BOOL LLPanelEstateCovenant::postBuild()
 {
-	initHelpBtn("covenant_help",		"HelpEstateCovenant");
+	initHelpBtn("covenant_help","HelpEstateCovenant");
 	mEstateNameText = getChild<LLTextBox>("estate_name_text");
 	mEstateOwnerText = getChild<LLTextBox>("estate_owner_text");
 	mLastModifiedText = getChild<LLTextBox>("covenant_timestamp_text");

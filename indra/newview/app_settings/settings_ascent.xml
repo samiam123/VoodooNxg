@@ -45,7 +45,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AscentUpdateTagsOnLoad</key>
 		<map>
@@ -56,7 +56,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AscentUploadSettings</key>
 		<map>
@@ -145,7 +145,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AscentShowSelfTagColor</key>
 		<map>
@@ -211,7 +211,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<real>0</real>
+			<real>1</real>
 		</map>
 		<key>AscentAvatarXModifier</key>
 		<map>
@@ -255,7 +255,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AscentSystemTemporary</key>
 		<map>
@@ -266,7 +266,7 @@
 			<key>Type</key>
 			<string>Boolean</string>
 			<key>Value</key>
-			<integer>0</integer>
+			<integer>1</integer>
 		</map>
 		<key>AscentShowFriendsTag</key>
 		<map>

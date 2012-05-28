@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <panel top="20" left="10" height="400" width="517" border="true" label="System" name="ascsys">
-  <tab_container label="Singularity System" bottom="0" height="440" width="497" left="0" name="Ascent System" tab_min_width="70" tab_position="top">
+  <tab_container label="Voodoo System" bottom="0" height="440" width="497" left="0" name="Ascent System" tab_min_width="70" tab_position="top">
 
     <panel border="true" left="1" bottom="-408" height="408" width="500" label="General" name="User Interface">
       <check_box left="10" bottom_delta="-25" control_name="DoubleClickTeleport" follows="top" initial_value="false"
@@ -24,7 +24,7 @@
       <check_box bottom_delta="-20" follows="left|top" initial_value="true"
         label="Enable Power User functionality" tool_tip="Adds features deemed too dangerous for normal use. These features can wreak havoc or do bad things if misused - Mostly to yourself or your belongings. If you're sure, activate the checkbox below as well." name="power_user_check"/>
       <check_box bottom_delta="-20" enabled="true" follows="top" left="20" initial_value="true"
-        label="Confirm Power User functionality" tool_tip="Confirms Power User activation. Turn this on at your own risk, and use any features it enables responsibly. Singularity devs won't replace anything you break. We recommend having a backup copy of anything to be victim to these powers. Unlike most checkboxes, you must click Apply or OK before this will activate." name="power_user_confirm_check"/>
+        label="Confirm Power User functionality" tool_tip="Confirms Power User activation. Turn this on at your own risk, and use any features it enables responsibly. Voodoo devs won't replace anything you break. We recommend having a backup copy of anything to be victim to these powers. Unlike most checkboxes, you must click Apply or OK before this will activate." name="power_user_confirm_check"/>
       <check_box bottom_delta="-20" control_name="AscentUseSystemFolder" follows="top" left="10" initial_value="true"
         label="Enable Ascent System Inventory (Requires Restart)" tool_tip="Creates a new folder in the inventory for storing settings files and non-permanent assets." name="system_folder_check"/>
       <check_box bottom_delta="-20" control_name="AscentSystemTemporary" follows="top" left="20" initial_value="false"

@@ -2954,9 +2954,9 @@ Visit the [SECOND_LIFE] Public Issue Tracker, where you can report bugs and othe
    icon="alertmodal.tga"
    name="WebLaunchSinguIssue"
    type="alertmodal">
-Visit the Singularity Issue Tracker, to report bugs and issues with Singularity Viewer.
+Visit the Voodoo Issue Tracker, to report bugs and issues with Voodoo Viewer.
     <usetemplate
-     ignoretext="When launching web browser to view Singularity Issue Tracker"
+     ignoretext="When launching web browser to view Voodoo Issue Tracker"
      name="okcancelignore"
      notext="Cancel"
      yestext="Go to page"/>

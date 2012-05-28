@@ -916,7 +916,7 @@
 						userdata="WebLaunchSinguIssue,http://code.google.com/p/singularity-viewer/issues/entry" />
 			</menu_item_call>
 		</menu>
-		<menu_item_call bottom="-313" enabled="false" height="19" label="About Singularity..." left="0"
+		<menu_item_call bottom="-313" enabled="false" height="19" label="About Voodoo..." left="0"
 		     mouse_opaque="true" name="About Second Life..." width="166">
 			<on_click function="ShowFloater" userdata="about" />
 		</menu_item_call>
