@@ -67,7 +67,8 @@ U32 wpo2(U32 i)
 }
 
 
-const U32 LL_VBO_BLOCK_SIZE = 2048;
+//const U32 LL_VBO_BLOCK_SIZE = 2048;
+const U32 LL_VBO_BLOCK_SIZE = 4096;
 
 U32 vbo_block_size(U32 size)
 { //what block size will fit size?

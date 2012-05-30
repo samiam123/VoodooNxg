@@ -49,7 +49,7 @@ const F32 MAX_WALK_PLAYBACK_SPEED = 8.f;		// max m/s for which we adjust walk cy
 const F32 MIN_WALK_SPEED = 0.1f;				// minimum speed at which we use velocity for down foot detection
 const F32 TIME_EPSILON = 0.001f;				// minumum frame time
 const F32 MAX_TIME_DELTA = 2.f;					// max two seconds a frame for calculating interpolation
-const F32 SPEED_ADJUST_MAX_SEC = 3.f;					// maximum adjustment to walk animation playback speed for a second
+const F32 SPEED_ADJUST_MAX_SEC = 2.f;			// maximum adjustment to walk animation playback speed for a second
 F32 ANIM_SPEED_MAX = 1.5f;						// absolute upper limit on animation speed
 const F32 DRIFT_COMP_MAX_TOTAL = 0.1f;			// maximum drift compensation overall, in any direction 
 const F32 DRIFT_COMP_MAX_SPEED = 4.f;			// speed at which drift compensation total maxes out
@@ -264,30 +264,34 @@ BOOL LLWalkAdjustMotion::onUpdate(F32 time, U8* joint_mask)
 		// direction of the drift, up to a certain limited distance
 		// but this will cause the animation playback rate calculation below to 
 		// kick in too slowly and sometimes start playing the animation in reverse.
+//-----------------------------------------------------------------------------------------------
+		/*
+		mPelvisOffset -= PELVIS_COMPENSATION_WIEGHT * (foot_slip_vector * world_to_avatar_rot);
+		lerp(LLVector3::zero, -1.f * (foot_slip_vector * world_to_avatar_rot), LLCriticalDamp::getInterpolant(0.1f));
 
-		//mPelvisOffset -= PELVIS_COMPENSATION_WIEGHT * (foot_slip_vector * world_to_avatar_rot);//lerp(LLVector3::zero, -1.f * (foot_slip_vector * world_to_avatar_rot), LLCriticalDamp::getInterpolant(0.1f));
-
-		////F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL * (llclamp(speed, 0.f, DRIFT_COMP_MAX_SPEED) / DRIFT_COMP_MAX_SPEED);
-		//F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL;
+		//F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL * (llclamp(speed, 0.f, DRIFT_COMP_MAX_SPEED) / DRIFT_COMP_MAX_SPEED);
+		F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL;
 
 		//// clamp pelvis offset to a 90 degree arc behind the nominal position
 		//// NB: this is an ADDITIVE amount that is accumulated every frame, so clamping it alone won't do the trick
 		//// must clamp with absolute position of pelvis in mind
-		//LLVector3 currentPelvisPos = mPelvisState->getJoint()->getPosition();
-		//mPelvisOffset.mV[VX] = llclamp( mPelvisOffset.mV[VX], -drift_comp_max, drift_comp_max );
-		//mPelvisOffset.mV[VY] = llclamp( mPelvisOffset.mV[VY], -drift_comp_max, drift_comp_max );
-		//mPelvisOffset.mV[VZ] = 0.f;
+		LLVector3 currentPelvisPos = mPelvisState->getJoint()->getPosition();
+		mPelvisOffset.mV[VX] = llclamp( mPelvisOffset.mV[VX], -drift_comp_max, drift_comp_max );
+		mPelvisOffset.mV[VY] = llclamp( mPelvisOffset.mV[VY], -drift_comp_max, drift_comp_max );
+		mPelvisOffset.mV[VZ] = 0.f;
 		//
-		//mLastRightFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
-		//mLastLeftFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
+		mLastRightFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
+		mLastLeftFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
 
-		//foot_slip_vector -= mPelvisOffset;
-
+		foot_slip_vector -= mPelvisOffset;
+		*/
+//---------------------------------------------------------------------------------------
 		LLVector3 avatar_movement_dir = avatar_velocity;
 		avatar_movement_dir.normalize();
 
 		// planted foot speed is avatar velocity - foot slip amount along avatar movement direction
 		F32 foot_speed = speed - ((foot_slip_vector * avatar_movement_dir) / delta_time);
+		if(foot_speed < 0.0f) foot_speed = 0.0f; //fix for foot stomping when not moving by nhede
 
 		// multiply animation playback rate so that foot speed matches avatar speed
 		F32 min_speed_multiplier = clamp_rescale(speed, 0.f, 1.f, 0.f, 0.1f);

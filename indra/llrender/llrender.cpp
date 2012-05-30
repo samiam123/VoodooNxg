@@ -1426,12 +1426,22 @@ void LLRender::multMatrix(const GLfloat* m)
 
 void LLRender::matrixMode(U32 mode)
 {
+	U32 origMode = mode; // <FS:ND> FIRE-5577 for trace.
+
 	if (mode == MM_TEXTURE)
 	{
 		mode = MM_TEXTURE0 + gGL.getCurrentTexUnitIndex();
 	}
 
 	llassert(mode < NUM_MATRIX_MODES);
+    if( mode >= NUM_MATRIX_MODES )
+    {
+	llwarns << "Matrix mode overflow: matrix mode:" << mode << " original matrix mode: " << origMode << " current texture unit: "
+	<< gGL.getCurrentTexUnitIndex() << " type of tex unit #0 " << getTexUnit(0)->getCurrType() << llendl;
+    getTexUnit( 0 )->unbind( getTexUnit(0)->getCurrType() );
+    mode = MM_TEXTURE0;
+
+    }
 	mMatrixMode = mode;
 }
 

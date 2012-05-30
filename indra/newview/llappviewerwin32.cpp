@@ -79,7 +79,8 @@ extern "C" {
 #endif
 #endif
 
-const std::string LLAppViewerWin32::sWindowClass = "Second Life";
+//const std::string LLAppViewerWin32::sWindowClass = "Second Life";
+const std::string LLAppViewerWin32::sWindowClass = "Voodoo";
 
 LONG WINAPI viewer_windows_exception_handler(struct _EXCEPTION_POINTERS *exception_infop)
 {
@@ -360,7 +361,7 @@ void create_console()
 	{
 		fp = _fdopen( h_con_handle, "w" );
 		*stdout = *fp;
-		setvbuf( stdout, NULL, _IONBF, 0 );
+		//setvbuf( stdout, NULL, _IONBF, 0 );//huh whats this for
 	}
 
 	// redirect unbuffered STDIN to the console
@@ -374,7 +375,7 @@ void create_console()
 	{
 		fp = _fdopen( h_con_handle, "r" );
 		*stdin = *fp;
-		setvbuf( stdin, NULL, _IONBF, 0 );
+		//setvbuf( stdin, NULL, _IONBF, 0 ); //huh? whats this for
 	}
 
 	// redirect unbuffered STDERR to the console
@@ -388,8 +389,9 @@ void create_console()
 	{
 		fp = _fdopen( h_con_handle, "w" );
 		*stderr = *fp;
-		setvbuf( stderr, NULL, _IOFBF, 1024 );  //Assigning a buffer improves speed a LOT, esp on vista/win7
+		//setvbuf( stderr, NULL, _IOFBF, 1024 );  //Assigning a buffer improves speed a LOT, esp on vista/win7
 												//_IOLBF is borked.
+		//setvbuf( stderr, NULL, _IOFBF, 512 );//sams voodoo playing around think this is in Kb
 	}
 }
 

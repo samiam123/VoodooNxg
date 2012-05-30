@@ -379,8 +379,14 @@ public:
 			const F32 lpriority = lhsp->getDecodePriority();
 			const F32 rpriority = rhsp->getDecodePriority();
 			if (lpriority > rpriority) // higher priority
+         // F32 fDiff = lpriority-rpriority;
+	      // if( llabs( fDiff ) < 0.001 )
+         //  return lhsp < rhsp;
+	//else if( fDiff > 0 )
+
 				return true;
 			if (lpriority < rpriority)
+	//else
 				return false;
 			return lhsp < rhsp;
 		}

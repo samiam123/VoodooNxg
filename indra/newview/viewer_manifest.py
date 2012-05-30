@@ -76,11 +76,16 @@ class ViewerManifest(LLManifest):
             
         # Include the local_assets directory recursively
          #if self.prefix(src="local_assets"):
-           #  self.path("*.j2c")
-           #  self.end_prefix("local_assets")
- 
+            #self.path("*.j2c")
+             #self.end_prefix("local_assets")
+        # Include the local_assets directory recursively
+         #if self.prefix(src="skins"):
+            #self.path("skins")
+           #self.end_prefix("skins")
+            
         # skins
         if self.prefix(src="skins"):
+        
                 self.path("paths.xml")
                 # include the entire textures directory recursively
                 if self.prefix(src="default/textures"):
@@ -225,8 +230,8 @@ class WindowsManifest(ViewerManifest):
 
         # For textures
         #if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
-        #    self.path("openjpeg.dll")
-        #    self.end_prefix()
+           # self.path("openjpeg.dll")
+           # self.end_prefix()
 
         # Plugins - FilePicker
         if self.prefix(src='../plugins/filepicker/%s' % self.args['configuration'], dst="llplugin"):

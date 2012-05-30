@@ -390,7 +390,7 @@ void AIFilePicker::multiplex_impl(void)
 		}
 		case AIFilePicker_canceled:
 		{
-			mCanceled = true;
+			mCanceled = true;//was true messing around a bit
 			finish();
 			break;
 		}
