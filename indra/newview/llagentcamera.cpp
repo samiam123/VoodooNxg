@@ -51,6 +51,7 @@
 #include "llfloatertools.h"		//For gFloaterTools
 #include "floaterao.h"			//For LLFloaterAO
 #include "llfloatercustomize.h" //For gFloaterCustomize
+#include "llviewerparcelmgr.h"
 
 using namespace LLVOAvatarDefines;
 
@@ -297,7 +298,7 @@ void LLAgentCamera::resetView(BOOL reset_camera, BOOL change_camera)
 		LLSelectMgr::getInstance()->unhighlightAll();
 
 		// By popular request, keep land selection while walking around. JC
-		// LLViewerParcelMgr::getInstance()->deselectLand();
+		 LLViewerParcelMgr::getInstance()->deselectLand();
 
 		// force deselect when walking and attachment is selected
 		// this is so people don't wig out when their avatar moves without animating
@@ -2156,7 +2157,8 @@ void LLAgentCamera::changeCameraToMouselook(BOOL animate)
 		mMouselookTimer.reset();
 
 		gFocusMgr.setKeyboardFocus( NULL );
-		if (gSavedSettings.getBOOL("AONoStandsInMouselook"))	LLFloaterAO::stopMotion(LLFloaterAO::getCurrentStandId(), FALSE,TRUE);
+		if (gSavedSettings.getBOOL("AONoStandsInMouselook"))
+			LLFloaterAO::stopMotion(LLFloaterAO::getCurrentStandId(), FALSE,TRUE);
 		
 		updateLastCamera();
 		mCameraMode = CAMERA_MODE_MOUSELOOK;

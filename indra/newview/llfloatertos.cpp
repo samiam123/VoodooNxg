@@ -141,28 +141,40 @@ BOOL LLFloaterTOS::postBuild()
 	childSetAction("Cancel", onCancel, this);
 	childSetCommitCallback("agree_chk", updateAgree, this);
 
-	if ( mType != TOS_TOS )
-	{
-		// this displays the critical message
+	//if ( mType != TOS_TOS )
+	//{
+	LLCheckBoxCtrl* tos_agreement = getChild<LLCheckBoxCtrl>("agree_chk");
+	tos_agreement->setEnabled( true );
+	
+	//Always set this so that the TOS is displayed whether the web browser pops up or not.
 		LLTextEditor *editor = getChild<LLTextEditor>("tos_text");
 		editor->setHandleEditKeysDirectly( TRUE );
 		editor->setEnabled( FALSE );
 		editor->setWordWrap(TRUE);
 		editor->setFocus(TRUE);
 		editor->setValue(LLSD(mMessage));
+	LLMediaCtrl* web_browser = getChild<LLMediaCtrl>("tos_html");
+	if (web_browser)
+	{
+		//Disable for critical messages and text messages, it is reenabled later
+		web_browser->setVisible( FALSE );
+	}
 
+	if ( mType != TOS_TOS )
+	{
+		// this displays the critical message only
 		return TRUE;
 	}
 
 	// disable Agree to TOS radio button until the page has fully loaded
-	LLCheckBoxCtrl* tos_agreement = getChild<LLCheckBoxCtrl>("agree_chk");
-	tos_agreement->setEnabled( false );
+	//LLCheckBoxCtrl* tos_agreement = getChild<LLCheckBoxCtrl>("agree_chk");
+	//tos_agreement->setEnabled( false );
 
 	// hide the SL text widget if we're displaying TOS with using a browser widget.
-	LLTextEditor *editor = getChild<LLTextEditor>("tos_text");
-	editor->setVisible( FALSE );
+	//LLTextEditor *editor = getChild<LLTextEditor>("tos_text");
+	//editor->setVisible( FALSE );
 
-	LLMediaCtrl* web_browser = getChild<LLMediaCtrl>("tos_html");
+	//LLMediaCtrl* web_browser = getChild<LLMediaCtrl>("tos_html");
 	// buzz added the tos bits auora uses below sams voodoo 
 	// this should have an isAurora() check as not all platforms do this
 	//if ( web_browser )
@@ -184,10 +196,18 @@ BOOL LLFloaterTOS::postBuild()
  if ( web_browser && use_web_browser) 
 
 	{
+		// hide the SL text widget if we're displaying TOS with using a browser widget.
+		LLTextEditor *editor = getChild<LLTextEditor>("tos_text");
+		editor->setVisible( FALSE );
+
+		// disable Agree to TOS radio button until the page has fully loaded
+		tos_agreement->setEnabled( false );
+		// Reenable the web browser
+		web_browser->setVisible( TRUE );
 		web_browser->addObserver(this);
 		gResponsePtr = LLIamHere::build( this );
-		//LLHTTPClient::get( getString( "real_url" ), gResponsePtr );
-        LLHTTPClient::get( mMessage, gResponsePtr );
+		LLHTTPClient::head( getString( "real_url" ), gResponsePtr );
+        //LLHTTPClient::get( mMessage, gResponsePtr );
 	}
 
 	return TRUE;
