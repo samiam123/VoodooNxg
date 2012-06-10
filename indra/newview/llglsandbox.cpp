@@ -73,6 +73,8 @@
 #include "rlvhandler.h"
 // [/RLVa:KB]
 
+// Height of the yellow selection highlight posts for land
+const F32 PARCEL_POST_HEIGHT = 0.666f;//moved this from headder to here
 // Returns true if you got at least one object
 void LLToolSelectRect::handleRectangleSelection(S32 x, S32 y, MASK mask)
 {
@@ -405,7 +407,7 @@ void LLHorizontalCompass::draw()
 }
 
 
-const F32 WIND_ALTITUDE			= 180.f;
+const F32 WIND_ALTITUDE			= 25.f;
 
 
 void LLWind::renderVectors()
@@ -414,19 +416,22 @@ void LLWind::renderVectors()
 	S32 i,j;
 	F32 x,y;
 
-	F32 region_width_meters = LLWorld::getInstance()->getRegionWidthInMeters();
-
+	//F32 region_width_meters = LLWorld::getInstance()->getRegionWidthInMeters();
+	F32 region_width_meters = gAgent.getRegion()->getWidth();//new
 	gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 	gGL.pushMatrix();
 	LLVector3 origin_agent;
 	origin_agent = gAgent.getPosAgentFromGlobal(mOriginGlobal);
-	gGL.translatef(origin_agent.mV[VX], origin_agent.mV[VY], WIND_ALTITUDE);
+	//gGL.translatef(origin_agent.mV[VX], origin_agent.mV[VY], WIND_ALTITUDE);
+	gGL.translatef(origin_agent.mV[VX], origin_agent.mV[VY], gAgent.getPositionAgent().mV[VZ] + WIND_ALTITUDE);//new	
 	for (j = 0; j < mSize; j++)
 	{
 		for (i = 0; i < mSize; i++)
 		{
-			x = mCloudVelX[i + j*mSize] * WIND_SCALE_HACK;
-			y = mCloudVelY[i + j*mSize] * WIND_SCALE_HACK;
+			//x = mCloudVelX[i + j*mSize] * WIND_SCALE_HACK;
+			//y = mCloudVelY[i + j*mSize] * WIND_SCALE_HACK;
+			x = mVelX[i + j*mSize] * WIND_SCALE_HACK;//new
+			y = mVelY[i + j*mSize] * WIND_SCALE_HACK;//new			
 			gGL.pushMatrix();
 			gGL.translatef((F32)i * region_width_meters/mSize, (F32)j * region_width_meters/mSize, 0.0);
 			gGL.color3f(0,1,0);
@@ -635,9 +640,12 @@ void LLViewerParcelMgr::renderOneSegment(F32 x1, F32 y1, F32 x2, F32 y2, F32 hei
 	if (clamped_y2 > BORDER) clamped_y2 = BORDER;
 
 	F32 z;
-	F32 z1 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x1, clamped_y1, 0.f ) );;
-	F32 z2 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x2, clamped_y2, 0.f ) );;
-
+	F32 z1;
+	F32 z2;
+	//F32 z1 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x1, clamped_y1, 0.f ) );;
+	//F32 z2 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x2, clamped_y2, 0.f ) );;
+	z1 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x1, clamped_y1, 0.f ) );//new test
+	z2 = regionp->getLand().resolveHeightRegion( LLVector3( clamped_x2, clamped_y2, 0.f ) );//new test
 	// Convert x1 and x2 from region-local to agent coords.
 	LLVector3 origin = regionp->getOriginAgent();
 	x1 += origin.mV[VX];

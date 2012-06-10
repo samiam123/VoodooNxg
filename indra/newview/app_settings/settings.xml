@@ -11857,6 +11857,32 @@
 	  <key>Value</key>
 	  <string>http://webi.metaverseink.com/opensim/results.jsp?</string>
 	</map>
+    <key>SearchURLQueryOpenSim</key>
+    <map>
+      <key>Comment</key>
+      <string>for what</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>HideFromEditor</key>
+      <integer>0</integer>
+      <key>Type</key>
+      <string>String</string>
+      <key>Value</key>
+      <string>test</string>
+    </map>
+    <key>SearchURLSuffixOpenSim</key>
+    <map>
+      <key>Comment</key>
+      <string>Suffix</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>HideFromEditor</key>
+      <integer>0</integer>
+      <key>Type</key>
+      <string>String</string>
+      <key>Value</key>
+      <string>/search/</string>
+    </map>
     <key>SearchURLQuery</key>
     <map>
       <key>Comment</key>
@@ -15115,6 +15141,17 @@
       <string>String</string>
       <key>Value</key>
       <string>Random</string>
+    </map>
+    <key>MapShowGridCoordinates</key>
+    <map>
+      <key>Comment</key>
+      <string>Show Map Cords</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>1</integer>
     </map>
   </map>
 </llsd>

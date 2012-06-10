@@ -82,15 +82,15 @@
 	#pragma warning(disable:4355)
 #endif
 
-const F32 WATER_TEXTURE_SCALE = 8.f;			//  Number of times to repeat the water texture across a region was 8
-const S16 MAX_MAP_DIST = 10;
+const F32 WATER_TEXTURE_SCALE = 1.f;//  Number of times to repeat the water texture across a region was 8
+const S16 MAX_MAP_DIST = 10;//was 10 playing
 // The server only keeps our pending agent info for 60 seconds.
 // We want to allow for seed cap retry, but its not useful after that 60 seconds.
 // Give it 3 chances, each at 18 seconds to give ourselves a few seconds to connect anyways if we give up.
-const S32 MAX_SEED_CAP_ATTEMPTS_BEFORE_LOGIN = 4;//was 3
-const F32 CAP_REQUEST_TIMEOUT = 28;//was 18
+const S32 MAX_SEED_CAP_ATTEMPTS_BEFORE_LOGIN = 3;//was 3
+const F32 CAP_REQUEST_TIMEOUT = 18;//was 18
 // Even though we gave up on login, keep trying for caps after we are logged in:
-const S32 MAX_CAP_REQUEST_ATTEMPTS = 35;//was 30
+const S32 MAX_CAP_REQUEST_ATTEMPTS = 30;//was 30
 
 typedef std::map<std::string, std::string> CapabilityMap;
 
@@ -618,12 +618,12 @@ std::string LLViewerRegion::regionFlagsToString(U32 flags)
 		if(!result.empty()) result += ", ";
 		result += "Private";
 	}
-
+    */
 	if (!(flags & REGION_FLAGS_ALLOW_VOICE))
 	{
 		if(!result.empty()) result += ", ";
 		result += "Voice Disabled";
-	}*/
+	}
 	if (flags & REGION_FLAGS_ALLOW_LANDMARK)
 	{
 		if(!result.empty()) result += ", ";

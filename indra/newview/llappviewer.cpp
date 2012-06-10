@@ -1867,12 +1867,12 @@ bool LLAppViewer::initLogging()
 	
 	// Remove the last ".old" log file.
 	std::string old_log_file = gDirUtilp->getExpandedFilename(LL_PATH_LOGS,
-							     "SecondLife.old");
+							     "Voodoo.old");
 	LLFile::remove(old_log_file);
 
 	// Rename current log file to ".old"
 	std::string log_file = gDirUtilp->getExpandedFilename(LL_PATH_LOGS,
-							     "SecondLife.log");
+							     "Voodoo.log");
 	LLFile::rename(log_file, old_log_file);
 
 	// Set the log file to SecondLife.log

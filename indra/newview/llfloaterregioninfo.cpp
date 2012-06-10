@@ -87,7 +87,7 @@
 #include "rlvhandler.h"
 // [/RLVa:KB]
 
-#define ELAR_ENABLED 0 // Enable when server support is implemented
+#define ELAR_ENABLED 1 // Enable when server support is implemented
 
 const S32 TERRAIN_TEXTURE_COUNT = 4;
 const S32 CORNER_COUNT = 4;
