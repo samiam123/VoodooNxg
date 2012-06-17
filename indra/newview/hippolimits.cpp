@@ -1,15 +1,10 @@
 #include "llviewerprecompiledheaders.h"
-
 #include "hippolimits.h"
-
 #include "hippogridmanager.h"
-
 #include "llerror.h"
-
 #include "llviewercontrol.h"		// gSavedSettings
 
 HippoLimits *gHippoLimits = 0;
-
 
 HippoLimits::HippoLimits()
 {
@@ -37,10 +32,6 @@ void HippoLimits::setLimits()
 		setOpenSimLimits();
 		return;
 	}
-	//else
-	//{
-    //  setOpenSimLimits();
-	//}
 }
 
 
@@ -75,17 +66,19 @@ void HippoLimits::setOpenSimLimits()
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 192.0f;
 	mTerrainScale = 16.0f;
-	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
-		llinfos << "Using rendering compatible OpenSim limits." << llendl;
+	mDrawDistance = 128;
+	mLockedDrawDistance = FALSE;
+	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
+	//	llinfos << "Using rendering compatible OpenSim limits." << llendl;
+	//	mMinHoleSize = 0.001f;
+	//	mMaxHollow = 99.0f;
+	//}
+	//else
+	//{
+	//	llinfos << "Using Hippo OpenSim limits." << llendl;
 		mMinHoleSize = 0.001f;
 		mMaxHollow = 99.0f;
-	}
-	else
-	{
-		llinfos << "Using Hippo OpenSim limits." << llendl;
-		mMinHoleSize = 0.001f;
-		mMaxHollow = 99.0f;
-	}
+	//}
 }
 void HippoLimits::setAuroraLimits()
 {
@@ -105,48 +98,62 @@ void HippoLimits::setAuroraLimits()
 	mMaxHeight = 8192.0f;
 	mMaxLinkedPrims = 1000;
 	mMaxPhysLinkedPrims = 38;
-	//mMaxPhysLinkedPrims = S32_MAX;
 	mAllowParcelWindLight = TRUE;
 	mAllowMinimap = TRUE;
 	mMaxInventoryItemsTransfer = 68;
 	mRenderName = 2;
 	mAllowPhysicalPrims = TRUE;
-	skyUseClassicClouds = FALSE;
+	skyUseClassicClouds = TRUE;
 	mEnableTeenMode = FALSE;
 	mEnforceMaxBuild = FALSE;
-	mRenderWater = FALSE;
+	mRenderWater = TRUE;
 	mVoiceConnector = "SLVoice";
-	mMaxSelectDistance = 1024.0f;
-	//mTerrainScale = 30.0f;
-	mTerrainScale ;
-	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
-	//	llinfos << "Using rendering compatible Aurora limits." << llendl;
-	//	mMinHoleSize = 0.05f;
-	//	mMaxHollow = 0.95f;
-	//}
-	//else
-	//{
-	//	llinfos << "Using Hippo Auora limits." << llendl;
+	mMaxSelectDistance = 256.0f;
+	mDrawDistance = 128;
+	mLockedDrawDistance = FALSE;
+	mDrawDistance;
+	mLockedDrawDistance;
+	mTerrainScale; //yah i know but openregion sets this value anyway
 	mMinHoleSize = 0.001f;
 	mMaxHollow = 99.0f;
-	//}
+	
 }
 void HippoLimits::setSecondLifeLimits()
 {
-	llinfos << "Using Second Life limits." << llendl;
-	
+	llinfos << "Using Second Life limits." << llendl;	
 	if (gHippoGridManager->getConnectedGrid())
-	
-	//KC: new server defined max groups
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
 	if (mMaxAgentGroups <= 0)
 	{
 		mMaxAgentGroups = 25;
 	}
-	mMaxLinkedPrims = 255;
+	mMaxPrimScale = 67.0f;
+	mMinPrimScale = 0.001f;
+	mMinPrimXPos = 0;
+	mMinPrimYPos = 0;
+	mMinPrimZPos = 0;
+	mMaxPrimXPos = F32_MAX;
+	mMaxPrimYPos = F32_MAX;
+	mMaxPrimZPos = F32_MAX;
 	mMaxHeight = 4096.0f;
+	mMaxLinkedPrims = 1000;
+	mMaxPhysLinkedPrims = 40;
+	mMaxPhysLinkedPrims = S32_MAX;
+	mAllowParcelWindLight = TRUE;
+	mAllowMinimap = TRUE;
+	mMaxInventoryItemsTransfer = 68;
+	mRenderName = 2;
+	mAllowPhysicalPrims = TRUE;
+	skyUseClassicClouds = TRUE;
+	mEnableTeenMode = FALSE;
+	mEnforceMaxBuild = TRUE;
+	mRenderWater = TRUE;
+	mVoiceConnector = "SLVoice";
+	mMaxSelectDistance = 192.0f;
+	mTerrainScale = 16.0f;
 	mMinHoleSize = 0.001f;
-	mMaxHollow = 99.0f;
-	mMaxPrimScale = 64.0f;
+	mMaxHollow = 95.0f;
+	mDrawDistance = 128;
+	mLockedDrawDistance = FALSE;
 }
 

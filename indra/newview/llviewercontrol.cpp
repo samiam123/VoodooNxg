@@ -82,6 +82,7 @@
 #include "aithreadsafe.h"
 #include "lldrawpoolbump.h"
 #include "emeraldboobutils.h"
+#include "hippolimits.h"
 
 #ifdef TOGGLE_HACKED_GODLIKE_VIEWER
 BOOL 				gHackGodmode = FALSE;
@@ -111,6 +112,8 @@ static bool handleRenderAvatarMouselookChanged(const LLSD& newvalue)
 static bool handleRenderFarClipChanged(const LLSD& newvalue)
 {
 	F32 draw_distance = (F32) newvalue.asReal();
+	//F32 draw_distance = mDrawDistance;
+	//F32 draw_distance = (LLSD(gHippoLimits->mDrawDistance));//get it from our hippolimmits for now DD
 	gAgentCamera.mDrawDistance = draw_distance; //Force it to a sane value. I've had drawdistance get knocked down to 0.. and BAD things happen.
 	LLWorld::getInstance()->setLandFarClip(draw_distance);
 	return true;

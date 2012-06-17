@@ -36,7 +36,7 @@
 //#include "viewertime.h"
 
 //DEBUG includes
-//#include "llsdserialize.h" //LLSDNotationStreamer - for dumping LLSD to string
+#include "llsdserialize.h" //LLSDNotationStreamer - for dumping LLSD to string
 
 class OpenRegionInfoUpdate : public LLHTTPNode
 {
@@ -52,8 +52,8 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		}
 
 		LLSD body = input["body"];
-		//llinfos << "data: " << LLSDNotationStreamer(body) << llendl;	 
-		//llinfos << "data: " << LLSDXMLStreamer(body) << llendl;	 	 
+		llinfos << "data: " << LLSDNotationStreamer(body) << llendl;	 
+		llinfos << "data: " << LLSDXMLStreamer(body) << llendl;	 	 
 		
 		//set the default limits/settings for this simulator type, as limits from our
 		//previous region may not exist in this one
@@ -80,6 +80,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			if (distance > 0)
 			{
 				gAgent.mDrawDistance = distance;
+				//gHippoLimits->mDrawDistance = distance;
 			}
 		}
 		
@@ -87,35 +88,31 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		{
 			gAgent.mLockedDrawDistance = body["ForceDrawDistance"].asInteger() == 1;
 		}
-		//*/
+		/*
 		if ( body.has("LSLFunctions") )
 		{
-			//IMPLEMENT ME
+			//IMPLEMENT ME//not yet avail
 		}
-      ///*
+      */
 	  if ( body.has("TerrainDetailScale") )
 		{
 			//gAgent.getRegion()->getComposition()->setScaleParams(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
-			//gAgent.getRegion()->getComposition()-> DETAIL_SCALE(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
-
 			gHippoLimits->mTerrainScale = body["TerrainDetailScale"].asReal();
 			gSavedSettings.setF32("RenderTerrainScale", body["TerrainDetailScale"].asReal());
 			LLDrawPoolTerrain::sDetailScale = 1.f/body["TerrainDetailScale"].asReal();
 		}
-        //*/
+     
 		if ( body.has("MaxDragDistance") )
 		{
 			gHippoLimits->mMaxDragDistance = body["MaxDragDistance"].asReal();
 		}
 		if ( body.has("MinHoleSize") )
 		{
-			//Note: does NOT update correctly
 			gHippoLimits->mMinHoleSize = body["MinHoleSize"].asReal();
 			limitschanged = TRUE;
 		}
 		if ( body.has("MaxHollowSize") )
 		{
-			//Note: does NOT update correctly
 			gHippoLimits->mMaxHollow = body["MaxHollowSize"].asReal();
 			limitschanged = TRUE;
 		}
@@ -159,7 +156,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gHippoLimits->mMinPrimScale = body["MinPrimScale"].asReal();
 			limitschanged = TRUE;
 		}
-		/*
+		/*to do dont have the string parcer. need to add it back in
 		if ( body.has("OffsetOfUTC") )
 		{
 			gSavedSettings.setS32("TimeOffset", body["OffsetOfUTC"].asInteger());
@@ -177,7 +174,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		if ( body.has("RenderWater") )
 		{
 			gHippoLimits->mRenderWater = body["RenderWater"].asInteger() == 1 ? TRUE : FALSE;
-		//	gAgent.getRegion()->rebuildWater();
+		//	gAgent.getRegion()->rebuildWater();//not yet
 		}
 		/*
 		if ( body.has("SayDistance") )
@@ -220,8 +217,6 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		{
 			gHippoLimits->mAllowParcelWindLight = body["AllowParcelWindLight"].asInteger() == 1;
 		}
-
-
 		if (limitschanged)
 			gFloaterTools->updateToolsSizeLimits();
 

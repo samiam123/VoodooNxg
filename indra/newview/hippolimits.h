@@ -18,9 +18,11 @@ public:
 	float getMaxInventoryItemsTransfer() const { return mMaxInventoryItemsTransfer; }
 	const std::string& getVoiceConnector()  const { return mVoiceConnector; }
 	float getMaxSelectDistance() const { return mMaxSelectDistance; }
+	float getDrawDistance()      const { return mDrawDistance;      }
+	float getLockedDrawDistance()      const { return mLockedDrawDistance;      }
 	// Returns the max prim size we can use on a grid
 	F32	getMinPrimScale() const;
-	//F32	getMaxPrimScale() const;
+	
 
 	F32 getMaxDragDistance() const;
 
@@ -38,6 +40,8 @@ public:
 	float   mMinHoleSize;
 	float   mMaxHollow;
 	float   mMaxPrimScale;
+	float   mDrawDistance;//added for openregion
+    float   mLockedDrawDistance;//added for openregion
 	F32		mMinPrimScale;
 	S32		mMaxLinkedPrims;
 	S32		mMaxPhysLinkedPrims;

@@ -208,7 +208,7 @@ void HippoPanelGridsImpl::refresh()
 		childSetEnabled("platform", enablePlatform);
 		childSetEnabled("search", false);
 		childSetText("search", LLStringExplicit(""));
-		childSetEnabled("render_compat", false);
+		childSetEnabled("render_compat", false);//huh user sets this dont they ?
 		childSetValue("render_compat", false);
 	} 
 	else

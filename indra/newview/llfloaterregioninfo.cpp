@@ -87,7 +87,7 @@
 #include "rlvhandler.h"
 // [/RLVa:KB]
 
-#define ELAR_ENABLED 1 // Enable when server support is implemented
+#define ELAR_ENABLED 0 // Enable when server support is implemented
 
 const S32 TERRAIN_TEXTURE_COUNT = 4;
 const S32 CORNER_COUNT = 4;
@@ -847,11 +847,13 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 //
 bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 {
-	// Data gets filled in by hippo manager
+	// Data gets filled in by hippo manager then hyjacked by caps if sim has them else it will use default limits in hippo limmits
 	BOOL allow_modify = gAgent.isGodlike() || (region && region->canManageEstate());
 	
 	childSetValue("draw_distance", gAgent.mDrawDistance);
 	childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
+	//childSetValue("draw_distance", LLSD(gHippoLimits->mDrawDistance));
+	//childSetValue("force_draw_distance", (gHippoLimits->mLockedDrawDistance == 1 ? TRUE : FALSE));
 	childSetValue("allow_minimap", LLSD(gHippoLimits->mAllowMinimap));
 	childSetValue("allow_physical_prims", (gHippoLimits->mAllowPhysicalPrims == 1 ? TRUE : FALSE));
 	childSetValue("max_drag_distance", LLSD(gHippoLimits->mMaxDragDistance));
