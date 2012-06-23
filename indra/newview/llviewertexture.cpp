@@ -2402,7 +2402,7 @@ bool LLViewerFetchedTexture::doLoadedCallbacks()
 {
 	//static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds orginaly
     // changed this value expermentaly lower is faster, sl has it at 900 .. ick  sams voodoo 
-    static const F32 MAX_INACTIVE_TIME = 8.f ; //seconds 
+    static const F32 MAX_INACTIVE_TIME = 30.f ; //seconds 
 
 	if (mNeedsCreateTexture)
 	{

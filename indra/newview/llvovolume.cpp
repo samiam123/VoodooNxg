@@ -1111,6 +1111,12 @@ void LLVOVolume::updateFaceFlags()
 {
 	for (S32 i = 0; i < getVolume()->getNumFaces(); i++)
 	{
+
+	// <FS:ND> There's no guarantee that getVolume()->getNumFaces() == mDrawable->getNumFaces()
+     		if( mDrawable->getNumFaces() <= i || getNumTEs() <= i )
+     			return;
+    		// </FS:ND>
+
 		LLFace *face = mDrawable->getFace(i);
 		if (!face)
 		{
@@ -1198,6 +1204,12 @@ BOOL LLVOVolume::genBBoxes(BOOL force_global)
 
 	for (S32 i = 0; i < getVolume()->getNumVolumeFaces(); i++)
 	{
+
+// <FS:ND> There's no guarantee that getVolume()->getNumFaces() == mDrawable->getNumFaces()
+    		if( mDrawable->getNumFaces() <= i )
+    			break;
+    		// </FS:ND>
+
 		LLFace *face = mDrawable->getFace(i);
 		if (!face)
 		{
@@ -1488,6 +1500,11 @@ BOOL LLVOVolume::updateGeometry(LLDrawable *drawable)
 
 void LLVOVolume::updateFaceSize(S32 idx)
 {
+        // <FS:ND>
+    	if( mDrawable->getNumFaces() <= idx )
+    		return;
+    	// </FS:ND>
+
 	LLFace* facep = mDrawable->getFace(idx);
 	if (idx >= getVolume()->getNumVolumeFaces())
 	{

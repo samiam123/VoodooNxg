@@ -39,7 +39,11 @@
 #include "llmemory.h"
 #include "llfasttimer.h"
 
+#if LL_DARWIN
+#define LL_VBO_POOLING 1
+#else
 #define LL_VBO_POOLING 0
+#endif
 
 //Next Highest Power Of Two
 //helper function, returns first number > v that is a power of 2, or v if v is already a power of 2
@@ -1238,7 +1242,7 @@ void LLVertexBuffer::updateNumIndices(S32 nindices)
 
 	llassert(nindices >= 0);
 
-	S32 needed_size = sizeof(U16) * nindices;
+	S32 needed_size = sizeof(U16) * nindices;//was S32
 
 	if (needed_size > mIndicesSize || needed_size <= mIndicesSize/2)
 	{
