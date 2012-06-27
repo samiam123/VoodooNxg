@@ -77,6 +77,7 @@ public:
 
 LLURLRequestDetail::LLURLRequestDetail() :
 	mCurlRequest(NULL),
+	//mResponseBuffer(NULL),//-VS added for test
 	mLastRead(NULL),
 	mBodyLimit(0),
 	mByteAccumulator(0),
@@ -176,7 +177,7 @@ LLURLRequest::~LLURLRequest()
 {
 	LLMemType m1(LLMemType::MTYPE_IO_URL_REQUEST);
 	delete mDetail;
-	mDetail = NULL ;
+	mDetail = NULL ;// -VS comment out temp for test not used in voodoo1
 }
 
 void LLURLRequest::setURL(const std::string& url)
@@ -307,8 +308,9 @@ LLIOPipe::EStatus LLURLRequest::process_impl(
 	LLFastTimer t(FTM_PROCESS_URL_REQUEST);
 	PUMP_DEBUG;
 	LLMemType m1(LLMemType::MTYPE_IO_URL_REQUEST);
-	//llinfos << "LLURLRequest::process_impl()" << llendl;
+	//llinfos << "LLURLRequest::process_impl()" << llendl;//-VS uncomment for test
 	if (!buffer) return STATUS_ERROR;
+	//if (!mDetail) return STATUS_ERROR; //-VS added for test Seems to happen on occasion. Need to hunt down why.
 	
 	// we're still waiting or prcessing, check how many
 	// bytes we have accumulated.
@@ -348,7 +350,7 @@ LLIOPipe::EStatus LLURLRequest::process_impl(
 
 		// *FIX: bit of a hack, but it should work. The configure and
 		// callback method expect this information to be ready.
-		mDetail->mResponseBuffer = buffer;
+		mDetail->mResponseBuffer = buffer;// -VS added .get()
 		mDetail->mChannels = channels;
 		if(!configure())
 		{
@@ -376,6 +378,7 @@ LLIOPipe::EStatus LLURLRequest::process_impl(
 		while(1)
 		{
 			CURLcode result;
+			//bool newmsg = mDetail->mCurlRequest->getResult(&result);// -VS added this line for test
 
 			static LLFastTimer::DeclareTimer FTM_PROCESS_URL_REQUEST_GET_RESULT("Get Result");
 
@@ -683,7 +686,7 @@ static size_t headerCallback(void* data, size_t size, size_t nmemb, void* user)
 	return header_len;
 }
 
-static LLFastTimer::DeclareTimer FTM_PROCESS_URL_EXTRACTOR("URL Extractor");
+static LLFastTimer::DeclareTimer FTM_PROCESS_URL_EXTRACTOR("URL Extractor");//comment out for test
 /**
  * LLContextURLExtractor
  */
@@ -695,7 +698,7 @@ LLIOPipe::EStatus LLContextURLExtractor::process_impl(
 	LLSD& context,
 	LLPumpIO* pump)
 {
-	LLFastTimer t(FTM_PROCESS_URL_EXTRACTOR);
+	LLFastTimer t(FTM_PROCESS_URL_EXTRACTOR);//coment out for test
 	PUMP_DEBUG;
 	LLMemType m1(LLMemType::MTYPE_IO_URL_REQUEST);
 	// The destination host is in the context.

@@ -1828,7 +1828,7 @@ void	open_circuit(LLMessageSystem *msgsystem, void** /*user_data*/)
 	msgsystem->getIPPortFast(_PREHASH_CircuitInfo, _PREHASH_Port, port);
 
 	// By default, OpenCircuit's are untrusted
-	msgsystem->enableCircuit(LLHost(ip, port), FALSE);
+	//msgsystem->enableCircuit(LLHost(ip, port), FALSE);// -VS is commented out in voodoo1
 }
 
 void	close_circuit(LLMessageSystem *msgsystem, void** /*user_data*/)
@@ -4015,7 +4015,7 @@ void LLMessageSystem::setTimeDecodesSpamThreshold( F32 seconds )
 // TODO: babbage: move gServicePump in to LLMessageSystem?
 bool LLMessageSystem::checkAllMessages(S64 frame_count, LLPumpIO* http_pump)
 {
-	LLMemType mt_cam(LLMemType::MTYPE_MESSAGE_CHECK_ALL);
+	LLMemType mt_cam(LLMemType::MTYPE_MESSAGE_CHECK_ALL);//--VS not used in voodoo1
 	if(checkMessages(frame_count))
 	{
 		return true;

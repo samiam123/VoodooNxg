@@ -157,10 +157,12 @@ void send_parcel_select_objects(S32 parcel_local_id, U32 return_type,
 	msg->sendReliable(region->getHost());
 }
 
+//-----------------block not used in voodoo1----
 LLParcel* LLFloaterLand::getCurrentSelectedParcel()
 {
 	return mParcel->getParcel();
 };
+//------------------------------------------------
 
 //static
 LLPanelLandObjects* LLFloaterLand::getCurrentPanelLandObjects()
@@ -182,12 +184,14 @@ void LLFloaterLand::refreshAll()
 
 void LLFloaterLand::onOpen()
 {
+//------------------------Also not in voodoo1---------
 	// moved from triggering show instance in llviwermenu.cpp
 
 	if (LLViewerParcelMgr::getInstance()->selectionEmpty())
 	{
 		LLViewerParcelMgr::getInstance()->selectParcelAt(gAgent.getPositionGlobal());
 	}
+//----------------------------------------------------
 
 	// Done automatically when the selected parcel's properties arrive
 	// (and hence we have the local id).
@@ -204,6 +208,11 @@ void LLFloaterLand::onOpen()
 // virtual
 void LLFloaterLand::onClose(bool app_quitting)
 {
+//-----------------------Added block from voodoo1---------
+	LLViewerParcelMgr::getInstance()->removeObserver( sObserver );
+	delete sObserver;
+	sObserver = NULL;
+//---------------------------------------------------------
 	// Might have been showing owned objects
 	LLSelectMgr::getInstance()->unhighlightAll();
 
@@ -252,9 +261,11 @@ BOOL LLFloaterLand::postBuild()
 // virtual
 LLFloaterLand::~LLFloaterLand()
 {
+//----------------------Not here in voodoo1---------
 	LLViewerParcelMgr::getInstance()->removeObserver( sObserver );
 	delete sObserver;
 	sObserver = NULL;
+//----------------------------------------------------
 }
 
 // public
@@ -433,7 +444,7 @@ BOOL LLPanelLandGeneral::postBuild()
 	mBtnReclaimLand->setClickedCallback(onClickReclaim, NULL);
 	
 	mBtnStartAuction = getChild<LLButton>("Linden Sale...");
-	mBtnStartAuction->setClickedCallback(onClickStartAuction, this);
+	mBtnStartAuction->setClickedCallback(onClickStartAuction, this);//is set to null in voodoo1
 
 	return TRUE;
 }
@@ -793,7 +804,7 @@ void LLPanelLandGeneral::refreshNames()
 // virtual
 void LLPanelLandGeneral::draw()
 {
-	//refreshNames();
+	refreshNames();//not commented out in voodoo1
 	LLPanel::draw();
 }
 
@@ -946,6 +957,7 @@ void LLPanelLandGeneral::onClickBuyPass(void* data)
 
 	LLSD args;
 	args["COST"] = cost;
+	args["CURRENCY"] = gHippoGridManager->getConnectedGrid()->getCurrencySymbol();//added used in voodoo1
 	args["PARCEL_NAME"] = parcel_name;
 	args["TIME"] = time;
 	

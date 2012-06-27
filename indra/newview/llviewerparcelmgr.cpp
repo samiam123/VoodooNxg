@@ -470,10 +470,16 @@ LLParcelSelectionHandle LLViewerParcelMgr::selectParcelInRectangle()
 void LLViewerParcelMgr::selectCollisionParcel()
 {
 	// BUG: Claim to be in the agent's region
+    /*
 	mWestSouth = gAgent.getRegion()->getOriginGlobal();
 	mEastNorth = mWestSouth;
-	mEastNorth += LLVector3d(PARCEL_GRID_STEP_METERS, PARCEL_GRID_STEP_METERS, 0.0);
+    */
 
+	mWestSouth = getSelectionRegion()->getOriginGlobal();
+	mEastNorth = mWestSouth;
+	mEastNorth += LLVector3d((getSelectionRegion()->getWidth() / REGION_WIDTH_METERS) * PARCEL_GRID_STEP_METERS, 
+		                     (getSelectionRegion()->getWidth() / REGION_WIDTH_METERS) * PARCEL_GRID_STEP_METERS, 0.0);
+	//mEastNorth += LLVector3d(PARCEL_GRID_STEP_METERS, PARCEL_GRID_STEP_METERS, 0.0);
 	// BUG: must be in the sim you are in
 	LLMessageSystem *msg = gMessageSystem;
 	msg->newMessageFast(_PREHASH_ParcelPropertiesRequestByID);
@@ -730,7 +736,7 @@ bool LLViewerParcelMgr::allowAgentScripts(const LLViewerRegion* region, const LL
 	// and the flag to allow group-owned scripted objects to run.
 	// This mirrors the traditional menu bar parcel icon code, but is not
 	// technically correct.
-	return region
+	return region //voodoo1 just returns true; here
 		&& !(region->getRegionFlags() & REGION_FLAGS_SKIP_SCRIPTS)
 		&& !(region->getRegionFlags() & REGION_FLAGS_ESTATE_SKIP_SCRIPTS)
 		&& parcel
@@ -741,6 +747,12 @@ bool LLViewerParcelMgr::allowAgentDamage(const LLViewerRegion* region, const LLP
 {
 	return (region && region->getAllowDamage())
 		|| (parcel && parcel->getAllowDamage());
+//-----------------Added block from voodoo1-------		
+//}		
+//F32 LLViewerParcelMgr::agentDrawDistance() const		
+//{		
+//	return 512.f;
+//------------------------------------------------
 }
 
 BOOL LLViewerParcelMgr::isOwnedAt(const LLVector3d& pos_global) const
@@ -1319,11 +1331,12 @@ void LLViewerParcelMgr::sendParcelPropertiesUpdate(LLParcel* parcel, bool use_ag
 
 	LLViewerRegion *region = use_agent_region ? gAgent.getRegion() : LLWorld::getInstance()->getRegionFromPosGlobal( mWestSouth );
 	if (!region) return;
-	//llinfos << "found region: " << region->getName() << llendl;
+	llinfos << "found region: " << region->getName() << llendl;//un comment for debuging
 
 	LLSD body;
 	std::string url = region->getCapability("ParcelPropertiesUpdate");
-	if (!url.empty())
+	//if (!url.empty())//was
+		if (url.empty())//workaround the problem for now temp fix as caps should do this
 	{
 		// request new properties update from simulator
 		U32 message_flags = 0x01;
@@ -1494,6 +1507,16 @@ void LLViewerParcelMgr::processParcelProperties(LLMessageSystem *msg, void **use
 
 	S32		other_clean_time = 0;
 
+//----------------------------Added --------------
+	LLViewerParcelMgr& parcel_mgr = LLViewerParcelMgr::instance();
+	LLViewerRegion* msg_region = LLWorld::getInstance()->getRegion( msg->getSender() );
+	if(msg_region) {
+			parcel_mgr.mParcelsPerEdge = S32( msg_region->getWidth() / PARCEL_GRID_STEP_METERS );
+	}
+	else {
+		parcel_mgr.mParcelsPerEdge = S32( gAgent.getRegion()->getWidth() / PARCEL_GRID_STEP_METERS );
+	}
+//----------------------------------------------------
 	msg->getS32Fast(_PREHASH_ParcelData, _PREHASH_RequestResult, request_result );
 	msg->getS32Fast(_PREHASH_ParcelData, _PREHASH_SequenceID, sequence_id );
 
