@@ -1450,6 +1450,8 @@ void LLRender::loadIdentity()
 	flush();
 
 	{
+		llassert_always(mMatrixMode < NUM_MATRIX_MODES) ;
+
 		mMatrix[mMatrixMode][mMatIdx[mMatrixMode]].make_identity();
 		mMatHash[mMatrixMode]++;
 	}
@@ -1697,7 +1699,7 @@ void LLRender::blendFunc(eBlendFactor color_sfactor, eBlendFactor color_dfactor,
 
 LLTexUnit* LLRender::getTexUnit(U32 index)
 {
-	if ((index >= 0) && (index < mTexUnits.size()))
+	if (index < mTexUnits.size())
 	{
 		return mTexUnits[index];
 	}

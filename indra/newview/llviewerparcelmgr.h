@@ -46,7 +46,6 @@ class LLParcel;
 class LLViewerTexture;
 class LLViewerRegion;
 
-//const F32 DWELL_NAN = -1.0f;	// A dwell having this value will be displayed as Loading...
 // Constants for sendLandOwner
 //const U32 NO_NEIGHBOR_JOIN = 0x0;
 //const U32 ALL_NEIGHBOR_JOIN = U32(  NORTH_MASK 
@@ -265,8 +264,8 @@ public:
 								  BOOL remove_contribution);
 		// callers responsibility to call deleteParcelBuy() on return value
 	void sendParcelBuy(ParcelBuyInfo*);
-	void deleteParcelBuy(ParcelBuyInfo* *); //this
-	//void deleteParcelBuy(ParcelBuyInfo*&); //or voodoo					   
+	void deleteParcelBuy(ParcelBuyInfo* *info);
+					   
 	void sendParcelDeed(const LLUUID& group_id);
 
 	// Send the ParcelRelease message

@@ -111,6 +111,7 @@
 
 // [RLVa:KB]
 #include "rlvhandler.h"
+#include "rlvlocks.h"
 // [/RLVa:KB]
 
 void check_stack_depth(S32 stack_depth)
@@ -680,6 +681,7 @@ bool LLPipeline::allocateScreenBuffer(U32 resX, U32 resY, U32 samples)
 		// Set this flag in case we crash while resizing window or allocating space for deferred rendering targets
 		gSavedSettings.setBOOL("RenderInitError", TRUE);
 		gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
+
 		S32 shadow_detail = gSavedSettings.getS32("RenderShadowDetail");
 		BOOL ssao = gSavedSettings.getBOOL("RenderDeferredSSAO");
 		BOOL RenderDepthOfField = gSavedSettings.getBOOL("RenderDepthOfField");
@@ -716,9 +718,10 @@ bool LLPipeline::allocateScreenBuffer(U32 resX, U32 resY, U32 samples)
 
 		if (shadow_detail > 0)
 		{ //allocate 4 sun shadow maps
+			U32 sun_shadow_map_width = ((U32(resX*scale)+1)&~1); // must be even to avoid a stripe in the horizontal shadow blur
 			for (U32 i = 0; i < 4; i++)
 			{
-				if (!mShadow[i].allocate(U32(resX*scale),U32(resY*scale), 0, TRUE, FALSE, LLTexUnit::TT_RECT_TEXTURE)) return false;
+				if (!mShadow[i].allocate(sun_shadow_map_width,U32(resY*scale), 0, TRUE, FALSE, LLTexUnit::TT_RECT_TEXTURE)) return false;
 			}
 		}
 		else
@@ -734,9 +737,10 @@ bool LLPipeline::allocateScreenBuffer(U32 resX, U32 resY, U32 samples)
 
 		if (shadow_detail > 1)
 		{ //allocate two spot shadow maps
+			U32 spot_shadow_map_width = width;
 			for (U32 i = 4; i < 6; i++)
 			{
-				if (!mShadow[i].allocate(width, height, 0, TRUE, FALSE)) return false;
+				if (!mShadow[i].allocate(spot_shadow_map_width, height, 0, TRUE, FALSE)) return false;
 			}
 		}
 		else
@@ -843,15 +847,11 @@ void LLPipeline::releaseGLBuffers()
 		mTrueNoiseMap = 0;
 	}
 
-	if (mLightFunc)
-	{
-		LLImageGL::deleteTextures(1, &mLightFunc);
-		mLightFunc = 0;
-	}
+	releaseLUTBuffers();
 
 	mWaterRef.release();
 	mWaterDis.release();
-
+	
 	for (U32 i = 0; i < 3; i++)
 	{
 		mGlow[i].release();
@@ -861,6 +861,15 @@ void LLPipeline::releaseGLBuffers()
 
 	gBumpImageList.destroyGL();
 	LLVOAvatar::resetImpostors();
+}
+
+void LLPipeline::releaseLUTBuffers()
+{
+	if (mLightFunc)
+	{
+		LLImageGL::deleteTextures(1, &mLightFunc);
+		mLightFunc = 0;
+	}
 }
 
 void LLPipeline::releaseScreenBuffers()
@@ -891,12 +900,10 @@ void LLPipeline::createGLBuffers()
 
 	if (LLPipeline::sWaterReflections)
 	{ //water reflection texture
-//		U32 res = (U32) gSavedSettings.getS32("RenderWaterRefResolution");// remove later sam old
 		U32 res = (U32) llmax(gSavedSettings.getS32("RenderWaterRefResolution"), 512);
 			
 		mWaterRef.allocate(res,res,GL_RGBA,TRUE,FALSE);
 		//always use FBO for mWaterDis so it can be used for avatar texture bakes
-		//mWaterDis.allocate(res,res,GL_RGBA,TRUE,FALSE); // remove me later sam old
 		mWaterDis.allocate(res,res,GL_RGBA,TRUE,FALSE,LLTexUnit::TT_TEXTURE, true);
 	}
 
@@ -938,8 +945,7 @@ void LLPipeline::createGLBuffers()
 			LLImageGL::generateTextures(1, &mNoiseMap);
 			
 			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mNoiseMap);
-			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise);// remove this later sam old
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise, false);			
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB, GL_FLOAT, noise, false);
 			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_POINT);
 		}
 
@@ -954,55 +960,71 @@ void LLPipeline::createGLBuffers()
 
 			LLImageGL::generateTextures(1, &mTrueNoiseMap);
 			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mTrueNoiseMap);
-			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise);// remove me later sam old
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise, false);			
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_RGB16F_ARB, noiseRes, noiseRes, GL_RGB,GL_FLOAT, noise, false);
 			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_POINT);
 		}
 
-		if (!mLightFunc)
-		{
-			U32 lightResX = gSavedSettings.getU32("RenderSpecularResX");
-			U32 lightResY = gSavedSettings.getU32("RenderSpecularResY");
-			U8* lg = new U8[lightResX*lightResY];
-
-			for (U32 y = 0; y < lightResY; ++y)
-			{
-				for (U32 x = 0; x < lightResX; ++x)
-				{
-					//spec func
-					F32 sa = (F32) x/(lightResX-1);
-					F32 spec = (F32) y/(lightResY-1);
-					//lg[y*lightResX+x] = (U8) (powf(sa, 128.f*spec*spec)*255);
-
-					//F32 sp = acosf(sa)/(1.f-spec);
-
-					static const LLCachedControl<F32> render_specular_exponent("RenderSpecularExponent");
-					sa = powf(sa, render_specular_exponent);
-					F32 a = acosf(sa*0.25f+0.75f);
-					F32 m = llmax(0.5f-spec*0.5f, 0.001f);
-					F32 t2 = tanf(a)/m;
-					t2 *= t2;
-
-					F32 c4a = (3.f+4.f*cosf(2.f*a)+cosf(4.f*a))/8.f;
-					F32 bd = 1.f/(4.f*m*m*c4a)*powf(F_E, -t2);
-
-					lg[y*lightResX+x] = (U8) (llclamp(bd, 0.f, 1.f)*255);
-				}
-			}
-
-			LLImageGL::generateTextures(1, &mLightFunc);
-			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mLightFunc);
-			//LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, lg);// remove me sam old
-			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, lg, false);			
-			gGL.getTexUnit(0)->setTextureAddressMode(LLTexUnit::TAM_CLAMP);
-			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_TRILINEAR);
-
-			delete [] lg;
-		}
+		createLUTBuffers();
 	}
 
 	gBumpImageList.restoreGL();
 }
+
+void LLPipeline::createLUTBuffers()
+{
+	if (sRenderDeferred)
+	{
+		if (!mLightFunc)
+		{
+			U32 lightResX = gSavedSettings.getU32("RenderSpecularResX");
+			U32 lightResY = gSavedSettings.getU32("RenderSpecularResY");
+			U8* ls = new U8[lightResX*lightResY];
+			static const LLCachedControl<F32> specExp("RenderSpecularExponent");
+            // Calculate the (normalized) Blinn-Phong specular lookup texture.
+			for (U32 y = 0; y < lightResY; ++y)
+			{
+				for (U32 x = 0; x < lightResX; ++x)
+				{
+					ls[y*lightResX+x] = 0;
+					F32 sa = (F32) x/(lightResX-1);
+					F32 spec = (F32) y/(lightResY-1);
+					F32 n = spec * spec * specExp;
+					
+					// Nothing special here.  Just your typical blinn-phong term.
+					spec = powf(sa, n);
+					
+					// Apply our normalization function.
+					// Note: This is the full equation that applies the full normalization curve, not an approximation.
+					// This is fine, given we only need to create our LUT once per buffer initialization.
+					// The only trade off is we have a really low dynamic range.
+					// This means we have to account for things not being able to exceed 0 to 1 in our shaders.
+					spec *= (((n + 2) * (n + 4)) / (8 * F_PI * (powf(2, -n/2) + n)));
+					
+					// Always sample at a 1.0/2.2 curve.
+					// This "Gamma corrects" our specular term, boosting our lower exponent reflections.
+					spec = powf(spec, 1.f/2.2f);
+					
+					// Easy fix for our dynamic range problem: divide by 6 here, multiply by 6 in our shaders.
+					// This allows for our specular term to exceed a value of 1 in our shaders.
+					// This is something that can be important for energy conserving specular models where higher exponents can result in highlights that exceed a range of 0 to 1.
+					// Technically, we could just use an R16F texture, but driver support for R16F textures can be somewhat spotty at times.
+					// This works remarkably well for higher specular exponents, though banding can sometimes be seen on lower exponents.
+					// Combined with a bit of noise and trilinear filtering, the banding is hardly noticable.
+					ls[y*lightResX+x] = (U8)(llclamp(spec * (1.f / 6), 0.f, 1.f) * 255);
+				}
+			}
+			
+			LLImageGL::generateTextures(1, &mLightFunc);
+			gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mLightFunc);
+			LLImageGL::setManualImage(LLTexUnit::getInternalType(LLTexUnit::TT_TEXTURE), 0, GL_R8, lightResX, lightResY, GL_RED, GL_UNSIGNED_BYTE, ls, false);
+			gGL.getTexUnit(0)->setTextureAddressMode(LLTexUnit::TAM_CLAMP);
+			gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_TRILINEAR);
+			
+			delete [] ls;
+		}
+	}
+}
+
 
 void LLPipeline::restoreGL() 
 {
@@ -3181,8 +3203,12 @@ void LLPipeline::postSort(LLCamera& camera)
 	for (LLCullResult::sg_list_t::iterator i = sCull->beginVisibleGroups(); i != sCull->endVisibleGroups(); ++i)
 	{
 		LLSpatialGroup* group = *i;
+
+		static LLCachedControl<F32> RenderAutoHideSurfaceAreaLimit("RenderAutoHideSurfaceAreaLimit", 0.f);
 		if (sUseOcclusion && 
-			group->isOcclusionState(LLSpatialGroup::OCCLUDED))
+			group->isOcclusionState(LLSpatialGroup::OCCLUDED) ||
+			(RenderAutoHideSurfaceAreaLimit > 0.f && 
+			group->mSurfaceArea > RenderAutoHideSurfaceAreaLimit*llmax(group->mObjectBoxSize, 10.f)))
 		{
 			continue;
 		}
@@ -3253,7 +3279,7 @@ void LLPipeline::postSort(LLCamera& camera)
 	}
 	llpushcallstacks ;
 
-	forAllVisibleDrawables(updateParticleActivity);
+	forAllVisibleDrawables(updateParticleActivity);	//for llfloateravatarlist
 
 	// only render if the flag is set. The flag is only set if we are in edit mode or the toggle is set in the menus
 	static const LLCachedControl<bool> beacons_visible("BeaconsVisible", false);
@@ -3539,9 +3565,10 @@ void LLPipeline::renderGeom(LLCamera& camera, BOOL forceVBOUpdate)
     //to walk around the bug caused by ATI card --> DEV-3855 
 	//Re-enabling sams voodoo as this problem still happens 
     if(forceVBOUpdate) 
-    gSky.mVOSkyp->updateDummyVertexBuffer();
+  	  gSky.mVOSkyp->updateDummyVertexBuffer();
 //---------------------------------------------------------------------
 	gFrameStats.start(LLFrameStats::RENDER_GEOM);
+
 	// Initialize lots of GL state to "safe" values
 	gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 	gGL.matrixMode(LLRender::MM_TEXTURE);
@@ -6539,10 +6566,8 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield, b
 				mDeferredLight.flush();
 			}
 
-			//U32 dof_width = mScreen.getWidth()*CameraDoFResScale;//remove me sam old
-			//U32 dof_height = mScreen.getHeight()*CameraDoFResScale;// me to sam old
 			U32 dof_width = (U32) (mScreen.getWidth()*CameraDoFResScale);
-			U32 dof_height = (U32) (mScreen.getHeight()*CameraDoFResScale);			
+			U32 dof_height = (U32) (mScreen.getHeight()*CameraDoFResScale);
 			
 			{ //perform DoF sampling at half-res (preserve alpha channel)
 				mScreen.bindTarget();
@@ -8187,7 +8212,7 @@ static LLFastTimer::DeclareTimer FTM_SHADOW_RENDER("Render Shadows");
 static LLFastTimer::DeclareTimer FTM_SHADOW_ALPHA("Alpha Shadow");
 static LLFastTimer::DeclareTimer FTM_SHADOW_SIMPLE("Simple Shadow");
 
-void LLPipeline::renderShadow(glh::matrix4f& view, glh::matrix4f& proj, LLCamera& shadow_cam, LLCullResult &result, BOOL use_shader, BOOL use_occlusion)
+void LLPipeline::renderShadow(glh::matrix4f& view, glh::matrix4f& proj, LLCamera& shadow_cam, LLCullResult &result, BOOL use_shader, BOOL use_occlusion, U32 target_width)
 {
 	LLFastTimer t(FTM_SHADOW_RENDER);
 
@@ -8278,6 +8303,7 @@ void LLPipeline::renderShadow(glh::matrix4f& view, glh::matrix4f& proj, LLCamera
 		LLFastTimer ftm(FTM_SHADOW_ALPHA);
 		gDeferredShadowAlphaMaskProgram.bind();
 		gDeferredShadowAlphaMaskProgram.setMinimumAlpha(0.598f);
+		gDeferredShadowAlphaMaskProgram.uniform1f(LLShaderMgr::DEFERRED_SHADOW_TARGET_WIDTH, (float)target_width);
 		
 		U32 mask =	LLVertexBuffer::MAP_VERTEX | 
 					LLVertexBuffer::MAP_TEXCOORD0 | 
@@ -8677,16 +8703,15 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 		
 		da = powf(da, split_exp.mV[2]);
 
-
 		F32 sxp = split_exp.mV[1] + (split_exp.mV[0]-split_exp.mV[1])*da;
-
-
+		
 		for (U32 i = 0; i < 4; ++i)
 		{
 			F32 x = (F32)(i+1)/4.f;
 			x = powf(x, sxp);
 			mSunClipPlanes.mV[i] = near_clip+range*x;
 		}
+
 		mSunClipPlanes.mV[0] *= 1.25f; //bump back first split for transition padding
 	}
 
@@ -8743,8 +8768,6 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 				delta += (frust[i+4]-frust[(i+2)%4+4])*0.05f;
 				delta.normVec();
 				F32 dp = delta*pn;
-				//frust[i] = eye + (delta*dist[j]*0.95f)/dp;// remove me sam old
-				//frust[i+4] = eye + (delta*dist[j+1]*1.05f)/dp;// me to sam old
 				frust[i] = eye + (delta*dist[j]*0.75f)/dp;
 				frust[i+4] = eye + (delta*dist[j+1]*1.25f)/dp;
 			}
@@ -9067,11 +9090,13 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 			mShadow[j].getViewport(gGLViewport);
 			mShadow[j].clear();
 		
+			U32 target_width = mShadow[j].getWidth();
+
 			{
 				static LLCullResult result[4];
 
 				//LLGLEnable enable(GL_DEPTH_CLAMP_NV);
-				renderShadow(view[j], proj[j], shadow_cam, result[j], TRUE);
+				renderShadow(view[j], proj[j], shadow_cam, result[j], TRUE, TRUE, target_width);
 			}
 
 			mShadow[j].flush();
@@ -9210,11 +9235,13 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 			mShadow[i+4].getViewport(gGLViewport);
 			mShadow[i+4].clear();
 
+			U32 target_width = mShadow[i+4].getWidth();
+
 			static LLCullResult result[2];
 
 			LLViewerCamera::sCurCameraID = LLViewerCamera::CAMERA_SHADOW0+i+4;
 
-			renderShadow(view[i+4], proj[i+4], shadow_cam, result[i], FALSE, FALSE);
+			renderShadow(view[i+4], proj[i+4], shadow_cam, result[i], FALSE, FALSE, target_width);
 
 			mShadow[i+4].flush();
  		}
