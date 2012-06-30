@@ -32,8 +32,6 @@
 // extra
 //#include "IrcClient.h"
 
-using namespace std;
-
 #define __CPIRC_VERSION__	0.1
 //#define __IRC_DEBUG__ 1
 
@@ -47,9 +45,9 @@ class CIRCClient;
 
 struct IRCMiscInfo
 {
-	string OutputTarget;
-	string SecondaryPwd;
-	string AuthedNick;
+	std::string OutputTarget;
+	std::string SecondaryPwd;
+	std::string AuthedNick;
 
 	CIRCClient * ircclient;
 

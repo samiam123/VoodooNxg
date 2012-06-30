@@ -73,19 +73,9 @@ class ViewerManifest(LLManifest):
             self.path("*.ttf")
             self.path("*.txt")
             self.end_prefix("fonts")
-            
-        # Include the local_assets directory recursively
-         #if self.prefix(src="local_assets"):
-            #self.path("*.j2c")
-             #self.end_prefix("local_assets")
-        # Include the local_assets directory recursively
-         #if self.prefix(src="skins"):
-            #self.path("skins")
-           #self.end_prefix("skins")
-            
+
         # skins
         if self.prefix(src="skins"):
-        
                 self.path("paths.xml")
                 # include the entire textures directory recursively
                 if self.prefix(src="default/textures"):
@@ -147,7 +137,6 @@ class ViewerManifest(LLManifest):
         mapping={"secondlife":'SecondLife_',
                  "snowglobe":'Snowglobe_',
                  "Voodoo":'Voodoo_'}
-				 
         return mapping[self.viewer_branding_id()]
 
     def flags_list(self):
@@ -219,19 +208,19 @@ class WindowsManifest(ViewerManifest):
         self.path("dbghelp.dll")
 
         # For using FMOD for sound... DJS
-        if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
-            try:
-                self.path("fmod.dll")
-                pass
-            except:
-                print "Skipping fmod.dll - not found"
-                pass
-            self.end_prefix()
+        #~if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
+            #~try:
+                #~self.path("fmod.dll")
+                #~pass
+            #~except:
+                #~print "Skipping fmod.dll - not found"
+               #~ pass
+            #~self.end_prefix()
 
         # For textures
         #if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
-           # self.path("openjpeg.dll")
-           # self.end_prefix()
+        #    self.path("openjpeg.dll")
+        #    self.end_prefix()
 
         # Plugins - FilePicker
         if self.prefix(src='../plugins/filepicker/%s' % self.args['configuration'], dst="llplugin"):
@@ -331,26 +320,20 @@ class WindowsManifest(ViewerManifest):
             self.path("wrap_oal.dll")
             self.end_prefix()
 
-        # if self.args['extra_libraries'] != None:
-        #    print self.args['extra_libraries']
-        #    path_list = self.args['extra_libraries'].split('|')
-         #   for path in path_list:
-         #       path_pair = path.rsplit('/', 1)
-          #      if self.prefix(src=path_pair[0], dst=""):
-          #          self.path(path_pair[1])
-           #         self.end_prefix()
+        if self.args['extra_libraries'] != None:
+            print self.args['extra_libraries']
+            path_list = self.args['extra_libraries'].split('|')
+            for path in path_list:
+                path_pair = path.rsplit('/', 1)
+                if self.prefix(src=path_pair[0], dst=""):
+                    self.path(path_pair[1])
+                    self.end_prefix()
 
         # pull in the crash logger and updater from other projects
         self.path(src='../win_crash_logger/%s/windows-crash-logger.exe' % self.args['configuration'], dst="win_crash_logger.exe")
         self.path(src='../win_updater/%s/windows-updater.exe' % self.args['configuration'], dst="updater.exe")
-        
-        # Visual C++ runtimes for 2k8 and 2k10
-        #if self.prefix(src="../../libraries/i686-win32/lib/release", dst=""):
-         #   self.path("vcredist_x86_2k8.exe")
-         #   self.path("vcredist_x86_2k10.exe")
-         #   self.end_prefix()
-        # Visual C++ runtimes for 2k8 and 2k10
-        # self.path(src='../../libraries/i686-win32/lib/release", dst="")
+
+
     def nsi_file_commands(self, install=True):
         def wpath(path):
             if path.endswith('/') or path.endswith(os.path.sep):
@@ -715,7 +698,7 @@ class LinuxManifest(ViewerManifest):
             self.path("secondlife-stripped","bin/"+self.binary_name())
             self.path("../linux_crash_logger/linux-crash-logger-stripped","linux-crash-logger.bin")
         else:
-            self.path("Voodoo","bin/"+self.binary_name())
+            self.path("secondlife-bin","bin/"+self.binary_name())
             self.path("../linux_crash_logger/linux-crash-logger","linux-crash-logger.bin")
 
         self.path("linux_tools/launch_url.sh","launch_url.sh")

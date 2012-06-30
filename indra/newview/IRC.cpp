@@ -50,7 +50,6 @@
 #define INVALID_SOCKET -1
 #endif
 
-using namespace std;
 
 #if LL_WINDOWS
 #else
@@ -125,24 +124,24 @@ void IRC::delete_irc_command_hook(irc_command_hook* cmd_hook)
 int IRC::start(char* server, int port,char* nick,char* user, char* name, char* pass)
 {
 
-	#ifdef LL_WINDOWS
+#ifdef LL_WINDOWS
 	HOSTENT* resolv;
-	#else
+#else
 	hostent* resolv;
-	#endif
+#endif
 	sockaddr_in rem;
-	
+
 	if (connected)
 		return 1;
 #if LL_WINDOWS
-	
+
 	WSADATA             wsa;
 	memset(&wsa, 0x00, sizeof(WSADATA));
-    if(WSAStartup(MAKEWORD(2, 0), &wsa) != 0x0)
-    {
-        warn("Socket Initialization Error. Program aborted\n");
+	if(WSAStartup(MAKEWORD(2, 0), &wsa) != 0x0)
+	{
+		warn("Socket Initialization Error. Program aborted\n");
 		return 1;
-    }
+	}
 
 	irc_socket=socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (irc_socket==INVALID_SOCKET)
@@ -160,10 +159,10 @@ int IRC::start(char* server, int port,char* nick,char* user, char* name, char* p
 #endif
 	resolv=gethostbyname(server);
 	/*
-		gets(in);
-		IPHostEntry* hostInfo = Dns::GetHostByName(in);
-		printf(hostInfo);
-		*/
+	   gets(in);
+	   IPHostEntry* hostInfo = Dns::GetHostByName(in);
+	   printf(hostInfo);
+	   */
 	llinfos<<llformat("Host Name(%s) Resolved To: %p \n",server,resolv)<<llendl;
 	if (!resolv)
 	{
@@ -178,27 +177,27 @@ int IRC::start(char* server, int port,char* nick,char* user, char* name, char* p
 	rem.sin_family=AF_INET;
 	rem.sin_port=htons(port);
 	/*
-Global $sock = TCPConnect(TCPNameToIP($host), $port)
-If @error Then
-	_Log("We have failed to connect to server " & $host & " at port " & $port)
-	MsgBox(1, $Name & $Ver & " Error", "We cannot connect to the IRC Server." & @CRLF & "Host : " & $host & @CRLF & "Port : " & $port)
-	Exit
-EndIf
-Sleep(1000)
-_sendmsg("NICK " & $nick)
-Sleep(1000)
-_sendmsg('USER ' & $name & ' "' & $mailhost & '" "' & $host & '" :' & $name)
-Sleep(1000)
-_sendmsg("USERHOST " & $nick)
+	   Global $sock = TCPConnect(TCPNameToIP($host), $port)
+	   If @error Then
+	   _Log("We have failed to connect to server " & $host & " at port " & $port)
+	   MsgBox(1, $Name & $Ver & " Error", "We cannot connect to the IRC Server." & @CRLF & "Host : " & $host & @CRLF & "Port : " & $port)
+	   Exit
+	   EndIf
+	   Sleep(1000)
+	   _sendmsg("NICK " & $nick)
+	   Sleep(1000)
+	   _sendmsg('USER ' & $name & ' "' & $mailhost & '" "' & $host & '" :' & $name)
+	   Sleep(1000)
+	   _sendmsg("USERHOST " & $nick)
 
 
-	*/
+*/
 
 	if (connect(irc_socket, (const sockaddr*)&rem, sizeof(rem))==SOCKET_ERROR)
 	{
-		#ifdef LL_WINDOWS
+#ifdef LL_WINDOWS
 		llinfos<<llformat("Failed to connect: %d\n", WSAGetLastError())<<llendl;
-		#endif
+#endif
 		closesocket(irc_socket);
 
 		warn("Failed to connect wsaerror");
@@ -207,20 +206,20 @@ _sendmsg("USERHOST " & $nick)
 
 	/*dataout=_fdopen(irc_socket, "w");*/
 	//datain=fdopen(irc_socket, "r");
-	
+
 	//if (!dataout /*|| !datain*/)
 	//{
 	//	printf("Failed to open streams!\n");
 	//	closesocket(irc_socket);
 	//	return 1;
 	//}
-	
+
 	connected=true;
-	
+
 	cur_nick=new char[strlen(nick)+1];
 	strcpy(cur_nick, nick);
 
-	string sout = "";
+	std::string sout = "";
 	sout += "PASS "; sout += pass; sout += "\r\n";
 	sout += "NICK "; sout += nick; sout += "\r\n";
 	sout += "USER "; sout += user; sout += " * 0 :"; sout += name; sout += "\r\n";
@@ -234,10 +233,10 @@ _sendmsg("USERHOST " & $nick)
 	}
 
 	/*fprintf(dataout, "PASS %s\r\n", pass);
-	fprintf(dataout, "NICK %s\r\n", nick);
-	fprintf(dataout, "USER %s * 0 :%s\r\n", user, name);
-	
-	fflush(dataout);		*/
+	  fprintf(dataout, "NICK %s\r\n", nick);
+	  fprintf(dataout, "USER %s * 0 :%s\r\n", user, name);
+
+	  fflush(dataout);		*/
 
 	return 0;
 }
@@ -250,9 +249,9 @@ void IRC::disconnect()
 		llinfos<<"Disconnected from server.\n"<<llendl;
 		connected=false;
 		quit("Leaving");
-		#ifdef LL_WINDOWS
+#ifdef LL_WINDOWS
 		shutdown(irc_socket, 2);
-		#endif
+#endif
 		closesocket(irc_socket);
 	}
 }
@@ -263,20 +262,20 @@ int IRC::quit(const char* quit_message)
 	{
 		if (quit_message)
 		{
-				string sout;
-				sout = "QUIT "; sout += quit_message; sout += "\r\n";
-				int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
-				if(ret == -1) return 1;
+			std::string sout;
+			sout = "QUIT "; sout += quit_message; sout += "\r\n";
+			int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
+			if(ret == -1) return 1;
 		}
-			//fprintf(dataout, "QUIT %s\r\n", quit_message);
+		//fprintf(dataout, "QUIT %s\r\n", quit_message);
 		else
 		{
-				string sout;
-				sout = "QUIT "; sout += "\r\n";
-				int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
-				if(ret == -1) return 1;
+			std::string sout;
+			sout = "QUIT "; sout += "\r\n";
+			int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
+			if(ret == -1) return 1;
 		}
-			//fprintf(dataout, "QUIT\r\n");
+		//fprintf(dataout, "QUIT\r\n");
 		//if (fflush(dataout))
 		//	return 1;
 	}
@@ -309,8 +308,8 @@ int IRC::message_loop()
 }
 void IRC::warn(std::string warning)
 {
-	
-		llwarns << warning << llendl;
+
+	llwarns << warning << llendl;
 }
 
 void IRC::split_to_replies(char* data)
@@ -330,7 +329,7 @@ int IRC::is_op(char* channel, char* nick)
 	channel_user* cup;
 
 	cup=chan_users;
-	
+
 	while (cup)
 	{
 		if (!strcmp(cup->channel, channel) && !strcmp(cup->nick, nick))
@@ -344,12 +343,12 @@ int IRC::is_op(char* channel, char* nick)
 }
 LLSD IRC::getSpeakersLLSD()
 {
-	
+
 	channel_user* cup;
 
 	cup=chan_users;
 	int i=0;
-	
+
 	LLSD speakers;
 	while (cup)
 	{
@@ -359,7 +358,7 @@ LLSD IRC::getSpeakersLLSD()
 		//llinfos << "Generating uuid from " << strnick << " and " << std::string(cup->channel) << llendl;
 		uid.generate(strnick+"lgg"+std::string(cup->channel));
 
-		vector<LLUUID>::iterator result;
+		std::vector<LLUUID>::iterator result;
 		result = find( allparticipants.begin(), allparticipants.end(),uid );
 		if( result == allparticipants.end() ) 
 		{
@@ -377,7 +376,7 @@ LLSD IRC::getSpeakersLLSD()
 			//hashedName.finalize();
 			//hashedName.hex_digest(toMakeUUID);
 			//LLUUID hashedUUID(toMakeUUID);
-			
+
 			speaker["irc_agent_id"]=uid;
 			speaker["irc_agent_name"]=strnick;
 			speaker["irc_channel"]=std::string(cup->channel);
@@ -395,7 +394,7 @@ int IRC::is_voice(char* channel, char* nick)
 	channel_user* cup;
 
 	cup=chan_users;
-	
+
 	while (cup)
 	{
 		if (!strcmp(cup->channel, channel) && !strcmp(cup->nick, nick))
@@ -413,7 +412,7 @@ void IRC::parse_irc_reply(char* data)
 	char* hostd;
 	char* cmd;
 	char* params;
-//	char buffer[514];
+	//	char buffer[514];
 	irc_reply_data hostd_tmp;
 	channel_user* cup;
 	char* p;
@@ -426,7 +425,7 @@ void IRC::parse_irc_reply(char* data)
 	if (data[0]==':')
 	{
 		hostd=&data[1];
-		
+
 		//llinfos << "hostd is->" << hostd << llendl;
 		cmd=strchr(hostd, ' ');
 		if (!cmd)
@@ -441,7 +440,7 @@ void IRC::parse_irc_reply(char* data)
 		}
 
 		hostd_tmp.nick=hostd;
-		
+
 		//llinfos << "hostdtempnice->" << hostd_tmp.nick << llendl;
 		hostd_tmp.ident=strchr(hostd, '!');
 		if (hostd_tmp.ident)
@@ -583,7 +582,7 @@ void IRC::parse_irc_reply(char* data)
 
 			//params is like this #Imprudence Imprudence-User354541ac :test
 			std::string paramstring(params);
-			istringstream iss(paramstring);
+			std::istringstream iss(paramstring);
 			std::string tuser;
 			iss >> tuser;//first part we dont need
 			iss >> tuser;
@@ -592,41 +591,41 @@ void IRC::parse_irc_reply(char* data)
 				//we got kicked!!! shut down everything
 				chan_users = 0;
 			}else
-			while (cup)
-			{
-								  
-				if (!strcmp(cup->nick, tuser.c_str()))
+				while (cup)
 				{
-					d=cup;
-					if (d==chan_users)
+
+					if (!strcmp(cup->nick, tuser.c_str()))
 					{
-						chan_users=d->next;
-						if (d->channel)
-							delete [] d->channel;
-						if (d->nick)
-							delete [] d->nick;
-						delete d;
+						d=cup;
+						if (d==chan_users)
+						{
+							chan_users=d->next;
+							if (d->channel)
+								delete [] d->channel;
+							if (d->nick)
+								delete [] d->nick;
+							delete d;
+						}
+						else
+						{
+							if (prev)
+							{
+								prev->next=d->next;
+							}
+							if (d->channel)
+								delete [] d->channel;
+							if (d->nick)
+								delete [] d->nick;
+							delete d;
+						}
+						break;
 					}
 					else
 					{
-						if (prev)
-						{
-							prev->next=d->next;
-						}
-						if (d->channel)
-							delete [] d->channel;
-						if (d->nick)
-							delete [] d->nick;
-						delete d;
+						prev=cup;
 					}
-					break;
+					cup=cup->next;
 				}
-				else
-				{
-					prev=cup;
-				}
-				cup=cup->next;
-			}
 		}
 		else if (!strcmp(cmd, "MODE"))
 		{
@@ -654,119 +653,119 @@ void IRC::parse_irc_reply(char* data)
 			}
 			*params='\0';
 			params++;
-		
+
 			plus=false;
 			for (i=0; i<(signed)strlen(changevars); i++)
 			{
 				switch (changevars[i])
 				{
-				case '+':
-					plus=true;
-					break;
-				case '-':
-					plus=false;
-					break;
-				case 'o':
-					tmp=strchr(params, ' ');
-					if (tmp)
-					{
-						*tmp='\0';
-						tmp++;
-					}
-					tmp=params;
-					if (plus)
-					{
-						// user has been opped (chan, params)
-						cup=chan_users;
-						d=0;
-						while (cup)
+					case '+':
+						plus=true;
+						break;
+					case '-':
+						plus=false;
+						break;
+					case 'o':
+						tmp=strchr(params, ' ');
+						if (tmp)
 						{
-							if (cup->next && cup->channel)
+							*tmp='\0';
+							tmp++;
+						}
+						tmp=params;
+						if (plus)
+						{
+							// user has been opped (chan, params)
+							cup=chan_users;
+							d=0;
+							while (cup)
+							{
+								if (cup->next && cup->channel)
+								{
+									if (!strcmp(cup->channel, chan) && !strcmp(cup->nick, tmp))
+									{
+										d=cup;
+										break;
+									}
+								}
+								cup=cup->next;
+							}
+							if (d)
+							{
+								d->flags=d->flags|IRC_USER_OP;
+							}
+						}
+						else
+						{
+							// user has been deopped (chan, params)
+							cup=chan_users;
+							d=0;
+							while (cup)
 							{
 								if (!strcmp(cup->channel, chan) && !strcmp(cup->nick, tmp))
 								{
 									d=cup;
 									break;
 								}
+								cup=cup->next;
 							}
-							cup=cup->next;
-						}
-						if (d)
-						{
-							d->flags=d->flags|IRC_USER_OP;
-						}
-					}
-					else
-					{
-						// user has been deopped (chan, params)
-						cup=chan_users;
-						d=0;
-						while (cup)
-						{
-							if (!strcmp(cup->channel, chan) && !strcmp(cup->nick, tmp))
+							if (d)
 							{
-								d=cup;
-								break;
+								d->flags=d->flags^IRC_USER_OP;
 							}
-							cup=cup->next;
 						}
-						if (d)
+						params=tmp;
+						break;
+					case 'v':
+						tmp=strchr(params, ' ');
+						if (tmp)
 						{
-							d->flags=d->flags^IRC_USER_OP;
+							*tmp='\0';
+							tmp++;
 						}
-					}
-					params=tmp;
-					break;
-				case 'v':
-					tmp=strchr(params, ' ');
-					if (tmp)
-					{
-						*tmp='\0';
-						tmp++;
-					}
-					if (plus)
-					{
-						// user has been voiced
-						cup=chan_users;
-						d=0;
-						while (cup)
+						if (plus)
 						{
-							if (!strcmp(cup->channel, params) && !strcmp(cup->nick, hostd_tmp.nick))
+							// user has been voiced
+							cup=chan_users;
+							d=0;
+							while (cup)
 							{
-								d=cup;
-								break;
+								if (!strcmp(cup->channel, params) && !strcmp(cup->nick, hostd_tmp.nick))
+								{
+									d=cup;
+									break;
+								}
+								cup=cup->next;
 							}
-							cup=cup->next;
-						}
-						if (d)
-						{
-							d->flags=d->flags|IRC_USER_VOICE;
-						}
-					}
-					else
-					{
-						// user has been devoiced
-						cup=chan_users;
-						d=0;
-						while (cup)
-						{
-							if (!strcmp(cup->channel, params) && !strcmp(cup->nick, hostd_tmp.nick))
+							if (d)
 							{
-								d=cup;
-								break;
+								d->flags=d->flags|IRC_USER_VOICE;
 							}
-							cup=cup->next;
 						}
-						if (d)
+						else
 						{
-							d->flags=d->flags^IRC_USER_VOICE;
+							// user has been devoiced
+							cup=chan_users;
+							d=0;
+							while (cup)
+							{
+								if (!strcmp(cup->channel, params) && !strcmp(cup->nick, hostd_tmp.nick))
+								{
+									d=cup;
+									break;
+								}
+								cup=cup->next;
+							}
+							if (d)
+							{
+								d->flags=d->flags^IRC_USER_VOICE;
+							}
 						}
-					}
-					params=tmp;
-					break;
-				default:
-					return;
-					break;
+						params=tmp;
+						break;
+					default:
+						return;
+						break;
 				}
 				// ------------ END OF MODE ---------------
 			}
@@ -816,31 +815,31 @@ void IRC::parse_irc_reply(char* data)
 							cup->flags=cup->flags|IRC_USER_OP;
 							p++;
 						}else
-						if (p[0]=='%')
-						{
-							cup->flags=cup->flags|IRC_USER_HALFOP;
-							p++;
-						}else
-						if (p[0]=='&')
-						{
-							cup->flags=cup->flags|IRC_USER_OP;
-							p++;
-						}else
-						if (p[0]=='~')
-						{
-							cup->flags=cup->flags|IRC_USER_OP;
-							p++;
-						}else
-						if (p[0]=='!')
-						{
-							cup->flags=cup->flags|IRC_USER_OP;
-							p++;
-						}else
-						if (p[0]=='+')
-						{
-							cup->flags=cup->flags|IRC_USER_VOICE;
-							p++;
-						}
+							if (p[0]=='%')
+							{
+								cup->flags=cup->flags|IRC_USER_HALFOP;
+								p++;
+							}else
+								if (p[0]=='&')
+								{
+									cup->flags=cup->flags|IRC_USER_OP;
+									p++;
+								}else
+									if (p[0]=='~')
+									{
+										cup->flags=cup->flags|IRC_USER_OP;
+										p++;
+									}else
+										if (p[0]=='!')
+										{
+											cup->flags=cup->flags|IRC_USER_OP;
+											p++;
+										}else
+											if (p[0]=='+')
+											{
+												cup->flags=cup->flags|IRC_USER_VOICE;
+												p++;
+											}
 						//llinfos << "chan temp was " << chan_temp << llendl;
 						if(strstr(chan_temp," :"))chan_temp+=2;
 						if(strstr(chan_temp,":"))chan_temp+=1;
@@ -909,9 +908,9 @@ void IRC::parse_irc_reply(char* data)
 			if (params)
 				*params='\0';
 			params++;
-			#ifdef __IRC_DEBUG__
+#ifdef __IRC_DEBUG__
 			printf("%s >-%s- %s\n", hostd_tmp.nick, hostd_tmp.target, &params[1]);
-			#endif
+#endif
 		}
 		else if (!strcmp(cmd, "PRIVMSG"))
 		{
@@ -920,13 +919,13 @@ void IRC::parse_irc_reply(char* data)
 			if (!params)
 				return;
 			*(params++)='\0';
-			#ifdef __IRC_DEBUG__
+#ifdef __IRC_DEBUG__
 			printf("%s: <%s> %s\n", hostd_tmp.target, hostd_tmp.nick, &params[1]);
-			#endif
+#endif
 		}
 		else if (!strcmp(cmd, "NICK"))
 		{
-			
+
 			//llinfos << "hostdtempnice- in nick>" << hostd_tmp.nick << llendl;
 			if (!strcmp(hostd_tmp.nick, cur_nick))
 			{
@@ -937,7 +936,7 @@ void IRC::parse_irc_reply(char* data)
 			cup=chan_users;
 			while(cup)
 			{
-				
+
 				//llinfos << "loooking at>" << cup->nick << llendl;
 				if (!strcmp(hostd_tmp.nick, cup->nick))
 				{
@@ -949,44 +948,44 @@ void IRC::parse_irc_reply(char* data)
 			}
 		}
 		/* else if (!strcmp(cmd, ""))
-		{
-			#ifdef __IRC_DEBUG__
-			#endif
-		} */
-		call_hook(cmd, params, &hostd_tmp);
+		   {
+#ifdef __IRC_DEBUG__
+#endif
+} */
+call_hook(cmd, params, &hostd_tmp);
+}
+else
+{
+	cmd=data;
+	data=strchr(cmd, ' ');
+	if (!data)
+		return;
+	*data='\0';
+	params=data+1;
+
+	if (!strcmp(cmd, "PING"))
+	{
+		if (!params)
+			return;
+		std::string sout;
+		sout = "PONG "; sout += &params[1]; sout += "\r\n";
+		int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
+		if(ret == -1) return;
+		//fprintf(dataout, "PONG %s\r\n", &params[1]);
+#ifdef __IRC_DEBUG__
+		printf("Ping received, pong sent.\n");
+#endif
+		//fflush(dataout);
 	}
 	else
 	{
-		cmd=data;
-		data=strchr(cmd, ' ');
-		if (!data)
-			return;
-		*data='\0';
-		params=data+1;
-
-		if (!strcmp(cmd, "PING"))
-		{
-			if (!params)
-				return;
-			string sout;
-			sout = "PONG "; sout += &params[1]; sout += "\r\n";
-			int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
-			if(ret == -1) return;
-			//fprintf(dataout, "PONG %s\r\n", &params[1]);
-			#ifdef __IRC_DEBUG__
-			printf("Ping received, pong sent.\n");
-			#endif
-			//fflush(dataout);
-		}
-		else
-		{
-			hostd_tmp.host=0;
-			hostd_tmp.ident=0;
-			hostd_tmp.nick=0;
-			hostd_tmp.target=0;
-			call_hook(cmd, params, &hostd_tmp);
-		}
+		hostd_tmp.host=0;
+		hostd_tmp.ident=0;
+		hostd_tmp.nick=0;
+		hostd_tmp.target=0;
+		call_hook(cmd, params, &hostd_tmp);
 	}
+}
 }
 
 void IRC::call_hook(char* irc_command, char* params, irc_reply_data* hostd)
@@ -1015,7 +1014,7 @@ int IRC::notice(char* target, char* message)
 {
 	if (!connected)
 		return 1;
-	string sout;
+	std::string sout;
 	sout = "NOTICE "; sout += target; sout += " :"; sout += message; sout += "\r\n";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
@@ -1027,13 +1026,13 @@ int IRC::notice(char* target, char* message)
 int IRC::notice(char* fmt, ...)
 {
 	va_list argp;
-//	char* target;
-	
+	//	char* target;
+
 	if (!connected)
 		return 1;
 	va_start(argp, fmt);
 
-	string sout;
+	std::string sout;
 	sout = "NOTICE "; sout += fmt; sout += " :";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
@@ -1058,7 +1057,7 @@ int IRC::privmsg(char* target, char* message)
 	if (!connected)
 		return 1;
 
-	string sout;
+	std::string sout;
 	sout = "PRIVMSG "; sout += target; sout += " :"; sout += message; sout += "\r\n";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
@@ -1070,8 +1069,8 @@ int IRC::privmsg(char* target, char* message)
 int IRC::privmsg(char* fmt, ...)
 {
 	va_list argp;
-//	char* target;
-	
+	//	char* target;
+
 	if (!connected)
 		return 1;
 	//va_start(argp, fmt);
@@ -1114,13 +1113,13 @@ int IRC::join(char* channel, char* channelPass)
 	if (!connected)
 		return 1;
 
-	string sout;
+	std::string sout;
 	sout = "JOIN "; sout += channel; sout+= channelPass; sout += "\r\n";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
 
 	//fprintf(dataout, "JOIN %s\r\n", channel);
-	
+
 	return 0;
 	//return fflush(dataout);
 }
@@ -1132,7 +1131,7 @@ int IRC::part(char* channel)
 	//fprintf(dataout, "PART %s\r\n", channel);
 
 
-	string sout;
+	std::string sout;
 	sout = "PART "; sout += channel; sout += "\r\n";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
@@ -1146,8 +1145,8 @@ int IRC::kick(char* channel, char* nick)
 {
 	if (!connected)
 		return 1;
-	
-	string sout;
+
+	std::string sout;
 	sout = "KICK "; sout += channel; sout += " "; sout += nick; sout += "\r\n";
 	int ret = send(irc_socket, sout.c_str(), (int)sout.size(), 0);
 	if(ret == -1) return 1;
@@ -1165,7 +1164,7 @@ int IRC::raw(char* data)
 
 	int ret = send(irc_socket, data, strlen(data), 0);
 	if(ret == -1) return 1;
-	
+
 	return 0;
 	//return fflush(dataout);
 }
@@ -1174,12 +1173,12 @@ int IRC::kick(char* channel, char* nick, char* message)
 {
 	if (!connected)
 		return 1;
-	
+
 	sprintf_s(buf, sizeof(buf), "KICK %s %s :%s\r\n", channel, nick, message);
 	int ret = send(irc_socket, buf, strlen(buf), 0);
 	if(ret == -1) return 1;
 	//fprintf(dataout, "KICK %s %s :%s\r\n", channel, nick, message);
-	
+
 	return 0;
 	//return fflush(dataout);
 }

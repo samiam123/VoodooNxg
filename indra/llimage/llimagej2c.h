@@ -73,6 +73,7 @@ public:
 	S32 getMaxBytes() const { return mMaxBytes; }
 
 	static S32 calcHeaderSizeJ2C();
+	static S32 cald_data_size_help(S32 w, S32 h, S32 comp, S32 discard_level, F32 rate);
 	static S32 calcDataSizeJ2C(S32 w, S32 h, S32 comp, S32 discard_level, F32 rate = 0.f);
 
 	static void openDSO();

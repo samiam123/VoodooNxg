@@ -1296,6 +1296,10 @@ void LLPanelLogin::clearPassword()
 	sInstance->mIncomingPassword = blank;
 	sInstance->mMungedPassword = blank;
 }
+/* Sam said this doesn't work, and gcc doesn't like it
+ * 1352:29: warning: the address of ‘char* curl_version()’ will always evaluate as ‘true’ [-Waddress]
+ * 1355:24: error: invalid conversion from ‘char* (*)()’ to ‘void*’ [-fpermissive]
+ * Liru: It doesn't work anyway, why bother?
 //--------------------- newsbar stuff ----------
 bool LLPanelLogin::loadNewsBar()
 {
@@ -1357,4 +1361,4 @@ bool LLPanelLogin::loadNewsBar()
 	LL_DEBUGS("NewsBar")<< "news bar setup to navigate to: " << full_url.str() << LL_ENDL;
 	news_bar->navigateTo( full_url.str() );
 	return true;
-}
+}*/
