@@ -38,7 +38,6 @@
 #include "llimview.h"
 #include "llviewercontrol.h"
 #include "lldiriterator.h"
-using namespace std;
 
 lggIrcGroupHandler glggIrcGroupHandler;
 

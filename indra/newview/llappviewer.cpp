@@ -51,6 +51,8 @@
 #include "llagentwearables.h"
 #include "llwindow.h"
 #include "llviewerstats.h"
+//#include "llmarketplacefunctions.h"
+#include "llmarketplacenotifications.h"
 #include "llmd5.h"
 #include "llmeshrepository.h"
 #include "llpumpio.h"
@@ -162,7 +164,7 @@
 #include "llsurface.h"
 #include "llvosky.h"
 #include "llvotree.h"
-#include "llvoavatar.h"
+#include "llvoavatarself.h"
 #include "llfolderview.h"
 #include "lltoolbar.h"
 #include "llframestats.h"
@@ -193,6 +195,7 @@
 #include "llprogressview.h"
 
 #include "llmemory.h"
+#include "llmainlooprepeater.h"
 
 // [RLVa:KB]
 #include "rlvhandler.h"
@@ -724,6 +727,8 @@ bool LLAppViewer::init()
 				&LLURLDispatcher::dispatchFromTextEditor,
 				&LLURLDispatcher::dispatchFromTextEditor);
 	
+	LLToolMgr::getInstance(); // Initialize tool manager if not already instantiated
+		
 	/////////////////////////////////////////////////
 	//
 	// Load settings files
@@ -734,13 +739,15 @@ bool LLAppViewer::init()
 	LLAgent::parseTeleportMessages("teleport_strings.xml");
 
 	// load MIME type -> media impl mappings
-#if LL_WINDOWS
-	LLMIMETypes::parseMIMETypes( std::string("mime_types_windows.xml") );
-#elif LL_DARWIN
-	LLMIMETypes::parseMIMETypes( std::string("mime_types_mac.xml") );
+	std::string mime_types_name;
+#if LL_DARWIN
+	mime_types_name = "mime_types_mac.xml";
 #elif LL_LINUX
-	LLMIMETypes::parseMIMETypes( std::string("mime_types_linux.xml") );
+	mime_types_name = "mime_types_linux.xml";
+#else
+	mime_types_name = "mime_types_windows.xml";
 #endif
+	LLMIMETypes::parseMIMETypes( mime_types_name ); 
 
 	// Copy settings to globals. *TODO: Remove or move to appropriage class initializers
 	settings_to_globals();
@@ -788,7 +795,10 @@ bool LLAppViewer::init()
 		return 1;
 	}
 	LL_INFOS("InitInfo") << "Cache initialization is done." << LL_ENDL ;
-	
+
+	// Initialize the repeater service.
+	LLMainLoopRepeater::instance().start();
+
 	//
 	// Initialize the window
 	//
@@ -802,7 +812,7 @@ bool LLAppViewer::init()
 	// call all self-registered classes
 	LLInitClassList::instance().fireCallbacks();
 
-	#if LL_LCD_COMPILE
+#if LL_LCD_COMPILE
 		// start up an LCD window on a logitech keyboard, if there is one
 		HINSTANCE hInstance = GetModuleHandle(NULL);
 		gLcdScreen = new LLLCD(hInstance);
@@ -1055,7 +1065,13 @@ bool LLAppViewer::mainLoop()
 	LLFrameTimer memCheckTimer;
 	LLViewerJoystick* joystick(LLViewerJoystick::getInstance());
 	joystick->setNeedsReset(true);
- 	
+
+    LLEventPump& mainloop(LLEventPumps::instance().obtain("mainloop"));
+    // As we do not (yet) send data on the mainloop LLEventPump that varies
+    // with each frame, no need to instantiate a new LLSD event object each
+    // time. Obviously, if that changes, just instantiate the LLSD at the
+    // point of posting.
+    LLSD newFrame;
 
 
 	// Handle messages
@@ -1108,6 +1124,8 @@ bool LLAppViewer::mainLoop()
 				mem_leak_instance->idle() ;				
 			}			
 
+            // canonical per-frame event
+            mainloop.post(newFrame);
 			if (!LLApp::isExiting())
 			{
 				pingMainloopTimeout("Main:JoystickKeyboard");
@@ -1117,7 +1135,7 @@ bool LLAppViewer::mainLoop()
 				// done initializing.  JC
 				if (gViewerWindow->mWindow->getVisible() 
 					&& gViewerWindow->getActive()
-					&& !gViewerWindow->mWindow->getMinimized()
+					&& !gViewerWindow->getWindow()->getMinimized()
 					&& LLStartUp::getStartupState() == STATE_STARTED
 					&& !gViewerWindow->getShowProgress()
 					&& !gFocusMgr.focusLocked())
@@ -1376,6 +1394,8 @@ extern void cleanup_pose_stand(void);
 
 bool LLAppViewer::cleanup()
 {
+	//ditch LLVOAvatarSelf instance
+	gAgentAvatarp = NULL;
 	cleanup_pose_stand();
 
 	//flag all elements as needing to be destroyed immediately
@@ -1771,6 +1791,7 @@ bool LLAppViewer::cleanup()
 		llinfos << "File launched." << llendflush;
 	}
 
+	LLMainLoopRepeater::instance().stop();
 
 	//release all private memory pools.
 	LLPrivateMemoryPoolManager::destroyClass() ;
@@ -3585,7 +3606,7 @@ void LLAppViewer::badNetworkHandler()
 	std::string grid_support_msg = "";
 	if (!gHippoGridManager->getCurrentGrid()->getSupportUrl().empty())
 	{
-		grid_support_msg = "\n\nOr visit the gird support page at: \n " 
+		grid_support_msg = "\n\nOr visit the grid support page at: \n " 
 			+ gHippoGridManager->getCurrentGrid()->getSupportUrl();
 	}
 	std::ostringstream message;
@@ -3917,7 +3938,7 @@ void LLAppViewer::idle()
 		return;
     }
 
-	gViewerWindow->handlePerFrameHover();
+	gViewerWindow->updateUI();
 
 	///////////////////////////////////////
 	// Agent and camera movement
@@ -4083,6 +4104,10 @@ void LLAppViewer::idle()
 
 	// update media focus
 	LLViewerMediaFocus::getInstance()->update();
+	
+	// Update marketplace
+	//LLMarketplaceInventoryImporter::update();
+	LLMarketplaceInventoryNotifications::update();
 
 	// objects and camera should be in sync, do LOD calculations now
 	{
@@ -4570,7 +4595,7 @@ void LLAppViewer::resumeMainloopTimeout(const std::string& state, F32 secs)
 	{
 		if(secs < 0.0f)
 		{
-			static const LLCachedControl<F32> mainloop_timeout_default("ThrottleBandwidthKBPS",20);
+			static const LLCachedControl<F32> mainloop_timeout_default("MainloopTimeoutDefault",20);
 			secs = mainloop_timeout_default;
 		}
 		
@@ -4598,7 +4623,7 @@ void LLAppViewer::pingMainloopTimeout(const std::string& state, F32 secs)
 	{
 		if(secs < 0.0f)
 		{
-			static const LLCachedControl<F32> mainloop_timeout_default("ThrottleBandwidthKBPS",20);
+			static const LLCachedControl<F32> mainloop_timeout_default("MainloopTimeoutDefault",20);
 			secs = mainloop_timeout_default;
 		}
 
@@ -4644,13 +4669,9 @@ void LLAppViewer::handleLoginComplete()
 	{
 		gDebugInfo["MainloopTimeoutState"] = LLAppViewer::instance()->mMainloopTimeout->getState();
 	}
-	writeDebugInfo();
 
-// [RLVa:KB] - Checked: 2010-09-27 (RLVa-1.1.3b) | Modified: RLVa-1.1.3b
-	if (rlv_handler_t::isEnabled())
-	{
-		gRlvHandler.onLoginComplete();
-	}
-// [/RLVa:KB]
+	mOnLoginCompleted();
+
+	writeDebugInfo();
 }
 

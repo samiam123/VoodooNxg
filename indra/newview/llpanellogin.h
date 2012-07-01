@@ -39,6 +39,7 @@
 #include "llsavedlogins.h"
 
 class LLUIImage;
+class LLComboBox;
 
 // <edit>
 extern std::string gFullName;
@@ -108,7 +109,7 @@ public:
 	/*virtual*/ void handleMediaEvent(LLPluginClassMedia* self, EMediaEvent event);
 
 	/// Load the news bar web page, return true if successful.
-	bool loadNewsBar();
+	//bool loadNewsBar();
 private:
 	static void onClickConnect(void*);
 	//static void onClickGrid(void*);
@@ -124,7 +125,7 @@ private:
 	static void onSelectServer(LLUICtrl*, void*);
 	static void onServerComboLostFocus(LLFocusableElement*, void*);
 	static void onSelectLoginEntry(LLUICtrl*, void*);
-	static void onLoginComboLostFocus(LLFocusableElement* fe, void*);
+	void onLoginComboLostFocus(LLComboBox* combo_box);
 	static void onNameCheckChanged(LLUICtrl* ctrl, void* data);
 	static void clearPassword();
 

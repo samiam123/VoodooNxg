@@ -1,5 +1,8 @@
-/** 
- * $LicenseInfo:firstyear=2004&license=viewerlgpl$
+/**
+ * @file lloutfitobserver.cpp
+ * @brief Outfit observer facade.
+ *
+ * $LicenseInfo:firstyear=2010&license=viewerlgpl$
  * Second Life Viewer Source Code
  * Copyright (C) 2010, Linden Research, Inc.
  * 
@@ -22,24 +25,20 @@
  */
 
 #include "llviewerprecompiledheaders.h"
-#include "llagent.h"
-#include "llgesturemgr.h"
+
+#include "llappearancemgr.h"
+#include "lloutfitobserver.h"
+#include "llinventorymodel.h"
 #include "llviewerinventory.h"
-#include "llvoavatar.h"
-#include "cofmgr.h"
-#include "rlvviewer2.h"
 
-// ============================================================================
-// From lloutfitobserver.cpp
-
-LLCOFObserver::LLCOFObserver() :
+LLOutfitObserver::LLOutfitObserver() :
 	mCOFLastVersion(LLViewerInventoryCategory::VERSION_UNKNOWN)
 {
 	mItemNameHash.finalize();
 	gInventory.addObserver(this);
 }
 
-LLCOFObserver::~LLCOFObserver()
+LLOutfitObserver::~LLOutfitObserver()
 {
 	if (gInventory.containsObserver(this))
 	{
@@ -47,16 +46,18 @@ LLCOFObserver::~LLCOFObserver()
 	}
 }
 
-void LLCOFObserver::changed(U32 mask)
+void LLOutfitObserver::changed(U32 mask)
 {
 	if (!gInventory.isInventoryUsable())
 		return;
 
 	checkCOF();
+
+	checkBaseOutfit();
 }
 
 // static
-S32 LLCOFObserver::getCategoryVersion(const LLUUID& cat_id)
+S32 LLOutfitObserver::getCategoryVersion(const LLUUID& cat_id)
 {
 	LLViewerInventoryCategory* cat = gInventory.getCategory(cat_id);
 	if (!cat)
@@ -66,7 +67,7 @@ S32 LLCOFObserver::getCategoryVersion(const LLUUID& cat_id)
 }
 
 // static
-const std::string& LLCOFObserver::getCategoryName(const LLUUID& cat_id)
+const std::string& LLOutfitObserver::getCategoryName(const LLUUID& cat_id)
 {
 	LLViewerInventoryCategory* cat = gInventory.getCategory(cat_id);
 	if (!cat)
@@ -75,14 +76,14 @@ const std::string& LLCOFObserver::getCategoryName(const LLUUID& cat_id)
 	return cat->getName();
 }
 
-bool LLCOFObserver::checkCOF()
+bool LLOutfitObserver::checkCOF()
 {
-	LLUUID cof = LLCOFMgr::getInstance()->getCOF();
+	LLUUID cof = LLAppearanceMgr::getInstance()->getCOF();
 	if (cof.isNull())
 		return false;
 
 	bool cof_changed = false;
-	LLMD5 item_name_hash = hashDirectDescendentNames(cof);
+	LLMD5 item_name_hash = gInventory.hashDirectDescendentNames(cof);
 	if (item_name_hash != mItemNameHash)
 	{
 		cof_changed = true;
@@ -99,33 +100,54 @@ bool LLCOFObserver::checkCOF()
 	if (!cof_changed)
 		return false;
 	
+	// dirtiness state should be updated before sending signal
+	LLAppearanceMgr::getInstance()->updateIsDirty();
 	mCOFChanged();
 
 	return true;
 }
 
-LLMD5 LLCOFObserver::hashDirectDescendentNames(const LLUUID& cat_id)
+void LLOutfitObserver::checkBaseOutfit()
 {
-	LLInventoryModel::cat_array_t* cat_array;
-	LLInventoryModel::item_array_t* item_array;
-	gInventory.getDirectDescendentsOf(cat_id,cat_array,item_array);
-	LLMD5 item_name_hash;
-	if (!item_array)
-	{
-		item_name_hash.finalize();
-		return item_name_hash;
-	}
-	for (LLInventoryModel::item_array_t::const_iterator iter = item_array->begin();
-		 iter != item_array->end();
-		 iter++)
-	{
-		const LLViewerInventoryItem *item = (*iter);
-		if (!item)
-			continue;
-		item_name_hash.update(item->getName());
-	}
-	item_name_hash.finalize();
-	return item_name_hash;
-}
+	LLUUID baseoutfit_id =
+			LLAppearanceMgr::getInstance()->getBaseOutfitUUID();
 
-// ============================================================================
+	if (baseoutfit_id == mBaseOutfitId)
+	{
+		if (baseoutfit_id.isNull())
+			return;
+
+		const S32 baseoutfit_ver = getCategoryVersion(baseoutfit_id);
+		const std::string& baseoutfit_name = getCategoryName(baseoutfit_id);
+
+		if (baseoutfit_ver == mBaseOutfitLastVersion
+				// renaming category doesn't change version, so it's need to check it
+				&& baseoutfit_name == mLastBaseOutfitName)
+			return;
+	}
+	else
+	{
+		mBaseOutfitId = baseoutfit_id;
+		mBOFReplaced();
+
+		if (baseoutfit_id.isNull())
+			return;
+	}
+
+	mBaseOutfitLastVersion = getCategoryVersion(mBaseOutfitId);
+	mLastBaseOutfitName = getCategoryName(baseoutfit_id);
+
+	LLAppearanceMgr& app_mgr = LLAppearanceMgr::instance();
+	// dirtiness state should be updated before sending signal
+	app_mgr.updateIsDirty();
+	mBOFChanged();
+
+	if (mLastOutfitDirtiness != app_mgr.isOutfitDirty())
+	{
+		if(!app_mgr.isOutfitDirty())
+		{
+			mCOFSaved();
+		}
+		mLastOutfitDirtiness = app_mgr.isOutfitDirty();
+	}
+}

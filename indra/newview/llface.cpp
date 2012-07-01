@@ -1740,10 +1740,10 @@ BOOL LLFace::getGeometryVolume(const LLVolume& volume,
 		}
 	}
 
-	//if (rebuild_color)//remove me sam old
-    // <FS:ND> FS-5132 Only use color strider if face has colors.
-     if (rebuild_color && mVertexBuffer->hasDataType(LLVertexBuffer::TYPE_COLOR) )
-       // </FS:ND>
+	// <FS:ND> FS-5132 Only use color strider if face has colors.
+	// if (rebuild_color)
+	if (rebuild_color && mVertexBuffer->hasDataType(LLVertexBuffer::TYPE_COLOR) )
+	// </FS:ND>
 	{
 		LLFastTimer t(FTM_FACE_GEOM_COLOR);
 		mVertexBuffer->getColorStrider(colors, mGeomIndex, mGeomCount, map_range);
@@ -1791,7 +1791,7 @@ BOOL LLFace::getGeometryVolume(const LLVolume& volume,
 					 (glow << 24);
 
 		U32 vec[4];
-		vec[0] = vec[1] = vec[2] = vec[3] = glow32;
+		std::fill_n(vec,4,glow32);
 		
 		src.loadua((F32*) vec);
 

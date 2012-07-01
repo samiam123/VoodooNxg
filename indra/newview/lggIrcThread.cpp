@@ -337,8 +337,8 @@ int lggIrcThread::PrivMessageResponce( char * params, irc_reply_data * hostd, vo
 				//chan msg
 				//if(strstr(&params[1],"ACTION"))
 				//if(std::string(&params[1]).find_first_of("ACTION")!=std::string::npos)
-				string::size_type pos = std::string(&params[1]).find_first_of(" \001", 1);
-				string command = std::string(&params[1]).substr(1, pos - 1);
+				std::string::size_type pos = std::string(&params[1]).find_first_of(" \001", 1);
+				std::string command = std::string(&params[1]).substr(1, pos - 1);
 				if (command == "ACTION")
 				{
 					actionDisp(std::string(hostd->nick),(std::string(&params[1]).substr(pos + 1, (std::string(&params[1]).length() - pos) - 2)));
@@ -393,8 +393,8 @@ int lggIrcThread::NoticeMessageResponce( char * params, irc_reply_data * hostd, 
 
 		if(hostd->target && hostd->nick)
 		{
-			string::size_type pos = std::string(&params[1]).find_first_of(" \001", 1);
-			string command = std::string(&params[1]).substr(1, pos - 1);
+			std::string::size_type pos = std::string(&params[1]).find_first_of(" \001", 1);
+			std::string command = std::string(&params[1]).substr(1, pos - 1);
 			std::string temp1 = makelower(hostd->target);
 			std::string temp2 = makelower(getChannel().c_str());
 			if(command == "VERSION")
@@ -654,7 +654,7 @@ int lggIrcThread::KickMessageResponce( char * params, irc_reply_data * hostd, vo
 			std::string twho;
 			std::string twhy;
 			std::string paramstring(&params[1]);
-			istringstream iss(paramstring);
+			std::istringstream iss(paramstring);
 			iss >> twho;//first part we dont need
 			
 			if(iss >> twho)
@@ -1049,8 +1049,8 @@ void lggIrcThread::displayPrivateIm(std::string msg, std::string name)
 	if(found)
 	{
 
-		string::size_type pos = std::string(msg.c_str()).find_first_of(" \001", 1);
-		string command = std::string(msg.c_str()).substr(1, pos - 1);
+		std::string::size_type pos = std::string(msg.c_str()).find_first_of(" \001", 1);
+		std::string command = std::string(msg.c_str()).substr(1, pos - 1);
 		if(command == "VERSION")
 		{
 			conn->notice((char *)name.c_str(), (char *)gCurrentVersion.c_str());

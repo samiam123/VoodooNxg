@@ -38,10 +38,7 @@ void HippoLimits::setLimits()
 void HippoLimits::setOpenSimLimits()
 {
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
-	if (mMaxAgentGroups < 0)
-	{
-	mMaxAgentGroups = 50;
-	}
+	if (mMaxAgentGroups < 0) mMaxAgentGroups = 50;
 	mMaxPrimScale = 256.0f;
 	mMinPrimScale = 0.001f;
 	mMinPrimXPos = 0;
@@ -70,8 +67,8 @@ void HippoLimits::setOpenSimLimits()
 	mLockedDrawDistance = FALSE;
 	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
 	//	llinfos << "Using rendering compatible OpenSim limits." << llendl;
-	//	mMinHoleSize = 0.001f;
-	//	mMaxHollow = 99.0f;
+	//	mMinHoleSize = 0.005f;
+	//	mMaxHollow = 0.95f;
 	//}
 	//else
 	//{
@@ -83,10 +80,7 @@ void HippoLimits::setOpenSimLimits()
 void HippoLimits::setAuroraLimits()
 {
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
-	if (mMaxAgentGroups < 0)
-	{
-	mMaxAgentGroups = 50;
-	}
+	if (mMaxAgentGroups < 0) mMaxAgentGroups = 50;
 	mMaxPrimScale = 256.0f;
 	mMinPrimScale = 0.001f;
 	mMinPrimXPos = 0;
@@ -111,9 +105,9 @@ void HippoLimits::setAuroraLimits()
 	mMaxSelectDistance = 256.0f;
 	mDrawDistance = 128;
 	mLockedDrawDistance = FALSE;
-	mDrawDistance;
-	mLockedDrawDistance;
-	mTerrainScale; //yah i know but openregion sets this value anyway
+	//mDrawDistance;
+	//mLockedDrawDistance;
+	//mTerrainScale; //yah i know but openregion sets this value anyway
 	mMinHoleSize = 0.001f;
 	mMaxHollow = 99.0f;
 	

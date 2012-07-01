@@ -113,8 +113,6 @@ static bool nameSplit(const std::string& full, std::string& first, std::string& 
 	{
 		if (gHippoGridManager->getConnectedGrid()->isSecondLife())
 			last = "resident";
-		//{
-
 		else
 			last = "";
 	}
@@ -249,7 +247,7 @@ LLPanelLogin::LLPanelLogin(const LLRect &rect,
 	LLPanelLogin::sInstance = this;
 
 	// add to front so we are the bottom-most child
-	gViewerWindow->getRootView()->addChildAtEnd(this);
+	gViewerWindow->getRootView()->addChildInBack(this);
 
 	// Logo
 	mLogoImage = LLUI::getUIImage("startup_logo.j2c");
@@ -265,7 +263,7 @@ LLPanelLogin::LLPanelLogin(const LLRect &rect,
 #if !USE_VIEWER_AUTH
 	LLComboBox* name_combo = sInstance->getChild<LLComboBox>("name_combo");
 	name_combo->setCommitCallback(onSelectLoginEntry);
-	name_combo->setFocusLostCallback(onLoginComboLostFocus);
+	name_combo->setFocusLostCallback(boost::bind(&LLPanelLogin::onLoginComboLostFocus, this, name_combo));
 	name_combo->setPrevalidate(LLLineEditor::prevalidatePrintableNotPipe);
 	name_combo->setSuppressTentative(true);
 	name_combo->setSuppressAutoComplete(true);
@@ -538,7 +536,6 @@ void LLPanelLogin::draw()
 			gl_rect_2d( 0, height - 264 + news_bar_height, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
 			// draw the bottom part of the background image - just the blue background to the native client UI
 			mLogoImage->draw(0, -264 + news_bar_height, width + 8, mLogoImage->getHeight());
-			
 #endif
 		}
 		else
@@ -974,8 +971,7 @@ void LLPanelLogin::loadLoginPage()
 			}
 		}
 	}
-	else if (gHippoGridManager->getConnectedGrid()->isOpenSimulator())
-	{
+	else if (gHippoGridManager->getConnectedGrid()->isOpenSimulator()){
 		oStr << "&grid=" << gHippoGridManager->getConnectedGrid()->getGridNick();
 	}
 	else if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA)
@@ -1261,18 +1257,12 @@ void LLPanelLogin::onSelectLoginEntry(LLUICtrl* ctrl, void* data)
 	}
 }
 
-// static ---------------------------------------------------------------------------------
-
-void LLPanelLogin::onLoginComboLostFocus(LLFocusableElement* fe, void*)
+void LLPanelLogin::onLoginComboLostFocus(LLComboBox* combo_box)
 {
-	if (sInstance)
+	if(combo_box->isTextDirty())
 	{
-		LLComboBox* combo = sInstance->getChild<LLComboBox>("name_combo");
-		if(fe == combo && combo->isTextDirty())
-		{
-			clearPassword();
-			combo->resetTextDirty();
-		}
+		clearPassword();
+		combo_box->resetTextDirty();
 	}
 }
 
@@ -1306,6 +1296,10 @@ void LLPanelLogin::clearPassword()
 	sInstance->mIncomingPassword = blank;
 	sInstance->mMungedPassword = blank;
 }
+/* Sam said this doesn't work, and gcc doesn't like it
+ * 1352:29: warning: the address of ‘char* curl_version()’ will always evaluate as ‘true’ [-Waddress]
+ * 1355:24: error: invalid conversion from ‘char* (*)()’ to ‘void*’ [-fpermissive]
+ * Liru: It doesn't work anyway, why bother?
 //--------------------- newsbar stuff ----------
 bool LLPanelLogin::loadNewsBar()
 {
@@ -1367,4 +1361,4 @@ bool LLPanelLogin::loadNewsBar()
 	LL_DEBUGS("NewsBar")<< "news bar setup to navigate to: " << full_url.str() << LL_ENDL;
 	news_bar->navigateTo( full_url.str() );
 	return true;
-}
+}*/
