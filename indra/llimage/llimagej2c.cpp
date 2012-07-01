@@ -363,8 +363,12 @@ S32 LLImageJ2C::calcHeaderSizeJ2C()
 	return FIRST_PACKET_SIZE; // Hack. just needs to be >= actual header size...
 }
 
-static S32 cald_data_size_help(S32 w, S32 h, S32 comp, S32 discard_level, F32 rate)
+//static
+S32 LLImageJ2C::cald_data_size_help(S32 w, S32 h, S32 comp, S32 discard_level, F32 rate)
 {
+	// Note: this only provides an *estimate* of the size in bytes of an image level
+	// *TODO: find a way to read the true size (when available) and convey the fact
+	// that the result is an estimate in the other cases
 	if (rate <= 0.f) rate = .125f;
 	while (discard_level > 0)
 	{
@@ -375,6 +379,7 @@ static S32 cald_data_size_help(S32 w, S32 h, S32 comp, S32 discard_level, F32 ra
 		discard_level--;
 	}
 	S32 bytes = (S32)((F32)(w*h*comp)*rate);
+	bytes = llmax(bytes, calcHeaderSizeJ2C());
 	return bytes;
 }
 

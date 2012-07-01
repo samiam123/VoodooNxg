@@ -755,6 +755,11 @@ bool LLGLManager::initGL()
 	}
 #endif
 
+	if (mIsIntel && mGLVersion <= 3.f)
+	{ //never try to use framebuffer objects on older intel drivers (crashy)
+		mHasFramebufferObject = FALSE;
+	}
+
 	if (mHasFramebufferObject)
 	{
 		glGetIntegerv(GL_MAX_SAMPLES, &mMaxSamples);
@@ -1891,7 +1896,7 @@ void LLGLState::checkClientArrays(const std::string& msg, U32 data_mask)
 	glClientActiveTextureARB(GL_TEXTURE0_ARB);
 	gGL.getTexUnit(0)->activate();
 
-	if (gGLManager.mHasVertexShader)
+	if (gGLManager.mHasVertexShader && LLGLSLShader::sNoFixedFunction)
 	{	//make sure vertex attribs are all disabled
 		GLint count;
 		glGetIntegerv(GL_MAX_VERTEX_ATTRIBS_ARB, &count);
@@ -1943,6 +1948,7 @@ LLGLState::LLGLState(LLGLenum state, S32 enabled) :
 			case GL_COLOR_MATERIAL:
 			case GL_FOG:
 			case GL_LINE_STIPPLE:
+			case GL_POLYGON_STIPPLE:
 				mState = 0;
 				break;
 		}
