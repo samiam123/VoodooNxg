@@ -407,40 +407,29 @@ void LLSurface::connectNeighbor(LLSurface *neighborp, U32 direction)
 	S32 own_offset[2] = {0, 0};
 	S32 neighbor_offset[2] = {0, 0};
 	U32 own_xpos, own_ypos, neighbor_xpos, neighbor_ypos;
-
-	//ppe[0] = std::min(mPatchesPerEdge,neighborPatchesPerEdge); // used for x//dosent like to build with std
-	//ppe[1] = std::min(mPatchesPerEdge,neighborPatchesPerEdge); // used for y//dosent same here too -VS
-	
-	ppe[0] = (mPatchesPerEdge < neighborPatchesPerEdge) ? mPatchesPerEdge : neighborPatchesPerEdge; // used for x //added -VS
-	ppe[1] = ppe[0]; // used for y //added -VS
+#undef min //'Cause Windows is /brilliant/
+	ppe[0] = std::min(mPatchesPerEdge,neighborPatchesPerEdge); // used for x
+	ppe[1] = std::min(mPatchesPerEdge,neighborPatchesPerEdge); // used for y
 
 	from_region_handle(mRegionp->getHandle(), &own_xpos, &own_ypos);
 	from_region_handle(neighborp->getRegion()->getHandle(), &neighbor_xpos, &neighbor_ypos);
 
 	if(own_ypos >= neighbor_ypos) {
 		neighbor_offset[1] = (own_ypos - neighbor_ypos) / mGridsPerPatchEdge;
-		//ppe[1] = std::min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[1]);//org
-		ppe[1] = min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[1]);
-		
+		ppe[1] = std::min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[1]);
 	}
 	else {
 		own_offset[1] = (neighbor_ypos - own_ypos) / mGridsPerPatchEdge;
-		//ppe[1] = std::min(mPatchesPerEdge-own_offset[1], neighborPatchesPerEdge);//org
-		ppe[1] = min(mPatchesPerEdge-own_offset[1], neighborPatchesPerEdge);
-		
+		ppe[1] = std::min(mPatchesPerEdge-own_offset[1], neighborPatchesPerEdge);
 	}
 
 	if(own_xpos >= neighbor_xpos) {
 		neighbor_offset[0] = (own_xpos - neighbor_xpos) / mGridsPerPatchEdge;
-		//ppe[0] = std::min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[0]);//org
-        ppe[0] = min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[0]);
-		
+		ppe[0] = std::min(mPatchesPerEdge, neighborPatchesPerEdge-neighbor_offset[0]);
 	}
 	else {
 		own_offset[0] = (neighbor_xpos - own_xpos) / mGridsPerPatchEdge;
-		//ppe[0] = std::min(mPatchesPerEdge-own_offset[0], neighborPatchesPerEdge);//org
-		ppe[0] = min(mPatchesPerEdge-own_offset[0], neighborPatchesPerEdge);
-		
+		ppe[0] = std::min(mPatchesPerEdge-own_offset[0], neighborPatchesPerEdge);
 	}
 	// Connect patches
 	if (NORTHEAST == direction)
