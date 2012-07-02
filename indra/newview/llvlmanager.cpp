@@ -121,7 +121,9 @@ void LLVLManager::unpackData(const S32 num_packets)
       AURORA_CLOUD_LAYER_CODE == datap->mType) // for var
 		//else if (CLOUD_LAYER_CODE == datap->mType) //non var
 		{
+#if ENABLE_CLASSIC_CLOUDS
 			datap->mRegionp->mCloudLayer.decompress(bit_pack, &goph);
+#endif
 		}
     else if (WATER_LAYER_CODE == datap->mType || // for var
       AURORA_WATER_LAYER_CODE == datap->mType) //for var

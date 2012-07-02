@@ -343,7 +343,9 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 	mImpl->mObjectPartition.push_back(new LLWaterPartition());		//PARTITION_WATER
 	mImpl->mObjectPartition.push_back(new LLTreePartition());		//PARTITION_TREE
 	mImpl->mObjectPartition.push_back(new LLParticlePartition());	//PARTITION_PARTICLE
+#if ENABLE_CLASSIC_CLOUDS
 	mImpl->mObjectPartition.push_back(new LLCloudPartition());		//PARTITION_CLOUD
+#endif
 	mImpl->mObjectPartition.push_back(new LLGrassPartition());		//PARTITION_GRASS
 	mImpl->mObjectPartition.push_back(new LLVolumePartition());	//PARTITION_VOLUME
 	mImpl->mObjectPartition.push_back(new LLBridgePartition());	//PARTITION_BRIDGE
@@ -373,7 +375,9 @@ LLViewerRegion::~LLViewerRegion()
 	// Can't do this on destruction, because the neighbor pointers might be invalid.
 	// This should be reference counted...
 	disconnectAllNeighbors();
+#if ENABLE_CLASSIC_CLOUDS
 	mCloudLayer.destroy();
+#endif
 	LLViewerPartSim::getInstance()->cleanupRegion(this);
 
 	gObjectList.killObjects(this);
@@ -515,7 +519,9 @@ void LLViewerRegion::setOriginGlobal(const LLVector3d &origin_global)
 	updateRenderMatrix();
 	mImpl->mLandp->setOriginGlobal(origin_global);
 	mWind.setOriginGlobal(origin_global);
+#if ENABLE_CLASSIC_CLOUDS
 	mCloudLayer.setOriginGlobal(origin_global);
+#endif
 	calculateCenterGlobal();
 }
 
@@ -791,14 +797,18 @@ void LLViewerRegion::forceUpdate()
 void LLViewerRegion::connectNeighbor(LLViewerRegion *neighborp, U32 direction)
 {
 	mImpl->mLandp->connectNeighbor(neighborp->mImpl->mLandp, direction);
+#if ENABLE_CLASSIC_CLOUDS
 	mCloudLayer.connectNeighbor(&(neighborp->mCloudLayer), direction);
+#endif
 }
 
 
 void LLViewerRegion::disconnectAllNeighbors()
 {
 	mImpl->mLandp->disconnectAllNeighbors();
+#if ENABLE_CLASSIC_CLOUDS
 	mCloudLayer.disconnectAllNeighbors();
+#endif
 }
 
 LLVLComposition * LLViewerRegion::getComposition() const
