@@ -216,7 +216,7 @@
 //#include "llactivation.h"
 #include "wlfPanel_AdvSettings.h" //Lower right Windlight and Rendering options
 #include "lldaycyclemanager.h"
-#include "llwindlightsettingresponder.h"
+//#include "llwindlightsettingresponder.h"
 #include "llfloaterblacklist.h"
 #include "scriptcounter.h"
 #include "shfloatermediaticker.h"
@@ -1574,17 +1574,11 @@ bool idle_startup()
 			return false;
 		}
 
-		// OGPX : successful login path common to OGP and XML-RPC
+		// XML-RPC successful login path here
 		if (successful_login)
 		{
 			// unpack login data needed by the application
-			if(gAgentID.notNull()
-			   && gAgentSessionID.notNull()
-			   && gMessageSystem->mOurCircuitCode
-			   && gFirstSim.isOk())
-			//Buzz check the above for typo First_sim vrs what it is
-			// OGPX : Inventory root might be null in OGP.
-//			   && gAgent.mInventoryRootID.notNull())
+			if(process_login_success_response(password))
 			{
 				std::string name = firstname;
 				std::string last_name = lastname;
@@ -4306,11 +4300,13 @@ bool process_login_success_response(std::string& password)
 			gMoonTextureID = id;
 		}
 
+#if ENABLE_CLASSIC_CLOUDS
 		id = global_textures["cloud_texture_id"];
 		if(id.notNull())
 		{
 			gCloudTextureID = id;
 		}
+#endif
 	}
 
 	
