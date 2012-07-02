@@ -209,9 +209,11 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host,
 	}
 
 	//Classic clouds
+#if ENABLE_CLASSIC_CLOUDS
 	regionp->mCloudLayer.create(regionp);
 	regionp->mCloudLayer.setWidth((F32)mWidth);
 	regionp->mCloudLayer.setWindPointer(&regionp->mWind);
+#endif
 
 	mRegionList.push_back(regionp);
 	mActiveRegionList.push_back(regionp);
@@ -723,6 +725,7 @@ void LLWorld::updateParticles()
 	LLViewerPartSim::getInstance()->updateSimulation();
 }
 
+#if ENABLE_CLASSIC_CLOUDS
 void LLWorld::updateClouds(const F32 dt)
 {
 	static const LLCachedControl<bool> freeze_time("FreezeTime",false);
@@ -781,6 +784,7 @@ LLCloudGroup* LLWorld::findCloudGroup(const LLCloudPuff &puff)
 	}
 	return NULL;
 }
+#endif
 
 
 void LLWorld::renderPropertyLines()
