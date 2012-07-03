@@ -184,6 +184,7 @@
 #include "llviewerstats.h"
 #include "llviewerthrottle.h"
 #include "llviewerwindow.h"
+#include "llvoavatar.h"
 #include "llvoavatarself.h"
 #include "llvoclouds.h"
 #include "llweb.h"
@@ -298,6 +299,7 @@ void release_start_screen();
 void reset_login();
 void apply_udp_blacklist(const std::string& csv);
 bool process_login_success_response(std::string &password);
+bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
 
 void callback_cache_name(const LLUUID& id, const std::string& full_name, bool is_group)
 {
@@ -386,7 +388,7 @@ bool idle_startup()
 	static LLUUID web_login_key;
 	static std::string password;
 	static std::vector<const char*> requested_options;
-// added 2 lines below sams voodoo
+// added 2 lines below sams voodoo -----------------
 	static LLHost first_sim;
 	static std::string first_sim_seed_cap;
 //--------------------------------------------------
@@ -1578,7 +1580,8 @@ bool idle_startup()
 		if (successful_login)
 		{
 			// unpack login data needed by the application
-			if(process_login_success_response(password))
+			//if(process_login_success_response(password))//was
+			if(process_login_success_response(first_sim_size_x,first_sim_size_y))//added for var -VS			
 			{
 				std::string name = firstname;
 				std::string last_name = lastname;
@@ -4044,7 +4047,9 @@ bool LLStartUp::startLLProxy()
 
 	return proxy_ok;
 }
-bool process_login_success_response(std::string& password)
+//bool process_login_success_response(std::string& password);//org need to fix
+bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y)//for var
+
 {
 	LLSD response = LLUserAuth::getInstance()->getResponse();
 
@@ -4088,14 +4093,14 @@ bool process_login_success_response(std::string& password)
 	if (gSavedSettings.getBOOL("RememberPassword"))
 	{
 		// Successful login means the password is valid, so save it.
-		LLStartUp::savePasswordToDisk(password);
+		//LLStartUp::savePasswordToDisk(password);//commented this out for now broke it somehow -VS
 	}
 	else
 	{
 		// Don't leave password from previous session sitting around
 		// during this login session.
-		LLStartUp::deletePasswordFromDisk();
-		password.assign(""); // clear the password so it isn't saved to login history either
+		//LLStartUp::deletePasswordFromDisk();//commented this out for now -VS
+		//password.assign(""); // clear the password so it isn't saved to login history either
 	}
 
 	{
@@ -4107,8 +4112,8 @@ bool process_login_success_response(std::string& password)
 		history_data.deleteEntry(firstname, lastname, grid_nick);
 		if (gSavedSettings.getBOOL("RememberLogin"))
 		{
-			LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);
-			history_data.addEntry(login_entry);
+			//LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);//commented out for now broken -VS
+			//history_data.addEntry(login_entry);// same here -VS
 		}
 		else
 		{
@@ -4164,8 +4169,10 @@ bool process_login_success_response(std::string& password)
 	std::string sim_port_str = response["sim_port"];
 	if(!sim_ip_str.empty() && !sim_port_str.empty())
 	{
-		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);
-		gFirstSim.set(sim_ip_str, sim_port);
+		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);		
+		//gFirstSim.set(sim_ip_str, sim_port);//commented this out added 2 lines below -VS
+		gFirstSim.setHostByName(sim_ip_str);//added -VS
+		gFirstSim.setPort(sim_port);//added -VS
 		if (gFirstSim.isOk())
 		{
 			gMessageSystem->enableCircuit(gFirstSim, TRUE);
@@ -4179,7 +4186,19 @@ bool process_login_success_response(std::string& password)
 		U32 region_y = strtoul(region_y_str.c_str(), NULL, 10);
 		gFirstSimHandle = to_region_handle(region_x, region_y);
 	}
-	
+
+// Added one block for var below for vars -VS------------------------------------------------
+
+	 text = response["region_size_x"].asString();
+     if(!text.empty()) 
+	 {
+      first_sim_size_x = strtoul(text.c_str(), NULL, 10);
+      LLViewerParcelMgr::getInstance()->init(first_sim_size_x);
+      }
+	  text = response["region_size_y"].asString();	 
+      if(!text.empty()) first_sim_size_y = strtoul(text.c_str(), NULL, 10);
+//------------------------------------------------------------------------------------------
+	 
 	const std::string look_at_str = response["look_at"];
 	if (!look_at_str.empty())
 	{
