@@ -184,7 +184,6 @@
 #include "llviewerstats.h"
 #include "llviewerthrottle.h"
 #include "llviewerwindow.h"
-#include "llvoavatar.h"
 #include "llvoavatarself.h"
 #include "llvoclouds.h"
 #include "llweb.h"
@@ -298,7 +297,7 @@ void init_start_screen(S32 location_id);
 void release_start_screen();
 void reset_login();
 void apply_udp_blacklist(const std::string& csv);
-bool process_login_success_response(std::string &password);
+//bool process_login_success_response(std::string &password); was
 bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
 
 void callback_cache_name(const LLUUID& id, const std::string& full_name, bool is_group)
@@ -1581,7 +1580,7 @@ bool idle_startup()
 		{
 			// unpack login data needed by the application
 			//if(process_login_success_response(password))//was
-			if(process_login_success_response(first_sim_size_x,first_sim_size_y))//added for var -VS			
+			if(process_login_success_response(first_sim_size_x,first_sim_size_y))//added for var -VS
 			{
 				std::string name = firstname;
 				std::string last_name = lastname;
@@ -4049,7 +4048,6 @@ bool LLStartUp::startLLProxy()
 }
 //bool process_login_success_response(std::string& password);//org need to fix
 bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y)//for var
-
 {
 	LLSD response = LLUserAuth::getInstance()->getResponse();
 
@@ -4169,7 +4167,7 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	std::string sim_port_str = response["sim_port"];
 	if(!sim_ip_str.empty() && !sim_port_str.empty())
 	{
-		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);		
+		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);
 		//gFirstSim.set(sim_ip_str, sim_port);//commented this out added 2 lines below -VS
 		gFirstSim.setHostByName(sim_ip_str);//added -VS
 		gFirstSim.setPort(sim_port);//added -VS
