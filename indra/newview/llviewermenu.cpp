@@ -877,8 +877,6 @@ void init_menus()
 	gLoginMenuBarView->setBackgroundColor( color );
 
 	gMenuHolder->addChild(gLoginMenuBarView);
-	
-	LLToolMgr::getInstance()->initMenu(sMenus);
 }
 
 
@@ -9521,4 +9519,6 @@ void initialize_menus()
 		addMenu(new RlvEnableIfNot(), "RLV.EnableIfNot");
 	}
 // [/RLVa:KB]
+
+	LLToolMgr::getInstance()->initMenu(sMenus);
 }
