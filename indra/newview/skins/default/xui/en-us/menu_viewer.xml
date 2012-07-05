@@ -881,8 +881,8 @@
 				<on_click function="PromptShowURL" name="PublicIssueTrackerHelp_url"
 				     userdata="WebLaunchPublicIssueHelp,http://wiki.secondlife.com/wiki/Issue_tracker" />
 			</menu_item_call>
-			<menu_item_call bottom="-94" enabled="false" height="19" label="Singularity Issue Tracker..."
-			     left="0" mouse_opaque="true" name="Singularity Issue Tracker..." width="166">
+			<menu_item_call bottom="-94" enabled="false" height="19" label="Voodoo Issue Tracker..."
+			     left="0" mouse_opaque="true" name="Voodoo Issue Tracker..." width="166">
 				<on_click function="PromptShowURL" name="SinguIssueTracker_url"
 						userdata="WebLaunchSinguIssue,http://code.google.com/p/singularity-viewer/issues/list" />
 			</menu_item_call>
@@ -910,8 +910,8 @@
 				<on_click function="PromptShowURL" name="ReportBug_url"
 				     userdata="WebLaunchPublicIssue,http://jira.secondlife.com" />
 			</menu_item_call>
-			<menu_item_call bottom="-240" enabled="false" height="19" label="Report Singularity Bug..." left="0"
-			     mouse_opaque="true" name="Report Singularity Bug..." width="166">
+			<menu_item_call bottom="-240" enabled="false" height="19" label="Report Voodoo Bug..." left="0"
+			     mouse_opaque="true" name="Report Voodoo Bug..." width="166">
 				<on_click function="PromptShowURL" name="ReportSinguBug_url"
 						userdata="WebLaunchSinguIssue,http://code.google.com/p/singularity-viewer/issues/entry" />
 			</menu_item_call>
