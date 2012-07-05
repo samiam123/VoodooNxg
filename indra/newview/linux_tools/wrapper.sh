@@ -130,7 +130,7 @@ if [ -n "$LL_TCMALLOC" ]; then
     fi
 fi
 
-export VIEWER_BINARY='singularity-do-not-run-directly'
+export VIEWER_BINARY='Voodoo-do-not-run-directly'
 BINARY_TYPE=$(expr match "$(file -b bin/$VIEWER_BINARY)" '\(.*executable\)')
 QPP=qt4/plugins/imageformats/
 if [ "${BINARY_TYPE}" == "ELF 64-bit LSB executable" ]; then
