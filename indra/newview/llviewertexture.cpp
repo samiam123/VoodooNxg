@@ -1422,10 +1422,10 @@ void LLViewerFetchedTexture::destroyTexture()
 {
 
 	//----- Comment out one block for more agressive ram clearing test VS ------
-	//if(LLImageGL::sGlobalTextureMemoryInBytes < sMaxDesiredTextureMemInBytes)//not ready to release unused memory.
-	//{
-	//	return ;
-	//}
+	if(LLImageGL::sGlobalTextureMemoryInBytes < sMaxDesiredTextureMemInBytes)//not ready to release unused memory.
+	{
+		return ;
+	}
     //---------------------------------------------------------------------------
 
 	if (mNeedsCreateTexture)//return if in the process of generating a new texture.
