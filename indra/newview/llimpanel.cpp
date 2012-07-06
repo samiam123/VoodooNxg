@@ -1722,7 +1722,6 @@ void LLFloaterIMPanel::addHistoryLine(const std::string &utf8msg, LLColor4 incol
 	}
 
 	//Kadah - Bold group mods chat. Doesnt work on the first msg of the session, dont have speakers list yet?
-	// The bool is set in ascent for the line below. sams voodoo
 	if (gSavedSettings.getBOOL("VoodooBoldGroupModerator") && isModerator(source))
 	{
 		mHistoryEditor->appendColoredText(utf8msg.substr(0,1), false, prepend_newline, color);
@@ -2341,7 +2340,7 @@ void LLFloaterIMPanel::sendMsg()
 
 					std::string send = utf8text.substr(pos, next_split);
 					pos += next_split;
-                    LL_WARNS("Splitting") << "Pos: " << pos << " next_split: " << next_split << LL_ENDL;
+LL_WARNS("Splitting") << "Pos: " << pos << " next_split: " << next_split << LL_ENDL;
 
 					deliver_message(send,
 									mSessionUUID,

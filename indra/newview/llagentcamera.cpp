@@ -2157,8 +2157,7 @@ void LLAgentCamera::changeCameraToMouselook(BOOL animate)
 		mMouselookTimer.reset();
 
 		gFocusMgr.setKeyboardFocus( NULL );
-		if (gSavedSettings.getBOOL("AONoStandsInMouselook"))
-			LLFloaterAO::stopMotion(LLFloaterAO::getCurrentStandId(), FALSE,TRUE);
+		if (gSavedSettings.getBOOL("AONoStandsInMouselook"))	LLFloaterAO::stopMotion(LLFloaterAO::getCurrentStandId(), FALSE,TRUE);
 		
 		updateLastCamera();
 		mCameraMode = CAMERA_MODE_MOUSELOOK;

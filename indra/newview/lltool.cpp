@@ -101,7 +101,7 @@ BOOL LLTool::handleHover(S32 x, S32 y, MASK mask)
 
 BOOL LLTool::handleScrollWheel(S32 x, S32 y, S32 clicks)
 {
-		if(clicks < 0)
+	if(clicks < 0)
 		gAgent.setControlFlags(AGENT_CONTROL_MBUTTON_SCROLL_DOWN);
 	else
 		gAgent.setControlFlags(AGENT_CONTROL_MBUTTON_SCROLL_UP);
@@ -128,7 +128,6 @@ BOOL LLTool::handleRightMouseDown(S32 x,S32 y,MASK mask)
 BOOL LLTool::handleRightMouseUp(S32 x, S32 y, MASK mask)
 {
 	gAgent.setControlFlags(AGENT_CONTROL_RBUTTON_UP);
-	//gAgent.setControlFlags(AGENT_CONTROL_RBUTTON_DOWN);
 	// by default, didn't handle it
 	// llinfos << "LLTool::handleRightMouseDown" << llendl;
 	return FALSE;

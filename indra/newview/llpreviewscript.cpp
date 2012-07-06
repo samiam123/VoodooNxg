@@ -1113,8 +1113,7 @@ void LLScriptEdCore::onErrorList(LLUICtrl*, void* user_data)
 	LLScrollListItem* item = self->mErrorList->getFirstSelected();
 	if(item)
 	{
-		// *FIX: This fucked up little hack is here because we don't
-		// have a grep library. This is very brittle code.
+		// *FIX: replace with boost grep
 		S32 row = 0;
 		S32 column = 0;
 		const LLScrollListCell* cell = item->getColumn(0);
@@ -1139,7 +1138,7 @@ bool LLScriptEdCore::handleReloadFromServerDialog(const LLSD& notification, cons
 		if( mLoadCallback )
 		{
 			setScriptText(getString("loading"), FALSE);
-			mLoadCallback( mUserdata );
+			mLoadCallback(mUserdata);
 		}
 		break;
 

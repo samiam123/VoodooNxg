@@ -150,8 +150,8 @@ public:
 	LLPointer<LLViewerFetchedTexture> mOverlayImage;
 };
 
-//#define MAP_BLOCK_RES 256 //non var buzz may be a ram hog for var
-#define MAP_BLOCK_RES 256 //for var
+#define MAP_BLOCK_RES 256
+
 struct LLWorldMapLayer
 {
 	BOOL LayerDefined;

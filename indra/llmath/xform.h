@@ -35,9 +35,9 @@
 #include "v3math.h"
 #include "m4math.h"
 #include "llquaternion.h"
-// this dosent go here and also now uses hippo limits
-//const F32 MAX_OBJECT_Z 	= 4096.f; // should match REGION_HEIGHT_METERS, Pre-havok4: 768.f
-const F32 MIN_OBJECT_Z = -256.f;
+// this doesn't go here and also now uses hippo limits
+//const F32 MAX_OBJECT_Z  	= 4096.f; // should match REGION_HEIGHT_METERS, Pre-havok4: 768.f
+const F32 MIN_OBJECT_Z 		= -256.f;
 const F32 DEFAULT_MAX_PRIM_SCALE = 256.f;
 const F32 DEFAULT_MAX_PRIM_SCALE_NO_MESH = DEFAULT_MAX_PRIM_SCALE;
 const F32 MIN_PRIM_SCALE = 0.01f;

@@ -217,8 +217,6 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		{
 			gHippoLimits->mAllowParcelWindLight = body["AllowParcelWindLight"].asInteger() == 1;
 		}
-		if (limitschanged)
-			gFloaterTools->updateToolsSizeLimits();
 
 		//Update the floater if its around
 		LLPanelRegionOpenSettingsInfo* floater = LLFloaterRegionInfo::getPanelOpenSettings();

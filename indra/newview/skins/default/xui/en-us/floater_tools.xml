@@ -1134,7 +1134,7 @@
 				follows="left|top" 
 				height="16"
 				left_delta="114" 
-			     	ncrement="0.05" 
+			    increment="0.05" 
 				initial_val="1" 
 				label="Ambiance" 
 				label_width="55"

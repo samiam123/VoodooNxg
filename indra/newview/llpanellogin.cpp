@@ -517,25 +517,25 @@ void LLPanelLogin::draw()
 
 		S32 width = getRect().getWidth();
 		S32 height = getRect().getHeight();
-//------ added impru type news bar ----------
+/*//------ added impru type news bar ----------
 		S32 news_bar_height = 8;
 		LLMediaCtrl* news_bar = getChild<LLMediaCtrl>("news_bar");
 		if (news_bar)
 		{
 			news_bar_height = news_bar->getRect().getHeight();
 		}
-//---------------------------------------------
+//---------------------------------------------*/
 
 		if ( mHtmlAvailable )
 		{
 #if !USE_VIEWER_AUTH
 			// draw a background box in black
-			//gl_rect_2d( 0, height - 264, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
+			gl_rect_2d( 0, height - 264, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
 			// draw the bottom part of the background image - just the blue background to the native client UI
-			//mLogoImage->draw(0, -264, width + 8, mLogoImage->getHeight());
-			gl_rect_2d( 0, height - 264 + news_bar_height, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
+			mLogoImage->draw(0, -264, width + 8, mLogoImage->getHeight());
+			//gl_rect_2d( 0, height - 264 + news_bar_height, width, 264, LLColor4( 0.0f, 0.0f, 0.0f, 1.f ) );
 			// draw the bottom part of the background image - just the blue background to the native client UI
-			mLogoImage->draw(0, -264 + news_bar_height, width + 8, mLogoImage->getHeight());
+			//mLogoImage->draw(0, -264 + news_bar_height, width + 8, mLogoImage->getHeight());
 #endif
 		}
 		else

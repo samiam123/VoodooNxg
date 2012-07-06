@@ -475,7 +475,6 @@ void handle_phantom_avatar(void*);
 void handle_hide_typing_notification(void*);
 void handle_close_all_notifications(void*);
 void handle_reopen_with_hex_editor(void*);
-// uncomment one line below orginaly commented out
 //void handle_open_message_log(void*);
 void handle_edit_ao(void*);
 void handle_local_assets(void*);
@@ -2774,7 +2773,7 @@ bool handle_go_to()
 	{
 		gAgentCamera.setFocusGlobal(gAgentCamera.getFocusTargetGlobal(), gAgentAvatarp->getID());
 	}
-	else
+	else 
 	{
 		// Snap camera back to behind avatar
 		gAgentCamera.setFocusOnAvatar(TRUE, ANIMATE);
@@ -3015,8 +3014,8 @@ class LLAvatarEnableDebug : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
 	{
-		bool new_value = gAgent.isGodlike();
-		gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
+		//bool new_value = gAgent.isGodlike();
+		//gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value);
 		return true;
 	}
 };

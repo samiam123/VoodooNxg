@@ -788,7 +788,9 @@ bool LLFindWearables::operator()(LLInventoryCategory* cat,
 	return FALSE;
 }
 
-LLFindWearablesEx::LLFindWearablesEx(bool is_worn, bool include_body_parts):mIsWorn(is_worn),mIncludeBodyParts(include_body_parts)
+LLFindWearablesEx::LLFindWearablesEx(bool is_worn, bool include_body_parts)
+:	mIsWorn(is_worn)
+,	mIncludeBodyParts(include_body_parts)
 {}
 
 bool LLFindWearablesEx::operator()(LLInventoryCategory* cat, LLInventoryItem* item)

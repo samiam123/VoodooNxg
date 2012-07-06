@@ -2240,7 +2240,7 @@ bool idle_startup()
 			}
 	 	}
 		display_startup();
-
+		
 		bool show_hud = false;
 		LLSD tutorial_setting = response["tutorial_setting"];
 		if(tutorial_setting.isDefined())
@@ -4184,17 +4184,16 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 		U32 region_y = strtoul(region_y_str.c_str(), NULL, 10);
 		gFirstSimHandle = to_region_handle(region_x, region_y);
 	}
-
+	
 // Added one block for var below for vars -VS------------------------------------------------
-
-	 text = response["region_size_x"].asString();
-     if(!text.empty()) 
-	 {
-      first_sim_size_x = strtoul(text.c_str(), NULL, 10);
-      LLViewerParcelMgr::getInstance()->init(first_sim_size_x);
-      }
-	  text = response["region_size_y"].asString();	 
-      if(!text.empty()) first_sim_size_y = strtoul(text.c_str(), NULL, 10);
+	text = response["region_size_x"].asString();
+	if(!text.empty()) 
+	{
+		first_sim_size_x = strtoul(text.c_str(), NULL, 10);
+		LLViewerParcelMgr::getInstance()->init(first_sim_size_x);
+	}
+	text = response["region_size_y"].asString();	 
+	if(!text.empty()) first_sim_size_y = strtoul(text.c_str(), NULL, 10);
 //------------------------------------------------------------------------------------------
 	 
 	const std::string look_at_str = response["look_at"];

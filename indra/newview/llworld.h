@@ -120,8 +120,7 @@ public:
 	F32						getRegionWidthInMeters() const	{ return mWidthInMeters; }
 	F32						getRegionMinHeight() const		{ return -mWidthInMeters; }
 	//F32						getRegionMaxHeight() const		{ return MAX_OBJECT_Z; }
-    F32						getRegionMaxHeight() const		{ return gHippoLimits->getMaxHeight(); }//from hippo limits now
-	//S32   mMaxHeight;
+	F32						getRegionMaxHeight() const		{ return gHippoLimits->getMaxHeight(); }//from hippo limits now
 
 	void					updateRegions(F32 max_update_time);
 	void					updateVisibilities();
@@ -179,13 +178,12 @@ private:
 	region_list_t	mCulledRegionList;
 
 	// Number of points on edge
-    static U32 mWidth; //for var
-	//static const U32 mWidth; //non var
+	static /*const*/ U32 mWidth;	//Voodoo needs to write to this.
 
 	// meters/point, therefore mWidth * mScale = meters per edge
 	static const F32 mScale;
-    static F32 mWidthInMeters; //for var
-	//static const F32 mWidthInMeters; //non var
+
+	static /*const*/ F32 mWidthInMeters;	//Voodoo needs to write to this.
 
 	F32 mLandFarClip;					// Far clip distance for land.
 	LLPatchVertexArray		mLandPatch;

@@ -84,7 +84,6 @@ const F32 PLANE_TICK_SIZE = 0.4f;
 const F32 MANIPULATOR_SCALE_HALF_LIFE = 0.07f;
 const F32 SNAP_ARROW_SCALE = 0.7f;
 
-//S32   mMaxHeight;
 static LLPointer<LLViewerTexture> sGridTex = NULL ;
 
 const LLManip::EManipPart MANIPULATOR_IDS[9] = 
@@ -546,9 +545,7 @@ BOOL LLManipTranslate::handleHover(S32 x, S32 y, MASK mask)
 	// You can't move more than some distance from your original mousedown point.
 	if (gSavedSettings.getBOOL("LimitDragDistance"))
 	{
-
 		F32 max_drag_distance = gSavedSettings.getF32("MaxDragDistance");
-		//F32 max_drag_distance = LLWorld::getInstance()->getMaxDragDistance();
 
 		if (relative_move.magVecSquared() > max_drag_distance * max_drag_distance)
 		{

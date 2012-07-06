@@ -623,7 +623,7 @@ void LLToolGrab::handleHoverActive(S32 x, S32 y, MASK mask)
 
 			// For safety, cap heights where objects can be dragged
 			//if (grab_point_global.mdV[VZ] > mMaxHeight)
-				if (grab_point_global.mdV[VZ] > gHippoLimits->getMaxHeight())
+			if (grab_point_global.mdV[VZ] > gHippoLimits->getMaxHeight())
 			{
 				grab_point_global.mdV[VZ] = gHippoLimits->getMaxHeight();
 			}

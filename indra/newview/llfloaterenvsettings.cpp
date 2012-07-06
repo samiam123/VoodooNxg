@@ -48,7 +48,7 @@
 #include "llwaterparammanager.h"
 #include "llmath.h"
 #include "llviewerwindow.h"
-#include "llfloaterdaycycle.h"
+//#include "llfloaterdaycycle.h"
 
 #include "pipeline.h"
 
@@ -200,7 +200,6 @@ bool LLFloaterEnvSettings::isOpen()
 	if (sEnvSettings != NULL) 
 	{
 		return sEnvSettings->getVisible();
-		//return true;
 	}
 	return false;
 }
@@ -307,7 +306,7 @@ void LLFloaterEnvSettings::onSubmitWindlight(void* userData)
 	strings.push_back((char*)wl);
 	send_generic_message("Windlight", strings);
 	//*/
-	// Added auora WL seetings sams voodoo
+	// Added aurora WL settings sams voodoo
     //LLWLParamManager::getInstance()->SendSettings();
 
 

@@ -50,7 +50,7 @@
 	     bottom="-101" drop_shadow_visible="true" follows="left|top"
 	     font="SansSerifSmall" h_pad="0" halign="left" height="16" left_delta="78"
 	     mouse_opaque="true" name="LabelOwnerName" v_pad="0" width="200">
-		Voodoo Sam
+		Thrax Linden
 	</text>
 	<button bottom="-101" follows="top|right" font="SansSerifSmall" halign="center"
 	     height="16" label="Profile..." label_selected="" left_delta="174"

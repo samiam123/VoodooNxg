@@ -57,7 +57,6 @@ set(llrender_HEADER_FILES
     llpostprocess.h
     llrender.h
     llrendersphere.h
-    llrendertarget.h
     llshadermgr.h
     lltexture.h
     llvertexbuffer.h

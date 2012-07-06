@@ -53,7 +53,7 @@
 #include <deque>
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/signals2.hpp>
-#include "hippolimits.h"
+
 class LLMessageSystem;
 class LLViewerTexture;
 class LLColor4;
@@ -479,7 +479,7 @@ public:
 	void			setGridMode(EGridMode mode);
 	EGridMode		getGridMode() { return mGridMode; }
 	void			getGrid(LLVector3& origin, LLQuaternion& rotation, LLVector3 &scale);
-    //void getMaxLinkedPrims();
+
 	BOOL getTEMode()		{ return mTEMode; }
 	void setTEMode(BOOL b)	{ mTEMode = b; }
 

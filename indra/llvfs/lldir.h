@@ -138,10 +138,8 @@ class LLDir
 	static std::string getForbiddenFileChars();
 
 	virtual void setChatLogsDir(const std::string &path);		// Set the chat logs dir to this user's dir
-	//virtual void setPerAccountChatLogsDir(const std::string &grid, const std::string &first, const std::string &last);// Set the per user chat log directory.
-    virtual void setPerAccountIRCSettingsDir(const std::string &grid, const std::string &first, const std::string &last);    // Set the per user irc settings directory.
-    virtual void setPerAccountChatLogsDir(const std::string &grid, const std::string &first, const std::string &last);        // Set the per user chat log directory.
-
+	virtual void setPerAccountIRCSettingsDir(const std::string &grid, const std::string &first, const std::string &last);			// Set the per user irc settings directory.
+	virtual void setPerAccountChatLogsDir(const std::string &grid, const std::string &first, const std::string &last);				// Set the per user chat log directory.
 	virtual void setLindenUserDir(const std::string& grid, const std::string& first, const std::string& last);		// Set the linden user dir to this user's dir
 	virtual void setSkinFolder(const std::string &skin_folder);
 	virtual bool setCacheDir(const std::string &path);
@@ -162,7 +160,7 @@ protected:
 	std::string mOSUserAppDir;			 // OS Specific user app directory
 	std::string mLindenUserDir;		 // Location for Linden user-specific data
 	std::string mPerAccountChatLogsDir;		 // Location for chat logs.
-    std::string mPerAccountIRCSettingsDir;     // Location for IRC settings.
+    std::string mPerAccountIRCSettingsDir;	// Location for IRC settings.
 	std::string mChatLogsDir;		 // Location for chat logs.
 	std::string mCAFile;				 // Location of the TLS certificate authority PEM file.
 	std::string mTempDir;

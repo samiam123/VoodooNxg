@@ -1709,14 +1709,13 @@ F32 LLViewerFetchedTexture::calcDecodePriority()
 	
 	if (mNeedsCreateTexture)
 	{
-			// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
-     		if( llisnan(mDecodePriority ) )
-     		{
-    			llwarns << "Detected NaN for decode priority" << llendl;
-    			mDecodePriority = 0; // What to put here? Something low? high? zero?
-    		}
-    		// </FS:NS>
-
+		// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
+		if( llisnan(mDecodePriority ) )
+		{
+			llwarns << "Detected NaN for decode priority" << llendl;
+			mDecodePriority = 0; // What to put here? Something low? high? zero?
+		}
+		// </FS:NS>
 		return mDecodePriority; // no change while waiting to create
 	}
 	if(mFullyLoaded && !mForceToSaveRawImage)//already loaded for static texture
@@ -1855,16 +1854,13 @@ F32 LLViewerFetchedTexture::calcDecodePriority()
 			priority += additional;
 		}
 	}
-
-// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
-    	if( llisnan(priority) )
-    	{
-    		llwarns << "Detected NaN for decode priority" << llendl;
-    		priority = 0; // What to put here? Something low? high? zero?
-    	}
-    	// </FS:ND>
-   
-
+	// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
+	if( llisnan(priority) )
+	{
+		llwarns << "Detected NaN for decode priority" << llendl;
+		priority = 0; // What to put here? Something low? high? zero?
+	}
+	// </FS:ND>
 	return priority;
 }
 
@@ -2425,9 +2421,9 @@ void LLViewerFetchedTexture::pauseLoadedCallbacks(const LLLoadedCallbackEntry::s
 
 bool LLViewerFetchedTexture::doLoadedCallbacks()
 {
-	//static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds orginaly
-    // changed this value expermentaly lower is faster, sl has it at 900 .. ick  sams voodoo 
-    static const F32 MAX_INACTIVE_TIME = 30.f ; //seconds 
+	//static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds orginally
+	// changed this value experimentally lower is faster, sl has it at 900 .. ick  sams voodoo 
+	static const F32 MAX_INACTIVE_TIME = 30.f ; //seconds 
 
 	if (mNeedsCreateTexture)
 	{
@@ -2438,16 +2434,7 @@ bool LLViewerFetchedTexture::doLoadedCallbacks()
 		destroyRawImage();
 		return false; //paused
 	}	
-	//if(sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching)
-    // Nahh lets not this makes for a big delay for everything and isant a fix sams voodoo 
-    if (mPauseLoadedCallBacks) 
-    { 
-    destroyRawImage(); 
-    return false; //paused 
-   } 
-    if (sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching) 
- // ------------------------------------------------------------------------------------ 
-
+	if(sCurrentTime - mLastCallBackActiveTime > MAX_INACTIVE_TIME && !mIsFetching)
 	{
 		clearCallbackEntryList() ; //remove all callbacks.
 		return false ;
@@ -3418,12 +3405,14 @@ LLViewerMediaTexture::LLViewerMediaTexture(const LLUUID& id, BOOL usemipmaps, LL
 	sMediaMap.insert(std::make_pair(id, this));
 
 	mGLTexturep = gl_image ;
+
 	if(mGLTexturep.isNull())
 	{
 		generateGLTexture() ;
 	}
 
 	mGLTexturep->setAllowCompression(false);
+
 	mGLTexturep->setNeedsAlphaAndPickMask(FALSE) ;
 
 	mIsPlaying = FALSE ;

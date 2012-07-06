@@ -91,9 +91,6 @@
 #include "llvovolume.h"
 #include "pipeline.h"
 #include "llviewershadermgr.h"
-#include "llviewernetwork.h"
-
-#include "llworld.h"
 
 #include "llglheaders.h"
 #include "hippogridmanager.h"
@@ -114,7 +111,7 @@ const S32 MAX_ACTION_QUEUE_SIZE = 20;
 const S32 MAX_SILS_PER_FRAME = 50;
 const S32 MAX_OBJECTS_PER_PACKET = 254;
 const S32 TE_SELECT_MASK_ALL = 0xFFFFFFFF;
-//float getMaxLinkedPrims() const { return mMaxLinkedPrims; }
+
 //
 // Globals
 //

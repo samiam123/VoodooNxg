@@ -71,7 +71,7 @@ class LLPanelLandAccess;
 class LLPanelLandBan;
 class LLPanelLandRenters;
 class LLPanelLandCovenant;
-class LLParcel;//not used in voodoo1
+class LLParcel;
 
 class LLFloaterLand
 :	public LLFloater, public LLFloaterSingleton<LLFloaterLand>
@@ -83,7 +83,7 @@ public:
 	static LLPanelLandObjects* getCurrentPanelLandObjects();
 	static LLPanelLandCovenant* getCurrentPanelLandCovenant();
 	
-	LLParcel* getCurrentSelectedParcel();//not used in voodoo1
+	LLParcel* getCurrentSelectedParcel();
 
 	// Destroys itself on close.
 	virtual void onClose(bool app_quitting);

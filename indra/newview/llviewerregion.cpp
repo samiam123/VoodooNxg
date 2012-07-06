@@ -83,14 +83,14 @@
 #endif
 
 const F32 WATER_TEXTURE_SCALE = 1.f;//  Number of times to repeat the water texture across a region was 8
-const S16 MAX_MAP_DIST = 10;//was 10 playing
+const S16 MAX_MAP_DIST = 10;
 // The server only keeps our pending agent info for 60 seconds.
 // We want to allow for seed cap retry, but its not useful after that 60 seconds.
 // Give it 3 chances, each at 18 seconds to give ourselves a few seconds to connect anyways if we give up.
-const S32 MAX_SEED_CAP_ATTEMPTS_BEFORE_LOGIN = 3;//was 3
-const F32 CAP_REQUEST_TIMEOUT = 18;//was 18
+const S32 MAX_SEED_CAP_ATTEMPTS_BEFORE_LOGIN = 3;
+const F32 CAP_REQUEST_TIMEOUT = 18;
 // Even though we gave up on login, keep trying for caps after we are logged in:
-const S32 MAX_CAP_REQUEST_ATTEMPTS = 30;//was 30
+const S32 MAX_CAP_REQUEST_ATTEMPTS = 30;
 
 typedef std::map<std::string, std::string> CapabilityMap;
 
@@ -299,7 +299,7 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 	mCacheDirty(FALSE),
 	mReleaseNotesRequested(FALSE),
 	mCapabilitiesReceived(false),
-    mWidth(region_width_meters) //for var
+	mWidth(region_width_meters) //for var
 {
 	//mWidth = region_width_meters; //non var
 	mImpl->mOriginGlobal = from_region_handle(handle); 
@@ -312,7 +312,7 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 		new LLVLComposition(mImpl->mLandp,
 							grids_per_region_edge,
 							//region_width_meters / grids_per_region_edge);//non var
-                            mWidth / grids_per_region_edge); //for var
+							mWidth / grids_per_region_edge); //for var
 	mImpl->mCompositionp->setSurface(mImpl->mLandp);
 
 	// Create the surfaces
@@ -323,11 +323,11 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 					mWidth);
 
 	//mParcelOverlay = new LLViewerParcelOverlay(this, region_width_meters);//non var
-    //Re-init the parcel mgr for this sim for var
-    //LLViewerParcelMgr::getInstance()->init(region_width_meters); // for var
-	 mParcelOverlay = new LLViewerParcelOverlay(this, mWidth); 
-    //Re-init the parcel mgr for this sim 
-    //LLViewerParcelMgr::getInstance()->init(mWidth); 
+	//Re-init the parcel mgr for this sim for var
+	//LLViewerParcelMgr::getInstance()->init(region_width_meters); // for var
+	mParcelOverlay = new LLViewerParcelOverlay(this, mWidth); 
+	//Re-init the parcel mgr for this sim 
+	//LLViewerParcelMgr::getInstance()->init(mWidth); 
 
 	setOriginGlobal(from_region_handle(handle));
 	calculateCenterGlobal();
@@ -864,7 +864,6 @@ F32 LLViewerRegion::getCompositionXY(const S32 x, const S32 y) const
 				//F32 adj_comp = regionp->getComposition()->getValueScaled(x - 256.f, (F32)y);
 				F32 our_comp = getComposition()->getValueScaled(mWidth-1.f, (F32)y);
 				F32 adj_comp = regionp->getComposition()->getValueScaled(x - regionp->getWidth(), (F32)y);
-				
 				while (llabs(our_comp - adj_comp) >= 1.f)
 				{
 					if (our_comp > adj_comp)
@@ -895,7 +894,6 @@ F32 LLViewerRegion::getCompositionXY(const S32 x, const S32 y) const
 //			F32 adj_comp = regionp->getComposition()->getValueScaled((F32)x, y - 256.f);
 			F32 our_comp = getComposition()->getValueScaled((F32)x, mWidth-1.f);
 			F32 adj_comp = regionp->getComposition()->getValueScaled((F32)x, y - regionp->getWidth());
-			
 			while (llabs(our_comp - adj_comp) >= 1.f)
 			{
 				if (our_comp > adj_comp)
@@ -912,7 +910,6 @@ F32 LLViewerRegion::getCompositionXY(const S32 x, const S32 y) const
 	}
 
 	return getComposition()->getValueScaled((F32)x, (F32)y);
-	
 }
 
 void LLViewerRegion::calculateCenterGlobal() 
@@ -1640,7 +1637,7 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("SimConsoleAsync");
 	capabilityNames.append("StartGroupProposal");
 	// added one line for new caps faster tps RS
-    capabilityNames.append("TeleportLocation");
+	capabilityNames.append("TeleportLocation");
 	capabilityNames.append("TextureStats");
 	capabilityNames.append("UntrustedSimulatorMessage");
 	capabilityNames.append("UpdateAgentInformation");

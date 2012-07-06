@@ -82,7 +82,7 @@
 #include "aithreadsafe.h"
 #include "lldrawpoolbump.h"
 #include "emeraldboobutils.h"
-#include "hippolimits.h"
+//#include "hippolimits.h"
 
 #ifdef TOGGLE_HACKED_GODLIKE_VIEWER
 BOOL 				gHackGodmode = FALSE;

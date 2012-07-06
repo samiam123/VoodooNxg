@@ -65,8 +65,7 @@ public:
 		void* callback_data);
 
 	// Remember password checkbox is set via gSavedSettings "RememberPassword"
-	//static void setFields(const std::string& firstname, const std::string& lastname, const std::string& password);
-	//static void setFields(const std::string& username, const std::string& password);
+
 	/**
 	 * @brief	Set the values of the displayed fields.
 	 * @param	firstname	First name value.
@@ -96,7 +95,6 @@ public:
 
 	void setSiteIsAlive( bool alive );
 
-	//static void loadLoginForm();
 	void updateGridCombo();
 
 	static void loadLoginPage();	
@@ -112,14 +110,12 @@ public:
 	//bool loadNewsBar();
 private:
 	static void onClickConnect(void*);
-	//static void onClickGrid(void*);
 	static void onClickNewAccount(void*);
 	static bool newAccountAlertCallback(const LLSD& notification, const LLSD& response);
 	static void onClickGrids(void*);
 	static void onSelectGrid(LLUICtrl *ctrl, void*);
 	static void onClickQuit(void*);
 	static void onClickVersion(void*);
-	static void onPasswordChanged(LLUICtrl* caller, void* user_data);
 	static void onClickForgotPassword(void*);
 	static void onPassKey(LLLineEditor* caller, void* user_data);
 	static void onSelectServer(LLUICtrl*, void*);

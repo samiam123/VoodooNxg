@@ -640,7 +640,7 @@ void LLFloaterChat::chatFromLogFile(LLLogChat::ELogLineType type , std::string l
 	{
 	case LLLogChat::LOG_EMPTY:
 	case LLLogChat::LOG_END:
-		// This will cause an error if the log file dosent exist and user wants to open it anyway. Sams notes
+		// This will cause an error if the log file doesn't exist and user wants to open it anyway. Sams notes
 		// *TODO: nice message from XML file here
 		break;
 	case LLLogChat::LOG_LINE:

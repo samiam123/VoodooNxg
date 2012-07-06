@@ -865,18 +865,17 @@ BOOL LLTextureCache::isInLocal(const LLUUID& id)
 		{
 			return TRUE;
 		}
-	   }
-     //}     
-    // Hmm... What about a PNG file? (used for UI texture mostly) sams voodoo     
-  { 
-       local_filename = filename + ".png"; 
-       local_size = LLAPRFile::size(local_filename); 
-       if (local_size > 0) 
-    { 
-            return TRUE; 
-    } 
- // } 
-  }
+	}
+	// Hmm... What about a PNG file? (used for UI texture mostly) sams voodoo
+	{
+		local_filename = filename + ".png";
+		local_size = LLAPRFile::size(local_filename);
+		if (local_size > 0)
+		{
+			return TRUE;
+		}
+	}
+
 	return FALSE;
 }
 //////////////////////////////////////////////////////////////////////////////
@@ -1892,8 +1891,8 @@ void LLTextureCache::removeEntry(S32 idx, Entry& entry, std::string& filename)
 		mTexturesSizeMap.erase(entry.mID);		
 		mFreeList.insert(idx);	
 	}
-	if (file_maybe_exists) //was trying new line below sams voodoo
-    //if (remove_file && file_maybe_exists)
+
+	if (file_maybe_exists)
 	{
 		LLAPRFile::remove(filename);
 	}

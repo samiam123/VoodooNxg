@@ -38,7 +38,6 @@
 #include "v4math.h"
 #include "llquaternion.h"
 
-#include "hippolimits.h"
 class LLManipTranslate : public LLManip
 {
 public:
@@ -49,7 +48,7 @@ public:
 		LLVector3	mEndPosition;
 		EManipPart	mManipID;
 		F32			mHotSpotRadius;
-        //S32   mMaxHeight;
+
 		ManipulatorHandle(LLVector3 start_pos, LLVector3 end_pos, EManipPart id, F32 radius):mStartPosition(start_pos), mEndPosition(end_pos), mManipID(id), mHotSpotRadius(radius){}
 	};
 

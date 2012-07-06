@@ -414,8 +414,8 @@ void LLViewerParcelOverlay::uncompressLandOverlay(S32 chunk, U8 *packed_overlay)
 {
 	// Unpack the message data into the ownership array
 	S32	size	= mParcelGridsPerEdge * mParcelGridsPerEdge;
-    S32 mParcelOverLayChunks = mRegionSize * mRegionSize / (128 * 128); //for var
-    S32 chunk_size = size / mParcelOverLayChunks; //for var 
+	S32 mParcelOverLayChunks = mRegionSize * mRegionSize / (128 * 128); //for var
+	S32 chunk_size = size / mParcelOverLayChunks; //for var 
 	//S32 chunk_size = size / PARCEL_OVERLAY_CHUNKS; //non var
 
 	memcpy(mOwnership + chunk*chunk_size, packed_overlay, chunk_size);		/*Flawfinder: ignore*/

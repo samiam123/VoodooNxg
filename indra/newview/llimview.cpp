@@ -206,7 +206,7 @@ LLUUID LLIMMgr::computeSessionID(
 	const LLUUID& other_participant_id)
 {
 	LLUUID session_id;
-	if( IM_SESSION_IRC_START == dialog)
+	if (IM_SESSION_IRC_START == dialog)
     {
 		session_id = other_participant_id;
     }

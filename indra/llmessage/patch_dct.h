@@ -65,8 +65,7 @@ public:
 //	F32 dc_offset;		// 4 bytes
 //	U16 range;			// 2 = 7 ((S16) FP range (breaks if we need > 32K meters in 1 patch)
 //	U8  quant_wbits;	// 1 = 8 (upper 4 bits is quant - 2, lower 4 bits is word bits - 2)
-//	U16	patchids;		// 2 = 10 (actually only uses 10 bits, 5 for each)//non var
-//Buzz this was comment out now anyway in newer singu none of this seems used added line to public below
+//	U16	patchids;		// 2 = 10 (actually only uses 10 bits, 5 for each)
 //} LLPatchHeader;
 class LLPatchHeader
 {

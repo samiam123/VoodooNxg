@@ -102,7 +102,7 @@
 #endif
 
 #if LL_WINDOWS
-#include <share.h> // For _SH_DENYWR in initMarkerFile
+#	include <share.h> // For _SH_DENYWR in initMarkerFile
 #else
 #   include <sys/file.h> // For initMarkerFile support
 #endif
@@ -505,7 +505,7 @@ static void settings_to_globals()
 	gAgentPilot.mNumRuns		= gSavedSettings.getS32("StatsNumRuns");
 	gAgentPilot.mQuitAfterRuns	= gSavedSettings.getBOOL("StatsQuitAfterRuns");
 	gAgent.setHideGroupTitle(gSavedSettings.getBOOL("RenderHideGroupTitle"));
-
+		
 	gDebugWindowProc = gSavedSettings.getBOOL("DebugWindowProc");
 	gAllowIdleAFK = gSavedSettings.getBOOL("AllowIdleAFK");
 	gAllowTapTapHoldRun = gSavedSettings.getBOOL("AllowTapTapHoldRun");
@@ -1885,7 +1885,7 @@ bool LLAppViewer::initLogging()
 	LLError::initForApplication(
 				gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, ""));
 	LLError::setFatalFunction(errorCallback);
-	
+
 	// Remove the last ".old" log file.
 	std::string old_log_file = gDirUtilp->getExpandedFilename(LL_PATH_LOGS,
 							     "Voodoo.old");
@@ -3619,7 +3619,7 @@ void LLAppViewer::badNetworkHandler()
 		"the issue. \n"
 		" \n"
 		"If the problem continues, please report the issue at: \n"
-		"http://grid.kikcs-ass.net" << grid_support_msg;
+		"http://grid.kicks-ass.net" << grid_support_msg;
 	forceDisconnect(message.str());
 }
 

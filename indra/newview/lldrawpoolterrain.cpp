@@ -54,7 +54,6 @@
 #include "pipeline.h"
 #include "llviewershadermgr.h"
 #include "llrender.h"
-#include "hippolimits.h"
 
 const F32 DETAIL_SCALE = 1.f/16.f;
 //const F32 mTerrainScale = 0.0f;

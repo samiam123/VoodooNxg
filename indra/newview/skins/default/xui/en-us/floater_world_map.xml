@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <floater can_close="true" can_drag_on_left="false" can_minimize="true" can_resize="true"
-       height="721" min_height="520" min_width="410" name="worldmap"
-       rect_control="FloaterWorldMapRect2" title="World Map" width="1243">
+     height="711" min_height="520" min_width="410" name="worldmap"
+     rect_control="FloaterWorldMapRect2" title="World Map" width="1243">
 	<panel bottom="-701" follows="left|top|right|bottom" height="681"
 		 left="15" mouse_opaque="true" name="objects_mapview" width="995" />
 	<icon bottom="-50" color="1, 1, 1, 1" follows="top|right" height="16"

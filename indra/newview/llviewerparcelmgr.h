@@ -234,7 +234,7 @@ public:
 
 	// If the point is outside the current hover parcel, request more data
 	void	setHoverParcel(const LLVector3d& pos_global);
-	//void	requestHoverParcelProperties(const LLVector3d& pos_global); // or voodoo
+
 	bool	canAgentBuyParcel(LLParcel*, bool forGroup) const;
 	
 //	void	startClaimLand(BOOL is_for_group = FALSE);

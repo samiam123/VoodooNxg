@@ -28,7 +28,7 @@
 #define LL_MESSAGE_PREHASH_H
 
 /**
- * Generated from message template version number 2.000.0
+ * Generated from message template version number 2.000
  */
 
 

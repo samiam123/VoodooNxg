@@ -33,7 +33,7 @@
 #include "llmemory.h"
 #include "lluuid.h"
 #include "llviewerwindow.h" // for LLPickInfo
-#include "hippolimits.h"// for well max-z set in this
+
 class LLView;
 class LLTextBox;
 class LLViewerObject;
@@ -68,7 +68,7 @@ public:
 	virtual void			stopEditing();
 	
 	virtual void			onMouseCaptureLost();
-    //S32   mMaxHeight;
+
 	BOOL			hasGrabOffset()  { return TRUE; }	// HACK
 	LLVector3		getGrabOffset(S32 x, S32 y);		// HACK
 

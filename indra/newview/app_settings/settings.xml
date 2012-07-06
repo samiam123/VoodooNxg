@@ -249,7 +249,7 @@
     <key>Value</key>
     <integer>0</integer>
   </map>
-    <key>NewsBarURL</key>
+  <!--<key>NewsBarURL</key>
   <map>
     <key>Comment</key>
     <string>URL to load in the news bar on the login screen</string>
@@ -259,7 +259,7 @@
     <string>String</string>
     <key>Value</key>
     <string>http://app.kokuaviewer.org/news/</string>
-  </map>
+  </map>-->
 
   <key>AllowLargeSounds</key>
   <map>
@@ -2198,7 +2198,7 @@
       <key>Type</key>
       <string>String</string>
       <key>Value</key>
-	  <string>http://www.Voodoo.org</string>
+	  <string>http://www.grid.kicks-ass.net</string>
     </map>
     <key>BrowserCookiesEnabled</key>
     <map>
@@ -14756,7 +14756,7 @@
       <key>Type</key>
       <string>String</string>
       <key>Value</key>
-      <string/>C:\Program Files (x86)\Notepad++\notepad++.exe
+      <string />
     </map>
     <key>YawFromMousePosition</key>
     <map>
@@ -15381,7 +15381,7 @@
     <key>MapShowGridCoordinates</key>
     <map>
       <key>Comment</key>
-      <string>Show Map Cords</string>
+      <string>Show Map Coords</string>
       <key>Persist</key>
       <integer>1</integer>
       <key>Type</key>

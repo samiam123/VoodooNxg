@@ -227,7 +227,33 @@ FunctionEnd
 ; *TODO: Return current SL version info and have installer check
 ; if it is up to date.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+Function CheckNetworkConnection
+    Push $0
+    Push $1
+    Push $2	# Option value for GetOptions
+    DetailPrint $(CheckNetworkConnectionDP)
+    ; Look for a tag value from the stub installer, used for statistics
+    ; to correlate installs.  Default to "" if not found on command line.
+    StrCpy $2 ""
+    ${GetOptions} $COMMANDLINE "/STUBTAG=" $2
+    GetTempFileName $0
+    !define HTTP_TIMEOUT 5000 ; milliseconds
+    ; Don't show secondary progress bar, this will be quick.
+    NSISdl::download_quiet \
+        /TIMEOUT=${HTTP_TIMEOUT} \
+        "http://install.secondlife.com/check/?stubtag=$2&version=${VERSION_LONG}" \
+        $0
+    Pop $1 ; Return value, either "success", "cancel" or an error message
+    ; MessageBox MB_OK "Download result: $1"
+    ; Result ignored for now
+	; StrCmp $1 "success" +2
+	;	DetailPrint "Connection failed: $1"
+    Delete $0 ; temporary file
+    Pop $2
+    Pop $1
+    Pop $0
+    Return
+FunctionEnd
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Delete files in Documents and Settings\<user>\SecondLife\cache
@@ -530,9 +556,9 @@ Delete "$INSTDIR\Uninstall $INSTSHORTCUT.lnk"
 ; Clean up cache and log files.
 ; Leave them in-place for non AGNI installs.
 
-; !ifdef UNINSTALL_SETTINGS
+!ifdef UNINSTALL_SETTINGS
 Call un.DocumentsAndSettingsFolder
-; !endif
+!endif
 
 ; remove stored password on uninstall
 Call un.RemovePassword

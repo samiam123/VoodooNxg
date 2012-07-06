@@ -80,16 +80,15 @@ const S32 MAX_NUMBER_OF_CLOUDS	= 750;
 const S32 WORLD_PATCH_SIZE = 16;
 
 extern LLColor4U MAX_WATER_COLOR;
-//Buzz whats the diff below?
-U32 LLWorld::mWidth = 256; //for var
-//const U32 LLWorld::mWidth = 256; //non var
+
+/*const*/ U32 LLWorld::mWidth = 256;	//Voodoo needs to write to this.
 
 // meters/point, therefore mWidth * mScale = meters per edge
 const F32 LLWorld::mScale = 1.f;
 //U32 LLWorld::mScale = 256; // for var
-//const F32 LLWorld::mWidthInMeters = mWidth * mScale; // non var
-F32 LLWorld::mWidthInMeters = mWidth * mScale;
-//F32   mMaxHeight;
+
+/*const*/ F32 LLWorld::mWidthInMeters = mWidth * mScale;	//Voodoo needs to write to this.
+
 //
 // Functions
 //
@@ -141,7 +140,7 @@ void LLWorld::destroyClass()
 	{
 		LLVOCache::getInstance()->destroyClass() ;
 	}
-    LLViewerPartSim::getInstance()->destroyClass();
+	LLViewerPartSim::getInstance()->destroyClass();
 
 	mDefaultWaterTexturep = NULL ;
 	for (S32 i = 0; i < 8; i++)
@@ -184,11 +183,11 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host,
 
 	U32 iindex = 0;
 	U32 jindex = 0;
-    mWidth = region_size_x;  //for var
-    mWidthInMeters = mWidth * mScale; //for var
+	mWidth = region_size_x;  //for var
+	mWidthInMeters = mWidth * mScale; //for var
 	from_region_handle(region_handle, &iindex, &jindex);
-    S32 x = (S32)(iindex/256); //for var
-    S32 y = (S32)(jindex/256); //for var
+	S32 x = (S32)(iindex/256); //for var
+	S32 y = (S32)(jindex/256); //for var
  	//S32 x = (S32)(iindex/mWidth); //non var
  	//S32 y = (S32)(jindex/mWidth); //non var
 	llinfos << "Adding new region (" << x << ":" << y << ")" << llendl;
@@ -233,7 +232,6 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host,
 
 	LLViewerRegion *neighborp;
 	LLViewerRegion *last_neighborp;
-
 	from_region_handle(region_handle, &region_x, &region_y);
 
 	// Iterate through all directions, and connect neighbors if there.
@@ -256,16 +254,12 @@ LLViewerRegion* LLWorld::addRegion(const U64 &region_handle, const LLHost &host,
 			if (neighborp && last_neighborp != neighborp)
 			{
 			regionp->connectNeighbor(neighborp, dir);
-				last_neighborp = neighborp;
+			last_neighborp = neighborp;
 			}
 
-			if(dir == NORTHEAST ||
-			   dir == NORTHWEST ||
-			   dir == SOUTHWEST ||
-			   dir == SOUTHEAST)
-			{
+			if(dir == NORTHEAST || dir == NORTHWEST ||
+			   dir == SOUTHWEST || dir == SOUTHEAST)
 				break;
-			}
 
 			if(dir == NORTH || dir == SOUTH) adj_x += WORLD_PATCH_SIZE;
 			if(dir == EAST || dir == WEST) adj_y += WORLD_PATCH_SIZE;
@@ -636,6 +630,7 @@ LLVector3 LLWorld::resolveLandNormalGlobal(const LLVector3d &pos_global)
 void LLWorld::updateVisibilities()
 {
 	F32 cur_far_clip = LLViewerCamera::getInstance()->getFar();
+
 //-------------------------voodoo--------------------------
 	//LLViewerCamera::getInstance()->setFar(mLandFarClip);
 	//F32 diagonal_squared = F_SQRT2 * F_SQRT2 * mWidth * mWidth;
@@ -880,7 +875,7 @@ F32 LLWorld::getLandFarClip() const
 
 void LLWorld::setLandFarClip(const F32 far_clip)
 {
-    static S32 const rwidth = (S32)getRegionWidthInMeters(); // for var
+	static S32 const rwidth = (S32)getRegionWidthInMeters(); // for var
 	//static S32 const rwidth = (S32)REGION_WIDTH_U32; //non var
 	S32 const n1 = (llceil(mLandFarClip) - 1) / rwidth;
 	S32 const n2 = (llceil(far_clip) - 1) / rwidth;
@@ -893,16 +888,6 @@ void LLWorld::setLandFarClip(const F32 far_clip)
 		updateWaterObjects();
 	}
 }
-/*
-// added this block from impru sams voodooo
-void LLWorld::rebuildClouds(LLViewerRegion *regionp)
-{
-	regionp->mCloudLayer.destroy();
-	regionp->mCloudLayer.create(regionp);
-	regionp->mCloudLayer.setWidth((F32)mWidth);
-	regionp->mCloudLayer.setWindPointer(&regionp->mWind);
-}
-*/
 
 // Some region that we're connected to, but not the one we're in, gave us
 // a (possibly) new water height. Update it in our local copy.
@@ -969,6 +954,7 @@ void LLWorld::updateWaterObjects()
 	// Region width in meters.
 	//S32 const rwidth = (S32)REGION_WIDTH_U32;//non var
 	S32 const rwidth = (S32)getRegionWidthInMeters();//REGION_WIDTH_U32;
+
 	// The distance we might see into the void
 	// when standing on the edge of a region, in meters.
 	S32 const draw_distance = llceil(mLandFarClip);
@@ -1320,6 +1306,7 @@ void process_enable_simulator(LLMessageSystem *msg, void **user_data)
 
 	// which simulator should we modify?
 	LLHost sim(ip_u32, port);
+
     // ----------Added one block below for var -----------------------------------------------------------
 	U32 region_size_x = 256;
     msg->getU32Fast(_PREHASH_SimulatorInfo, _PREHASH_RegionSizeX, region_size_x);
@@ -1334,7 +1321,8 @@ void process_enable_simulator(LLMessageSystem *msg, void **user_data)
 	// Viewer trusts the simulator.
 	msg->enableCircuit(sim, TRUE);
 	//LLWorld::getInstance()->addRegion(handle, sim); //non var
-    LLWorld::getInstance()->addRegion(handle, sim, region_size_x, region_size_y); //for var
+	LLWorld::getInstance()->addRegion(handle, sim, region_size_x, region_size_y); //for var
+
 	// give the simulator a message it can use to get ip and port
 	llinfos << "simulator_enable() Enabling " << sim << " with code " << msg->getOurCircuitCode() << llendl;
 	msg->newMessageFast(_PREHASH_UseCircuitCode);
@@ -1485,7 +1473,7 @@ static LLVector3d unpackLocalToGlobalPosition(U32 compact_local, const LLVector3
 
     pos_global += pos_local;
 	// comment out one line below add in one after should help with tps sams voodoo test
-    //return pos_global;
+	//return pos_global;
 	return region_origin + pos_local;
 }
 

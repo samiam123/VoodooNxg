@@ -1,10 +1,15 @@
 #include "llviewerprecompiledheaders.h"
+
 #include "hippolimits.h"
+
 #include "hippogridmanager.h"
+
 #include "llerror.h"
+
 #include "llviewercontrol.h"		// gSavedSettings
 
 HippoLimits *gHippoLimits = 0;
+
 
 HippoLimits::HippoLimits()
 {
@@ -14,23 +19,12 @@ HippoLimits::HippoLimits()
 
 void HippoLimits::setLimits()
 {
-	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_SECONDLIFE)
-	{
+	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_SECONDLIFE) {
 		setSecondLifeLimits();
-		return;
-	}
-
-	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA)
-	{
+	} else if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_AURORA) {
 		setAuroraLimits();
-		return;
-	}
-
-	if (gHippoGridManager->getConnectedGrid()->getPlatform() == HippoGridInfo::PLATFORM_OPENSIM)
-	{
-
+	} else {
 		setOpenSimLimits();
-		return;
 	}
 }
 
@@ -105,17 +99,17 @@ void HippoLimits::setAuroraLimits()
 	mMaxSelectDistance = 256.0f;
 	mDrawDistance = 128;
 	mLockedDrawDistance = FALSE;
-	//mDrawDistance;
-	//mLockedDrawDistance;
-	//mTerrainScale; //yah i know but openregion sets this value anyway
 	mMinHoleSize = 0.001f;
 	mMaxHollow = 99.0f;
 	
 }
 void HippoLimits::setSecondLifeLimits()
 {
-	llinfos << "Using Second Life limits." << llendl;	
+	llinfos << "Using Second Life limits." << llendl;
+	
 	if (gHippoGridManager->getConnectedGrid())
+	
+	//KC: new server defined max groups
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
 	if (mMaxAgentGroups <= 0)
 	{

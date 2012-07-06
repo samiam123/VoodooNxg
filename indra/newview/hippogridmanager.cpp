@@ -704,12 +704,10 @@ void HippoGridManager::init()
 	HippoGridInfo::initFallback();
 	loadFromFile();
 
-	/*
-	gSavedSettings.getControl("CmdLineLoginURI");
-	gSavedSettings.getString("CmdLineLoginPage");
-	gSavedSettings.getString("CmdLineHelperURI");
-	LLString::compareInsensitive(gGridInfo[grid_index].mLabel, grid_name.c_str()))
-    //*/
+	// !!!### gSavedSettings.getControl("CmdLineLoginURI");
+	// !!!### gSavedSettings.getString("CmdLineLoginPage");
+	// !!!### gSavedSettings.getString("CmdLineHelperURI");
+	// !!!### LLString::compareInsensitive(gGridInfo[grid_index].mLabel, grid_name.c_str()))
 }
 
 

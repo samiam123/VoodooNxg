@@ -91,7 +91,7 @@ public:
 	void disconnectNeighbor(LLSurface *neighborp);
 	void disconnectAllNeighbors();
 
-	void rebuildWater(); //Destroys (if nesessary) and then rebuilds (if needed)
+	void rebuildWater(); //Destroys (if necessary) and then rebuilds (if needed)
 	virtual void decompressDCTPatch(LLBitPack &bitpack, LLGroupHeader *gopp, BOOL b_large_patch);
 	virtual void updatePatchVisibilities(LLAgent &agent);
 

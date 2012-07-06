@@ -1249,10 +1249,10 @@ BOOL LLPanelRegionTextureInfo::sendUpdate()
 
 	// Make sure user hasn't chosen wacky textures.
 	//  Buzz -Revolution  Allow 'wacky' things
-    //if (!validateTextureSizes()) // comment out with var uncomment for non var
-    //{
-    //return FALSE;
-    //}
+	//if (!validateTextureSizes()) // comment out with var uncomment for non var
+	//{
+	//	return FALSE;
+	//}
 
 	LLTextureCtrl* texture_ctrl;
 	std::string buffer;
@@ -1316,7 +1316,7 @@ BOOL LLPanelRegionTextureInfo::validateTextureSizes()
 			return FALSE;
 		}
         //Allow terrain textures up to 1024x1024 pixels
-        if (width > 1024 || height > 1024)		
+        if (width > 1024 || height > 1024)
 		{
 
 			LLSD args;
@@ -1488,29 +1488,22 @@ void LLPanelRegionTerrainInfo::onClickDownloadRaw(void* data)
 	AIFilePicker* filepicker = AIFilePicker::create();
 	filepicker->open("terrain.raw", FFSAVE_RAW);
 	filepicker->run(boost::bind(&LLPanelRegionTerrainInfo::onClickUploadRaw_continued, self, filepicker));
-	
 }
 
 void LLPanelRegionTerrainInfo::onClickDownloadRaw_continued(AIFilePicker* filepicker)
 {
 	if (!filepicker->hasFilename())
-	//LLFilePicker& picker = LLFilePicker::instance();
-	//if (!picker.getSaveFile(LLFilePicker::FFSAVE_RAW, "terrain.raw"))
 	{
-		llwarns << "No file" << llendl;
 		return;
 	}
 	std::string filepath = filepicker->getFilename();
-		//std::string filepath = picker.getFirstFile();
 	gXferManager->expectFileForRequest(filepath);
-// added one line for raw
-	//LLPanelRegionTerrainInfo* self = (LLPanelRegionTerrainInfo*)data;
+
 	strings_t strings;
 	strings.push_back("download filename");
 	strings.push_back(filepath);
 	LLUUID invoice(LLFloaterRegionInfo::getLastInvoice());
 	sendEstateOwnerMessage(gMessageSystem, "terrain", invoice, strings);
-	//self->sendEstateOwnerMessage(gMessageSystem, "terrain", invoice, strings);
 }
 
 // static
@@ -1525,11 +1518,8 @@ void LLPanelRegionTerrainInfo::onClickUploadRaw(void* data)
 void LLPanelRegionTerrainInfo::onClickUploadRaw_continued(AIFilePicker* filepicker)
 {
 	if (!filepicker->hasFilename())
-     {
-		llwarns << "No file" << llendl;
 		return;
 
-     }
 	std::string filepath = filepicker->getFilename();
 	gXferManager->expectFileForTransfer(filepath);
 
@@ -2912,7 +2902,7 @@ bool LLPanelEstateCovenant::estateUpdate(LLMessageSystem* msg)
 // virtual 
 BOOL LLPanelEstateCovenant::postBuild()
 {
-	initHelpBtn("covenant_help","HelpEstateCovenant");
+	initHelpBtn("covenant_help",		"HelpEstateCovenant");
 	mEstateNameText = getChild<LLTextBox>("estate_name_text");
 	mEstateOwnerText = getChild<LLTextBox>("estate_owner_text");
 	mLastModifiedText = getChild<LLTextBox>("covenant_timestamp_text");

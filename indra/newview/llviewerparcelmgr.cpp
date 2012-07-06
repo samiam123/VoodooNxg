@@ -144,27 +144,28 @@ LLViewerParcelMgr::LLViewerParcelMgr()
 	mHoverParcel = new LLParcel();
 	mCollisionParcel = new LLParcel();
 	//Buzz added one block below for var ----------------------------------------------------------------------------
-    mBlockedImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrylines.j2c");
-    mPassImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrypasslines.j2c");
-    //init(256); // for var and memleak fix
-//} 
-    //moved this stuff out of the constructor and into a function that we can call again after we get the region size.
-    //LLViewerParcelMgr needs to be changed so we either get an instance per region, or it handles various region sizes
-    //on a single grid properly - Patrick Sapinski (2/10/2011)
-    //void LLViewerParcelMgr::init(F32 region_size)
-//{
+	mBlockedImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrylines.j2c");
+	mPassImage = LLViewerTextureManager::getFetchedTextureFromFile("noentrypasslines.j2c");
+	//init(256); // for var and memleak fix
+
+	//moved this stuff out of the constructor and into a function that we can call again after we get the region size.
+	//LLViewerParcelMgr needs to be changed so we either get an instance per region, or it handles various region sizes
+	//on a single grid properly - Patrick Sapinski (2/10/2011)
+	//void LLViewerParcelMgr::init(F32 region_size)
+
 	//-----------------------------------------------------------------------------------------------------------------
 	//mParcelsPerEdge = S32(	REGION_WIDTH_METERS / PARCEL_GRID_STEP_METERS ); //non var
-    F32 region_size = 8192.f; //aurora max region size, 8192
-    mParcelsPerEdge = S32(  region_size / PARCEL_GRID_STEP_METERS ); // for var
+	F32 region_size = 8192.f; //aurora max region size, 8192
+	mParcelsPerEdge = S32(  region_size / PARCEL_GRID_STEP_METERS ); // for var
 	mHighlightSegments = new U8[(mParcelsPerEdge+1)*(mParcelsPerEdge+1)];
 	resetSegments(mHighlightSegments);
 
 	mCollisionSegments = new U8[(mParcelsPerEdge+1)*(mParcelsPerEdge+1)];
 	resetSegments(mCollisionSegments);
+
 	//Buzz need to check JC comment for vars comment it out for now
-    //S32 mParcelOverLayChunks = region_size * region_size / (128 * 128); // for var
-    //S32 overlay_size = mParcelsPerEdge * mParcelsPerEdge / mParcelOverLayChunks; // for var
+	//S32 mParcelOverLayChunks = region_size * region_size / (128 * 128); // for var
+	//S32 overlay_size = mParcelsPerEdge * mParcelsPerEdge / mParcelOverLayChunks; // for var
 	// JC: Resolved a merge conflict here, eliminated
 	// mBlockedImage->setAddressMode(LLTexUnit::TAM_WRAP);
 	// because it is done in llviewertexturelist.cpp
@@ -185,15 +186,15 @@ LLViewerParcelMgr::LLViewerParcelMgr()
 	mParcelsPerEdge = S32(	REGION_WIDTH_METERS / PARCEL_GRID_STEP_METERS );
 
 	mTeleportInProgress = TRUE; // the initial parcel update is treated like teleport
-    }
+}
 
-    void LLViewerParcelMgr::init(F32 region_size)
-    {
+void LLViewerParcelMgr::init(F32 region_size)
+{
 	mParcelsPerEdge = S32(	region_size / PARCEL_GRID_STEP_METERS );
-    }
+}
 
-    LLViewerParcelMgr::~LLViewerParcelMgr()
-    {
+LLViewerParcelMgr::~LLViewerParcelMgr()
+{
 	mCurrentParcelSelection->setParcel(NULL);
 	mCurrentParcelSelection = NULL;
 
@@ -265,7 +266,7 @@ void LLViewerParcelMgr::getDisplayInfo(S32* area_out, S32* claim_out,
 	S32 price = 0;
 	S32 rent = 0;
 	BOOL for_sale = FALSE;
-	F32 dwell = 0.f; //F32 dwell = DWELL_NAN;
+	F32 dwell = 0.f;
 
 	if (mSelected)
 	{
@@ -479,7 +480,6 @@ void LLViewerParcelMgr::selectCollisionParcel()
 	mEastNorth = mWestSouth;
 	mEastNorth += LLVector3d((getSelectionRegion()->getWidth() / REGION_WIDTH_METERS) * PARCEL_GRID_STEP_METERS, 
 		                     (getSelectionRegion()->getWidth() / REGION_WIDTH_METERS) * PARCEL_GRID_STEP_METERS, 0.0);
-	//mEastNorth += LLVector3d(PARCEL_GRID_STEP_METERS, PARCEL_GRID_STEP_METERS, 0.0);
 	// BUG: must be in the sim you are in
 	LLMessageSystem *msg = gMessageSystem;
 	msg->newMessageFast(_PREHASH_ParcelPropertiesRequestByID);
@@ -736,7 +736,7 @@ bool LLViewerParcelMgr::allowAgentScripts(const LLViewerRegion* region, const LL
 	// and the flag to allow group-owned scripted objects to run.
 	// This mirrors the traditional menu bar parcel icon code, but is not
 	// technically correct.
-	return region //voodoo1 just returns true; here
+	return region
 		&& !(region->getRegionFlags() & REGION_FLAGS_SKIP_SCRIPTS)
 		&& !(region->getRegionFlags() & REGION_FLAGS_ESTATE_SKIP_SCRIPTS)
 		&& parcel
@@ -747,12 +747,6 @@ bool LLViewerParcelMgr::allowAgentDamage(const LLViewerRegion* region, const LLP
 {
 	return (region && region->getAllowDamage())
 		|| (parcel && parcel->getAllowDamage());
-//-----------------Added block from voodoo1-------		
-//}		
-//F32 LLViewerParcelMgr::agentDrawDistance() const		
-//{		
-//	return 512.f;
-//------------------------------------------------
 }
 
 BOOL LLViewerParcelMgr::isOwnedAt(const LLVector3d& pos_global) const
@@ -1443,7 +1437,7 @@ void LLViewerParcelMgr::processParcelOverlay(LLMessageSystem *msg, void **user)
 		return;
 	}
 	// Buzz may need to comment out a few lines here for var
-    S32 expected_size = 1024; //for var
+	S32 expected_size = 1024; //for var
 	//S32 parcels_per_edge = LLViewerParcelMgr::getInstance()->mParcelsPerEdge;
 	//S32 expected_size = parcels_per_edge * parcels_per_edge / PARCEL_OVERLAY_CHUNKS;
 	if (packed_overlay_size != expected_size)
@@ -1507,16 +1501,17 @@ void LLViewerParcelMgr::processParcelProperties(LLMessageSystem *msg, void **use
 
 	S32		other_clean_time = 0;
 
-//----------------------------Added --------------
 	LLViewerParcelMgr& parcel_mgr = LLViewerParcelMgr::instance();
+//----------------------------Added --------------
 	LLViewerRegion* msg_region = LLWorld::getInstance()->getRegion( msg->getSender() );
 	if(msg_region) {
-			parcel_mgr.mParcelsPerEdge = S32( msg_region->getWidth() / PARCEL_GRID_STEP_METERS );
+		parcel_mgr.mParcelsPerEdge = S32( msg_region->getWidth() / PARCEL_GRID_STEP_METERS );
 	}
 	else {
 		parcel_mgr.mParcelsPerEdge = S32( gAgent.getRegion()->getWidth() / PARCEL_GRID_STEP_METERS );
 	}
 //----------------------------------------------------
+
 	msg->getS32Fast(_PREHASH_ParcelData, _PREHASH_RequestResult, request_result );
 	msg->getS32Fast(_PREHASH_ParcelData, _PREHASH_SequenceID, sequence_id );
 

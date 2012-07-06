@@ -87,7 +87,6 @@
 
 #include "llvograss.h"
 #include "llvotree.h"
-#include "hippolimits.h"
 
 // Globals
 LLFloaterTools *gFloaterTools = NULL;
@@ -180,54 +179,7 @@ void*	LLFloaterTools::createPanelLandInfo(void* data)
 	floater->mPanelLandInfo = new LLPanelLandInfo(std::string("land info panel"));
 	return floater->mPanelLandInfo;
 }
-///*
-void LLFloaterTools::updateToolsSizeLimits()
 
-	//mPanelObject->updateLimits();
-{
-	/*
-	getChild<LLSpinCtrl>("Scale X")->setMinValue(gHippoLimits->getMinPrimScale());
-	getChild<LLSpinCtrl>("Scale Y")->setMinValue(gHippoLimits->getMinPrimScale());
-	getChild<LLSpinCtrl>("Scale Z")->setMinValue(gHippoLimits->getMinPrimScale());
-
-	getChild<LLSpinCtrl>("Scale X")->setMaxValue(gHippoLimits->getMaxPrimScale());
-	getChild<LLSpinCtrl>("Scale Y")->setMaxValue(gHippoLimits->getMaxPrimScale());
-	getChild<LLSpinCtrl>("Scale Z")->setMaxValue(gHippoLimits->getMaxPrimScale());
-
-	getChild<LLSpinCtrl>("Pos X")->setMinValue(gHippoLimits->getMinPrimXPos());
-	getChild<LLSpinCtrl>("Pos Y")->setMinValue(gHippoLimits->getMinPrimYPos());
-	getChild<LLSpinCtrl>("Pos Z")->setMinValue(gHippoLimits->getMinPrimZPos());
-
-	getChild<LLSpinCtrl>("Pos X")->setMaxValue(gHippoLimits->getMaxPrimXPos());
-	getChild<LLSpinCtrl>("Pos Y")->setMaxValue(gHippoLimits->getMaxPrimYPos());
-	getChild<LLSpinCtrl>("Pos Z")->setMaxValue(gHippoLimits->getMaxPrimZPos());
-
-	getChild<LLCheckBoxCtrl>("Physical Checkbox Ctrl")->setEnabled(gHippoLimits->mAllowPhysicalPrims);
-}
-
-
-void LLFloaterTools::updateToolsPrecision()
-{
-	U32 decimals = gSavedSettings.getU32("DecimalsForTools");
-	if (decimals != mPrecision)
-	{
-		if (decimals > 5)
-		{
-			decimals = 5;
-		}
-		getChild<LLSpinCtrl>("Pos X")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Pos Y")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Pos Z")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Scale X")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Scale Y")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Scale Z")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Rot X")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Rot Y")->setPrecision(decimals);
-		getChild<LLSpinCtrl>("Rot Z")->setPrecision(decimals);
-		mPrecision = decimals;
-	}
-	*/
-}
 static	const std::string	toolNames[]={
 	"ToolCube",
 	"ToolPrism",
@@ -262,7 +214,7 @@ LLPCode toolData[]={
 	LL_PCODE_LEGACY_GRASS};
 
 BOOL	LLFloaterTools::postBuild()
-{
+{	
 	
 	// Hide until tool selected
 	setVisible(FALSE);
@@ -327,16 +279,6 @@ BOOL	LLFloaterTools::postBuild()
 	mTextGridMode = getChild<LLTextBox>("text ruler mode");
 	mComboGridMode = getChild<LLComboBox>("combobox grid mode");
 	childSetCommitCallback("combobox grid mode",commit_grid_mode, this);
-	//mBtnLink = getChild<LLButton>("link_btn");
-	//childSetAction("link_btn",onClickLink, this);
-	//mBtnUnlink = getChild<LLButton>("unlink_btn");
-	//childSetAction("unlink_btn",onClickUnlink, this);
-
-	// Set the default size limits for spinners -- MC
-	updateToolsSizeLimits();
-
-	// Set the default decimal precision for spinners -- MC
-	//updateToolsPrecision();
 	//
 	// Create Buttons
 	//
@@ -453,8 +395,6 @@ LLFloaterTools::LLFloaterTools()
 	mBtnDuplicate(NULL),
 	mBtnDuplicateInPlace(NULL),
 
-	// mBtnLink(NULL),
-	// mBtnUnlink(NULL),
 	mComboTreesGrass(NULL),
 	mCheckSticky(NULL),
 	mCheckCopySelection(NULL),
@@ -481,7 +421,6 @@ LLFloaterTools::LLFloaterTools()
 
 	mTabLand(NULL),
 	mDirty(TRUE)
-	//mPrecision(3)
 {
 	setAutoFocus(FALSE);
 	LLCallbackMap::map_t factory_map;
@@ -782,7 +721,7 @@ void LLFloaterTools::updatePopup(LLCoordGL center, MASK mask)
 	// Create buttons
 	BOOL create_visible = (tool == LLToolCompCreate::getInstance());
 
-	mBtnCreate	->setToggleState(tool == LLToolCompCreate::getInstance() );
+	mBtnCreate	->setToggleState(	tool == LLToolCompCreate::getInstance() );
 
 	updateTreeGrassCombo(create_visible);
 
