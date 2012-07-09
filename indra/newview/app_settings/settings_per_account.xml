@@ -313,7 +313,7 @@
 			<string>Boolean</string>
 			<key>Value</key>
 			<integer>0</integer>
-		</map>	
+		</map>
     <key>RLVaLoginLastLocation</key>
     <map>
       <key>Comment</key>
@@ -529,6 +529,7 @@
 		<key>Value</key>
 			<integer>0</integer>
     </map>
+
     <key>KeywordsChangeColor</key>
     <map>
       <key>Comment</key>
@@ -622,5 +623,17 @@
       <key>Value</key>
       <string></string>
     </map>
+    <key>EmeraldBuildPrefs_Item</key>
+    <map>
+      <key>Comment</key>
+      <string>UUID of item added to new object created</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>String</string>
+      <key>Value</key>
+      <string></string>
+    </map>
+
   </map>
 </llsd>

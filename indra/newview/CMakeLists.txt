@@ -8,13 +8,13 @@ include(DBusGlib)
 include(DirectX)
 include(ELFIO)
 if(FMODEX)
-include(FMODEX)
-if(FMODEX)
-set(FMOD OFF)
-endif(FMODEX)
+	include(FMODEX)
+	if(FMODEX)
+		set(FMOD OFF)
+	endif(FMODEX)
 endif(FMODEX)
 if(NOT FMODEX)
-include(FMOD)
+	include(FMOD)
 endif(NOT FMODEX)
 include(FMOD)
 include(OPENAL)
@@ -100,8 +100,8 @@ set(viewer_SOURCE_FILES
     ascentprefssys.cpp
     ascentprefsvan.cpp
     astraopenregionsettings.cpp
-    dhparam.cpp
-    dsaparam.cpp
+	#dhparam.cpp
+	#dsaparam.cpp
     emeraldboobutils.cpp
     dofloaterhex.cpp
     dohexeditor.cpp
@@ -113,6 +113,7 @@ set(viewer_SOURCE_FILES
     hippolimits.cpp
     hipporestrequest.cpp
     hippopanelgrids.cpp
+	importtracker.cpp
     jcfloaterareasearch.cpp
     chatbar_as_cmdline.cpp
     qtoolalign.cpp
@@ -178,6 +179,7 @@ set(viewer_SOURCE_FILES
     lldrawpoolwater.cpp
     lldrawpoolwlsky.cpp
     lldriverparam.cpp
+	lldroptarget.cpp
     lldynamictexture.cpp
     llemote.cpp
     lleventinfo.cpp
@@ -564,7 +566,7 @@ set(viewer_SOURCE_FILES
     llworldmapview.cpp
     llxmlrpctransaction.cpp
     noise.cpp
-    pipeline.cpp    
+    pipeline.cpp
     scriptcounter.cpp
     wlfPanel_AdvSettings.cpp
     rlvhandler.cpp
@@ -629,6 +631,7 @@ set(viewer_HEADER_FILES
     hippolimits.h
     hipporestrequest.h
     hippopanelgrids.h
+	importtracker.h
     jcfloaterareasearch.h
     lggdicdownload.h
     lgghunspell_wrapper.h
@@ -697,6 +700,7 @@ set(viewer_HEADER_FILES
     lldrawpoolwater.h
     lldrawpoolwlsky.h
     lldriverparam.h
+	lldroptarget.h
     lldynamictexture.h
     llemote.h
     lleventinfo.h
@@ -1280,7 +1284,6 @@ if (WINDOWS)
         odbccp32
         ole32
         oleaut32
-
         shell32
         user32
         Vfw32
