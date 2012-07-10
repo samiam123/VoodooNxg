@@ -1712,7 +1712,7 @@ F32 LLViewerFetchedTexture::calcDecodePriority()
 		// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
 		if( llisnan(mDecodePriority ) )
 		{
-			llwarns << "Detected NaN for decode priority" << llendl;
+			llwarns << "Detected NaN for decode priority A" << llendl;
 			mDecodePriority = 0; // What to put here? Something low? high? zero?
 		}
 		// </FS:NS>
@@ -1857,7 +1857,7 @@ F32 LLViewerFetchedTexture::calcDecodePriority()
 	// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
 	if( llisnan(priority) )
 	{
-		llwarns << "Detected NaN for decode priority" << llendl;
+		llwarns << "Detected NaN for decode priority B" << llendl;
 		priority = 0; // What to put here? Something low? high? zero?
 	}
 	// </FS:ND>
@@ -1884,7 +1884,7 @@ void LLViewerFetchedTexture::setDecodePriority(F32 priority)
  	// <FS:ND> NaN has some very special comparison characterisctics. Those would make comparing by decode-prio wrong and destroy strict weak ordering of stl containers.
     	if( llisnan(priority) )
     	{
-    		llwarns << "Detected NaN for decode priority" << llendl;
+    		llwarns << "Detected NaN for decode priority C" << llendl;
     		priority = 0; // What to put here? Something low? high? zero?
     	}
     	// </FS:ND>
