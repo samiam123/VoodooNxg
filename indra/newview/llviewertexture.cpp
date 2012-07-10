@@ -1858,7 +1858,7 @@ F32 LLViewerFetchedTexture::calcDecodePriority()
 	if( llisnan(priority) )
 	{
 		llwarns << "Detected NaN for decode priority B" << llendl;
-		priority = 0; // What to put here? Something low? high? zero?
+		priority = 0.5; // What to put here? Something low? high? zero? World map trigger this trying .5 -VS
 	}
 	// </FS:ND>
 	return priority;
