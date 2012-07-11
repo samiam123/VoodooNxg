@@ -55,8 +55,8 @@ const S32 MAX_IMAGE_DATA_SIZE = MAX_IMAGE_AREA * MAX_IMAGE_COMPONENTS;
 // Sams 1024 test works but its not right yet
 const S32 FIRST_PACKET_SIZE = 600;
 const S32 MAX_IMG_PACKET_SIZE = 1000;
-//const S32 FIRST_PACKET_SIZE = 1024;
-//const S32 MAX_IMG_PACKET_SIZE = 1024;
+// const S32 FIRST_PACKET_SIZE = 1024;
+// const S32 MAX_IMG_PACKET_SIZE = 1024;
 
 // Base classes for images.
 // There are two major parts for the image:

@@ -2749,8 +2749,8 @@ bool LLTextureFetch::receiveImageHeader(const LLHost& host, const LLUUID& id, U8
 		worker->mImageCodec = codec;
 		worker->mTotalPackets = packets;
 		worker->mFileSize = (S32)totalbytes;	
-		llassert_always(totalbytes > 0);
-		llassert_always(data_size == FIRST_PACKET_SIZE || data_size == worker->mFileSize);
+		//llassert_always(totalbytes > 0);
+		//llassert_always(data_size == FIRST_PACKET_SIZE || data_size == worker->mFileSize);
 		res = worker->insertPacket(0, data, data_size);
 		worker->setPriority(LLWorkerThread::PRIORITY_HIGH | worker->mWorkPriority);
 		worker->mState = LLTextureFetchWorker::LOAD_FROM_SIMULATOR;

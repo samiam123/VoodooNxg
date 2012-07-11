@@ -82,7 +82,7 @@
 	#pragma warning(disable:4355)
 #endif
 
-const F32 WATER_TEXTURE_SCALE = 1.f;//  Number of times to repeat the water texture across a region was 8
+const F32 WATER_TEXTURE_SCALE = 2.f;//  Number of times to repeat the water texture across a region was 8
 const S16 MAX_MAP_DIST = 10;
 // The server only keeps our pending agent info for 60 seconds.
 // We want to allow for seed cap retry, but its not useful after that 60 seconds.
