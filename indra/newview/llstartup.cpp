@@ -4279,6 +4279,24 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 		gSavedSettings.setString("MapServerURL", map_server_url);
 		LLWorldMap::gotMapServerURL(true);
 	}
+
+    /*---------------------------Added one block VS-------------------------------------*/
+    std::string web_profile_url = response["web_profile_url"];
+    if(!web_profile_url.empty())
+	{
+     /* We got an answer from the grid -> use that */
+    gSavedSettings.setString("WebProfileURL", web_profile_url);
+    LL_INFOS("LLStartup") << "map-server-url : we got an answer from the grid : " << web_profile_url << LL_ENDL;
+	}
+	else
+	{
+    /* No answer from the grid -> use the default setting for current session */
+    web_profile_url = "https://my.secondlife.com/[AGENT_NAME]";
+    gSavedSettings.setString("WebProfileURL", web_profile_url);
+    LL_INFOS("LLStartup") << "web_profile_url : no web_profile_url answer, we use the default setting for the web : " << web_profile_url << LL_ENDL;
+    }
+    /*------------------------------------------------------------------------------------*/
+
 	// Initial outfit for the user.
 	LLSD initial_outfit = response["initial-outfit"][0];
 	if(initial_outfit.size())
