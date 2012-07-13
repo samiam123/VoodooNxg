@@ -16,7 +16,6 @@ endif(FMODEX)
 if(NOT FMODEX)
 	include(FMOD)
 endif(NOT FMODEX)
-include(FMOD)
 include(OPENAL)
 include(Hunspell)
 include(FindOpenGL)
@@ -990,7 +989,6 @@ set(viewer_HEADER_FILES
     lltpresponder.h
     lltracker.h
     lltranslate.h
-    #lltrans.h
     lluiconstants.h
     lluploaddialog.h
 	lluploadfloaterobservers.h

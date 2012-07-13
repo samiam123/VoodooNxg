@@ -47,7 +47,6 @@ set(llmessage_SOURCE_FILES
     llmail.cpp
     llmessagebuilder.cpp
     llmessageconfig.cpp
-    llmessagelog.cpp
     llmessagereader.cpp
     llmessagetemplate.cpp
     llmessagetemplateparser.cpp
@@ -142,7 +141,6 @@ set(llmessage_HEADER_FILES
     llmail.h
     llmessagebuilder.h
     llmessageconfig.h
-    llmessagelog.h
     llmessagereader.h
     llmessagetemplate.h
     llmessagetemplateparser.h

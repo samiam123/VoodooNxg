@@ -264,28 +264,25 @@ BOOL LLWalkAdjustMotion::onUpdate(F32 time, U8* joint_mask)
 		// direction of the drift, up to a certain limited distance
 		// but this will cause the animation playback rate calculation below to 
 		// kick in too slowly and sometimes start playing the animation in reverse.
-//-----------------------------------------------------------------------------------------------
-		/*
-		mPelvisOffset -= PELVIS_COMPENSATION_WIEGHT * (foot_slip_vector * world_to_avatar_rot);
-		lerp(LLVector3::zero, -1.f * (foot_slip_vector * world_to_avatar_rot), LLCriticalDamp::getInterpolant(0.1f));
 
-		//F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL * (llclamp(speed, 0.f, DRIFT_COMP_MAX_SPEED) / DRIFT_COMP_MAX_SPEED);
-		F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL;
+		//mPelvisOffset -= PELVIS_COMPENSATION_WIEGHT * (foot_slip_vector * world_to_avatar_rot);//lerp(LLVector3::zero, -1.f * (foot_slip_vector * world_to_avatar_rot), LLCriticalDamp::getInterpolant(0.1f));
+
+		////F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL * (llclamp(speed, 0.f, DRIFT_COMP_MAX_SPEED) / DRIFT_COMP_MAX_SPEED);
+		//F32 drift_comp_max = DRIFT_COMP_MAX_TOTAL;
 
 		//// clamp pelvis offset to a 90 degree arc behind the nominal position
 		//// NB: this is an ADDITIVE amount that is accumulated every frame, so clamping it alone won't do the trick
 		//// must clamp with absolute position of pelvis in mind
-		LLVector3 currentPelvisPos = mPelvisState->getJoint()->getPosition();
-		mPelvisOffset.mV[VX] = llclamp( mPelvisOffset.mV[VX], -drift_comp_max, drift_comp_max );
-		mPelvisOffset.mV[VY] = llclamp( mPelvisOffset.mV[VY], -drift_comp_max, drift_comp_max );
-		mPelvisOffset.mV[VZ] = 0.f;
+		//LLVector3 currentPelvisPos = mPelvisState->getJoint()->getPosition();
+		//mPelvisOffset.mV[VX] = llclamp( mPelvisOffset.mV[VX], -drift_comp_max, drift_comp_max );
+		//mPelvisOffset.mV[VY] = llclamp( mPelvisOffset.mV[VY], -drift_comp_max, drift_comp_max );
+		//mPelvisOffset.mV[VZ] = 0.f;
 		//
-		mLastRightFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
-		mLastLeftFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
+		//mLastRightFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
+		//mLastLeftFootGlobalPos += LLVector3d(mPelvisOffset * avatar_to_world_rot);
 
-		foot_slip_vector -= mPelvisOffset;
-		*/
-//---------------------------------------------------------------------------------------
+		//foot_slip_vector -= mPelvisOffset;
+
 		LLVector3 avatar_movement_dir = avatar_velocity;
 		avatar_movement_dir.normalize();
 

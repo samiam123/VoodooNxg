@@ -107,8 +107,6 @@ public:
 
 	llifstream()
 		: std::basic_istream<char,std::char_traits< char > >(NULL,true),_Filebuffer(NULL),_ShouldClose(false)
-//		: std::basic_istream<char,std::char_traits< char > >(std::_Noinit),_Filebuffer(NULL),_ShouldClose(false)
-		
 	{	// construct unopened
 	}
 
@@ -118,8 +116,6 @@ public:
 
 	explicit llifstream(_Filet *_File)
 		: std::basic_istream<char,std::char_traits< char > >(NULL,true),
-//		: std::basic_istream<char,std::char_traits< char > >(std::_Noinit),
-		
 			_Filebuffer(new _Myfb(_File)),
 			_ShouldClose(false)
 	{	// construct with specified C stream
@@ -151,7 +147,6 @@ public:
 
 	llofstream()
 		: std::basic_ostream<char,std::char_traits < char > >(NULL,true),_Filebuffer(NULL),_ShouldClose(false)
-//		: std::basic_ostream<char,std::char_traits < char > >(std::_Noinit,true),_Filebuffer(NULL),_ShouldClose(false)
 	{	// construct unopened
 	}
 
@@ -162,7 +157,6 @@ public:
 
 	explicit llofstream(_Filet *_File)
 		: std::basic_ostream<char,std::char_traits < char > >(NULL,true),
-//		: std::basic_ostream<char,std::char_traits < char > >(std::_Noinit,true),
 			_Filebuffer(new _Myfb(_File)),//_File)
 			_ShouldClose(false)
 	{	// construct with specified C stream

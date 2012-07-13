@@ -14,19 +14,6 @@ find_library(FMOD_LIBRARY
              debug ${ARCH_PREBUILT_DIRS_DEBUG}
              )
 
-find_library(FMOD_LIBRARY_DEBUG
-             NAMES fmod fmodvc fmod-3.75
-             PATHS
-             ${ARCH_PREBUILT_DIRS_DEBUG}
-             )
-
-if (FMOD_LIBRARY_RELEASE AND FMOD_LIBRARY_DEBUG)
-  set(FMOD_LIBRARY
-      debug ${FMOD_LIBRARY_DEBUG}
-      optimized ${FMOD_LIBRARY_RELEASE})
-elseif (FMOD_LIBRARY_RELEASE)
-  set(FMOD_LIBRARY ${FMOD_LIBRARY_RELEASE})
-endif (FMOD_LIBRARY_RELEASE AND FMOD_LIBRARY_DEBUG)
 if (NOT FMOD_LIBRARY)
   set(FMOD_SDK_DIR CACHE PATH "Path to the FMOD SDK.")
   if (FMOD_SDK_DIR)

@@ -254,7 +254,6 @@ BOOL LLVorbisDecodeState::initDecode()
 		abort_decode = true;
 		//llwarns << "Illegal sample count: " << sample_count << llendl;
         LL_WARNS_ONCE(NULL) << "Illegal sample count: " << sample_count << llendl;
-
 	}
 	
 	if( size_guess > LLVORBIS_CLIP_REJECT_SIZE ||

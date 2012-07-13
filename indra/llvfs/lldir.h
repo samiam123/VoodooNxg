@@ -101,9 +101,8 @@ class LLDir
 	const std::string &getLindenUserDir(bool empty_ok = false) const;	// Location of the Linden user dir.
 	const std::string &getChatLogsDir() const;	// Location of the chat logs dir.
 	const std::string &getPerAccountChatLogsDir() const;	// Location of the per account chat logs dir.
-	//const std::string &getTempDir() const;			// Common temporary directory
+	const std::string &getTempDir() const;			// Common temporary directory
 	const std::string &getPerAccountIRCSettingsDir() const; // Location of the IRC settings.
-    const std::string &getTempDir() const;      // Common temporary directory
 	const std::string  getCacheDir(bool get_default = false) const;	// Location of the cache.
 	const std::string &getOSCacheDir() const;		// location of OS-specific cache folder (may be empty string)
 	const std::string &getCAFile() const;			// File containing TLS certificate authorities
