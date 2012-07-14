@@ -1,1 +1,0 @@
-develop.py -G vc90 configure -DPACKAGE:BOOL=ON
