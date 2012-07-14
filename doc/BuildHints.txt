@@ -1,0 +1,6 @@
+It's built in for nix but this may be of some help for nix builders anyway.
+
+
+./develop.py -m32 -tRelWithDebInfo -DFMODEX:BOOL=TRUE -DFMODEX_SDK_DIR=[Enter path to fmodapi here] build;
+
+run ./develop.py --help and you learn most of that...
