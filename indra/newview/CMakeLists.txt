@@ -523,7 +523,7 @@ set(viewer_SOURCE_FILES
     llviewervisualparam.cpp
     llviewerwindow.cpp
     llvlcomposition.cpp
-    #viewertime.cpp
+    viewertime.cpp
     llvlmanager.cpp
     llvoavatar.cpp
     llvoavatardefines.cpp
@@ -1110,7 +1110,7 @@ set(viewer_HEADER_FILES
     rlvui.h
  	shcommandhandler.h
 	shfloatermediaticker.h
-	#viewertime.h
+	viewertime.h
     )
 
 source_group("CMake Rules" FILES ViewerInstall.cmake)

@@ -33,7 +33,7 @@
 #include "llfloaterregioninfo.h"
 #include "llfloaterworldmap.h"
 #include "lldrawpoolterrain.h"
-//#include "viewertime.h"
+#include "viewertime.h"
 
 //DEBUG includes
 #include "llsdserialize.h" //LLSDNotationStreamer - for dumping LLSD to string
@@ -156,7 +156,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gHippoLimits->mMinPrimScale = body["MinPrimScale"].asReal();
 			limitschanged = TRUE;
 		}
-		/*to do dont have the string parcer. need to add it back in
+		///*to do dont have the string parcer. need to add it back in
 		if ( body.has("OffsetOfUTC") )
 		{
 			gSavedSettings.setS32("TimeOffset", body["OffsetOfUTC"].asInteger());
@@ -170,7 +170,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gSavedSettings.setBOOL("TimeOffsetDST", body["OffsetOfUTCDST"].asInteger() == 1 ? TRUE : FALSE);
 			ViewerTime::sTimeOffsetDST = gSavedSettings.getBOOL("TimeOffsetDST");
 		}
-		*/
+		//*/
 		if ( body.has("RenderWater") )
 		{
 			gHippoLimits->mRenderWater = body["RenderWater"].asInteger() == 1 ? TRUE : FALSE;

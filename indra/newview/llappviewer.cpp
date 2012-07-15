@@ -132,7 +132,7 @@
 #include "llviewermenu.h"
 #include "llselectmgr.h"
 #include "lltrans.h"
-#include "lltrans.h"
+//#include "lltrans.h"
 #include "lltracker.h"
 #include "llviewerparcelmgr.h"
 #include "llworldmapview.h"
@@ -190,7 +190,7 @@
 #include "llimview.h"
 #include "llviewerthrottle.h"
 #include "llparcel.h"
-
+#include "viewertime.h"
 #include "llcommandlineparser.h"
 #include "llprogressview.h"
 
@@ -512,6 +512,10 @@ static void settings_to_globals()
 	gShowObjectUpdates = gSavedSettings.getBOOL("ShowObjectUpdates");
 	LLWorldMapView::sMapScale = gSavedSettings.getF32("MapScale");
 	LLHoverView::sShowHoverTips = gSavedSettings.getBOOL("ShowHoverTips");
+/*--------------------------Added for viewer time caps --------------------------*/
+	ViewerTime::sUse24HourTime = gSavedSettings.getBOOL("Use24HourTime");
+	ViewerTime::sUseUTCTime = gSavedSettings.getBOOL("UseUTCTime");
+/*-------------------------------------------------------------------------------*/
 }
 
 static void settings_modify()
@@ -605,8 +609,8 @@ bool LLAppViewer::init()
 	LLVector4a::initClass();
 	// Need to do this initialization before we do anything else, since anything
 	// that touches files should really go through the lldir API
-	//gDirUtilp->initAppDirs("SecondLife");
-     gDirUtilp->initAppDirs("Voodoo");
+	//gDirUtilp->initAppDirs("SecondLife");	
+    gDirUtilp->initAppDirs("Voodoo");
 	// set skin search path to default, will be overridden later
 	// this allows simple skinned file lookups to work
 	gDirUtilp->setSkinFolder("default");
