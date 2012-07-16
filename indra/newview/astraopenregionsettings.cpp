@@ -179,15 +179,19 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		/*
 		if ( body.has("SayDistance") )
 		{
-			gSavedSettings.setU32("ChatDistance", body["SayDistance"].asReal());
+			gSavedSettings.setU32("ChatDistance", body["SayDistance"].asReal()); //this should override chat_normal_radius
+			//CHAT_NORMAL_RADIUS = 20.f;
 		}
+		
 		if ( body.has("ShoutDistance") )
 		{
-			//IMPLEMENT ME
+			gSavedSettings.setU32("ShoutDistance", body["ShoutDistance"].asReal()); //this should override chat_shout_radius
+			//CHAT_SHOUT_RADIUS = 100.f;
 		}
 		if ( body.has("WhisperDistance") )
 		{
-			//IMPLEMENT ME
+			gSavedSettings.setU32("WhisperDistance", body["WhisperDistance"].asReal()); // this should override chat_whisper_radius
+			//CHAT_WHISPER_RADIUS = 10.f;
 		}
 		*/
 		if ( body.has("ToggleTeenMode") )
