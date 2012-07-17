@@ -269,7 +269,7 @@ static bool gUseCircuitCallbackCalled = false;
 
 EStartupState LLStartUp::gStartupState = STATE_FIRST;
 
-
+static std::string password;//moved to here for global -VS
 static U64 gFirstSimHandle = 0;
 static LLHost gFirstSim;
 static std::string gFirstSimSeedCap;
@@ -297,7 +297,7 @@ void init_start_screen(S32 location_id);
 void release_start_screen();
 void reset_login();
 void apply_udp_blacklist(const std::string& csv);
-//bool process_login_success_response(std::string &password); was
+bool process_login_success_response(std::string &password); //was
 bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
 
 void callback_cache_name(const LLUUID& id, const std::string& full_name, bool is_group)
@@ -385,7 +385,7 @@ bool idle_startup()
 	static std::string firstname;
 	static std::string lastname;
 	static LLUUID web_login_key;
-	static std::string password;
+//	static std::string password;
 	static std::vector<const char*> requested_options;
 // added 2 lines below sams voodoo -----------------
 	static LLHost first_sim;
@@ -4091,14 +4091,14 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	if (gSavedSettings.getBOOL("RememberPassword"))
 	{
 		// Successful login means the password is valid, so save it.
-		//LLStartUp::savePasswordToDisk(password);//commented this out for now broke it somehow -VS
+		LLStartUp::savePasswordToDisk(password);//commented this out for now broke it somehow -VS
 	}
 	else
 	{
 		// Don't leave password from previous session sitting around
 		// during this login session.
-		//LLStartUp::deletePasswordFromDisk();//commented this out for now -VS
-		//password.assign(""); // clear the password so it isn't saved to login history either
+		LLStartUp::deletePasswordFromDisk();//commented this out for now -VS
+		password.assign(""); // clear the password so it isn't saved to login history either
 	}
 
 	{
@@ -4110,8 +4110,8 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 		history_data.deleteEntry(firstname, lastname, grid_nick);
 		if (gSavedSettings.getBOOL("RememberLogin"))
 		{
-			//LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);//commented out for now broken -VS
-			//history_data.addEntry(login_entry);// same here -VS
+			LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);//commented out for now broken -VS
+			history_data.addEntry(login_entry);// same here -VS
 		}
 		else
 		{
