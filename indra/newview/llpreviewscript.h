@@ -115,6 +115,8 @@ public:
 	static void		onPasteMenu(void* userdata);
 	static void		onSelectAllMenu(void* userdata);
 	static void		onDeselectMenu(void* userdata);
+	static void		onBtnSaveToDisc(void*);
+	static void		onBtnLoadFromDisc(void*);
 
 	static BOOL		enableUndoMenu(void* userdata);
 	static BOOL		enableRedoMenu(void* userdata);
@@ -126,6 +128,8 @@ public:
 
 	static BOOL		hasChanged(void* userdata);
 
+	void            onBtnSaveToDisc_continued(AIFilePicker* filepicker);
+	void            onBtnLoadFromDisc_continued(AIFilePicker* filepicker);
 	void selectFirstError();
 	
 	void autoSave();
