@@ -1620,11 +1620,11 @@ S32 LLVOVolume::setTEColor(const U8 te, const LLColor4& color)
 		if (color.mV[3] != tep->getColor().mV[3])
 		{
 			gPipeline.markTextured(mDrawable);
-/* ----------------- Added one block for testing OZ linden --------------------------------------*/
+/* ----------------- Added one block for testing OZ linden --------------------------------------
             //treat this alpha change as an LoD update since render batches may need to get rebuilt
 			mLODChanged = TRUE;
 			gPipeline.markRebuild(mDrawable, LLDrawable::REBUILD_VOLUME, FALSE);
-/* ----------------------------------------------------------------------------------------------*/
+   ----------------------------------------------------------------------------------------------*/
 
 		}
 		retval = LLPrimitive::setTEColor(te, color);
