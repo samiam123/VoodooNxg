@@ -297,7 +297,7 @@ void init_start_screen(S32 location_id);
 void release_start_screen();
 void reset_login();
 void apply_udp_blacklist(const std::string& csv);
-bool process_login_success_response(std::string &password); //was
+bool process_login_success_response(std::string &password);
 bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
 
 void callback_cache_name(const LLUUID& id, const std::string& full_name, bool is_group)
@@ -1061,7 +1061,7 @@ bool idle_startup()
 		else
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
-			//gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getCurrentGridNick(), 			
+ 			
 			gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
 			gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), firstname, lastname);
 		}
@@ -1691,7 +1691,7 @@ bool idle_startup()
 		gAgent.initOriginGlobal(from_region_handle(gFirstSimHandle));
 		display_startup();
         LLWorld::getInstance()->addRegion(gFirstSimHandle, gFirstSim, first_sim_size_x, first_sim_size_y); // with var
-		//LLWorld::getInstance()->addRegion(gFirstSimHandle, gFirstSim); // non var
+
 		display_startup();
 
 		LLViewerRegion *regionp = LLWorld::getInstance()->getRegionFromHandle(gFirstSimHandle);
@@ -4168,9 +4168,8 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	if(!sim_ip_str.empty() && !sim_port_str.empty())
 	{
 		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);
-		//gFirstSim.set(sim_ip_str, sim_port);//commented this out added 2 lines below -VS
-		gFirstSim.setHostByName(sim_ip_str);//added -VS
-		gFirstSim.setPort(sim_port);//added -VS
+		gFirstSim.set(sim_ip_str, sim_port);
+
 		if (gFirstSim.isOk())
 		{
 			gMessageSystem->enableCircuit(gFirstSim, TRUE);

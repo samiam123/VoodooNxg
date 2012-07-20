@@ -14,7 +14,7 @@
       <key>Value</key>
       <integer>0</integer>
       <key>IsCOA</key>
-      <integer>1</integer>
+      <integer>0</integer>
     </map>
 
     <key>MoyMiniMapCustomColor</key>
@@ -59,7 +59,7 @@
 			<key>Value</key>
 			<integer>0</integer>
 			<key>IsCOA</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</map>
 		<key>AscentCustomTagLabel</key>
 		<map>
@@ -103,7 +103,7 @@
 			<key>Value</key>
 			<integer>0</integer>
 			<key>IsCOA</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</map>
 		<key>AscentReportClientIndex</key>
 		<map>
@@ -116,7 +116,7 @@
 			<key>Value</key>
 			<integer>1</integer>
 			<key>IsCOA</key>
-			<integer>1</integer>
+			<integer>0</integer>
 		</map>
 		<key>AscentFriendColor</key>
 		<map>
@@ -293,7 +293,7 @@
           <key>Value</key>
           <integer>0</integer>
           <key>IsCOA</key>
-          <integer>1</integer>
+          <integer>0</integer>
         </map>
         <key>BuildPrefs_Material</key>
         <map>
