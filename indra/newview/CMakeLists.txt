@@ -37,7 +37,6 @@ include(LLUI)
 include(LLVFS)
 include(LLWindow)
 include(LLXML)
-include(LLXUIXML)
 include(LScript)
 include(Linking)
 include(NDOF)
@@ -72,7 +71,6 @@ include_directories(
     ${LLVFS_INCLUDE_DIRS}
     ${LLWINDOW_INCLUDE_DIRS}
     ${LLXML_INCLUDE_DIRS}
-    ${LLXUIXML_INCLUDE_DIRS}
     ${LSCRIPT_INCLUDE_DIRS}
     ${LSCRIPT_INCLUDE_DIRS}/lscript_compile
     )
@@ -102,8 +100,6 @@ set(viewer_SOURCE_FILES
 	#dhparam.cpp
 	#dsaparam.cpp
     emeraldboobutils.cpp
-    dofloaterhex.cpp
-    dohexeditor.cpp
     floatersculptpreview.cpp
     hbfloatergrouptitles.cpp
     hgfloatertexteditor.cpp
@@ -123,6 +119,7 @@ set(viewer_SOURCE_FILES
 	lggIrcGroupHandler.cpp
 	lggIrcProfileFloater.cpp
 	lggIrcThread.cpp
+	NACLantispam.cpp
     llaccountingcostmanager.cpp
     llagent.cpp
     llagentaccess.cpp
@@ -230,7 +227,6 @@ set(viewer_SOURCE_FILES
     llfloatergroupinvite.cpp
     llfloatergroups.cpp
     llfloaterhandler.cpp
-    llfloaterhardwaresettings.cpp
     llfloaterhtmlcurrency.cpp
     llfloatermediabrowser.cpp
     llfloaterhtmlsimple.cpp
@@ -484,8 +480,6 @@ set(viewer_SOURCE_FILES
     llviewerfoldertype.cpp
     llviewergenericmessage.cpp
     llviewergesture.cpp
-    #llviewerimage.cpp
-    #llviewerimagelist.cpp
     llviewerinventory.cpp
     llviewerjoint.cpp
     llviewerjointattachment.cpp
@@ -539,7 +533,6 @@ set(viewer_SOURCE_FILES
     llvopartgroup.cpp
     llvosky.cpp
     llvosurfacepatch.cpp
-    llvotextbubble.cpp
     llvotree.cpp
     llvovolume.cpp
     llvowater.cpp
@@ -584,23 +577,11 @@ set(viewer_SOURCE_FILES
 set(VIEWER_BINARY_NAME "Voodoo" CACHE STRING
     "The name of the viewer executable to create.")
 
-if ((LINUX OR DARWIN) AND NOT DARWIN_PPC)
-  # We can't set these flags for Darwin, because they get passed to
-  # the PPC compiler.  Ugh.
-
-  set_source_files_properties(
-      llviewerjointmesh_sse.cpp
-      PROPERTIES COMPILE_FLAGS "-msse -mfpmath=sse"
-      )
-  set_source_files_properties(
-      llviewerjointmesh_sse2.cpp
-      PROPERTIES COMPILE_FLAGS "-msse2 -mfpmath=sse"
-      )
-endif ((LINUX OR DARWIN) AND NOT DARWIN_PPC)
 set(viewer_HEADER_FILES
     CMakeLists.txt
     ViewerInstall.cmake
 
+	NACLantispam.h
     sgmemstat.h
     sgversion.h
     llviewerobjectbackup.h
@@ -620,8 +601,6 @@ set(viewer_HEADER_FILES
     ascentprefssys.h
     ascentprefsvan.h
     emeraldboobutils.h
-    dofloaterhex.h
-    dohexeditor.h
     floatersculptpreview.h
     hbfloatergrouptitles.h
     hgfloatertexteditor.h
@@ -751,7 +730,6 @@ set(viewer_HEADER_FILES
     llfloatergroupinvite.h
     llfloatergroups.h
     llfloaterhandler.h
-    llfloaterhardwaresettings.h
     llfloaterhtmlcurrency.h
     llfloatermediabrowser.h
     llfloaterhtmlsimple.h
@@ -1010,8 +988,6 @@ set(viewer_HEADER_FILES
     llviewerfoldertype.h
     llviewergenericmessage.h
     llviewergesture.h
-    #llviewerimage.h
-    #llviewerimagelist.h
     llviewerinventory.h
     llviewerjoint.h
     llviewerjointattachment.h
@@ -1064,7 +1040,6 @@ set(viewer_HEADER_FILES
     llvopartgroup.h
     llvosky.h
     llvosurfacepatch.h
-    llvotextbubble.h
     llvotree.h
     llvotreenew.h
     llvovolume.h
@@ -1410,23 +1385,28 @@ if (FMOD OR FMODEX)
   endif (FMOD)
 
   if (DARWIN)
-    set(fmodwrapper_SOURCE_FILES fmodwrapper.cpp)
-    add_library(fmodwrapper SHARED ${fmodwrapper_SOURCE_FILES})
-    if (FMODEX)
-      set(fmodwrapper_needed_LIBRARIES ${FMODEX_LIBRARY} ${CARBON_LIBRARY})
-    endif (FMODEX)
-    if (FMOD)
-      set(fmodwrapper_needed_LIBRARIES ${FMOD_LIBRARY} ${CARBON_LIBRARY})
-    endif (FMOD)
-    set_target_properties(
-      fmodwrapper
-      PROPERTIES
-      BUILD_WITH_INSTALL_RPATH 1
-      INSTALL_NAME_DIR "@executable_path/../Resources"
-      LINK_FLAGS "-unexported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/fmod_hidden_symbols.exp"
-      )
-    set(FMODWRAPPER_LIBRARY fmodwrapper)
-    target_link_libraries(fmodwrapper ${fmodwrapper_needed_LIBRARIES})
+    if(FMOD)
+      set(fmodwrapper_SOURCE_FILES fmodwrapper.cpp)
+      add_library(fmodwrapper SHARED ${fmodwrapper_SOURCE_FILES})
+      if (FMODEX)
+        set(fmodwrapper_needed_LIBRARIES ${FMODEX_LIBRARY} ${CARBON_LIBRARY})
+      endif (FMODEX)
+      if (FMOD)
+        set(fmodwrapper_needed_LIBRARIES ${FMOD_LIBRARY} ${CARBON_LIBRARY})
+      endif (FMOD)
+      set_target_properties(
+        fmodwrapper
+        PROPERTIES
+        BUILD_WITH_INSTALL_RPATH 1
+        INSTALL_NAME_DIR "@executable_path/../Resources"
+        LINK_FLAGS "-unexported_symbols_list ${CMAKE_CURRENT_SOURCE_DIR}/fmod_hidden_symbols.exp"
+        )
+      set(FMODWRAPPER_LIBRARY fmodwrapper)
+      target_link_libraries(fmodwrapper ${fmodwrapper_needed_LIBRARIES})
+    endif(FMOD)
+    if(FMODEX)
+      set(FMODWRAPPER_LIBRARY ${FMODEX_LIBRARY})
+    endif(FMODEX)
   else (DARWIN)
     # fmodwrapper unnecessary on linux or windows, for fmod and fmodex
     if (FMODEX)
@@ -1588,7 +1568,6 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${LLVFS_LIBRARIES}
     ${LLWINDOW_LIBRARIES}
     ${LLXML_LIBRARIES}
-    ${LLXUIXML_LIBRARIES}
     ${LSCRIPT_LIBRARIES}
     ${LLMATH_LIBRARIES}
     ${LLCOMMON_LIBRARIES}
@@ -1840,7 +1819,7 @@ endif (WINDOWS)
 if (DARWIN)
 # Don't do this here -- it's taken care of by viewer_manifest.py
 #  add_custom_command(TARGET ${VIEWER_BINARY_NAME} POST_BUILD
-#    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/../libraries/universal-darwin/lib_release/libllqtwebkit.dylib ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/llplugin/
-#    DEPENDS ${CMAKE_SOURCE_DIR}/../libraries/universal-darwin/lib_release/libllqtwebkit.dylib
+#    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/../libraries/universal-darwin/lib/release/libllqtwebkit.dylib ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/llplugin/
+#    DEPENDS ${CMAKE_SOURCE_DIR}/../libraries/universal-darwin/lib/release/libllqtwebkit.dylib
 #  )
 endif (DARWIN)

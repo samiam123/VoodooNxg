@@ -245,7 +245,6 @@
 #include "lltexlayer.h"
 
 // <edit>
-#include "dofloaterhex.h"
 #include "hgfloatertexteditor.h"
 #include "llfloatervfs.h"
 #include "llfloatervfsexplorer.h"
@@ -474,7 +473,6 @@ void handle_force_ground_sit(void*);
 void handle_phantom_avatar(void*);
 void handle_hide_typing_notification(void*);
 void handle_close_all_notifications(void*);
-void handle_reopen_with_hex_editor(void*);
 //void handle_open_message_log(void*);
 void handle_edit_ao(void*);
 void handle_local_assets(void*);
@@ -2687,44 +2685,37 @@ class LLObjectMeasure : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
 	{
-		LLViewerObject* object = LLSelectMgr::getInstance()->getSelection()->getPrimaryObject();
-		if(object)
+		static LLVector3 startMeasurePoint = LLVector3::zero;
+		static bool startpoint_set = false;
+
+		LLViewerObject* object = LLSelectMgr::getInstance()->getSelection()->getFirstObject();
+		if(!object)
+			return false;
+
+		LLVector3 position = object->getPositionEdit();
+
+		LLChat chat;
+		chat.mSourceType = CHAT_SOURCE_SYSTEM;
+
+		if (!startpoint_set)
 		{
-			LLChat chat;
-			chat.mSourceType = CHAT_SOURCE_SYSTEM;
-			
-			if (LLAgent::exlStartMeasurePoint.isExactlyZero())
-			{
-				LLAgent::exlStartMeasurePoint = object->getPosition();
+			startMeasurePoint = position;
+			startpoint_set = true;
 
-				chat.mText = llformat("Start point set");
-				LLFloaterChat::addChat(chat);
-			}
-			else if (LLAgent::exlEndMeasurePoint.isExactlyZero())
-			{
-				LLAgent::exlEndMeasurePoint = object->getPosition();
-
-				chat.mText = llformat("End point set");
-				LLFloaterChat::addChat(chat);
-			}
-			else
-			{
-				LLAgent::exlStartMeasurePoint = LLVector3::zero;
-				LLAgent::exlEndMeasurePoint = LLVector3::zero;
-				return false;
-			}
-
-			if (!LLAgent::exlStartMeasurePoint.isExactlyZero() && !LLAgent::exlEndMeasurePoint.isExactlyZero())
-			{
-				F32 fdist = dist_vec(LLAgent::exlStartMeasurePoint, LLAgent::exlEndMeasurePoint);
-				LLAgent::exlStartMeasurePoint = LLVector3::zero;
-				LLAgent::exlEndMeasurePoint = LLVector3::zero;
-
-				chat.mText = llformat("Distance: %fm", fdist);
-				LLFloaterChat::addChat(chat);
-			}
+			chat.mText = llformat("Start point set");
+			LLFloaterChat::addChat(chat);
 		}
+		else
+		{
+			chat.mText = llformat("End point set");
+			LLFloaterChat::addChat(chat);
 
+			F32 fdist = dist_vec(startMeasurePoint, position);
+
+			chat.mText = llformat("Distance: %fm", fdist);
+			LLFloaterChat::addChat(chat);
+			startpoint_set = false;
+		}
 		return true;
 	}
 };
@@ -3639,11 +3630,6 @@ void process_grant_godlike_powers(LLMessageSystem* msg, void**)
 }
 
 // <edit>
-
-void handle_reopen_with_hex_editor(void*)
-{
-
-}
 
 /*void handle_open_message_log(void*)
 {

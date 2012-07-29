@@ -2411,7 +2411,7 @@ U32 LLVOVolume::getRenderCost(texture_cost_t &textures) const
 		produces_light = 1;
 	}
 
-	for (S32 i = 0; i < num_faces; ++i)
+	for (U32 i = 0; i < num_faces; ++i)
 	{
 		const LLFace* face = drawablep->getFace(i);
 		if (!face) continue;
@@ -3104,6 +3104,11 @@ void LLRiggedVolume::update(const LLMeshSkinInfo* skin, LLVOAvatar* avatar, cons
 		LLVolumeFace& dst_face = mVolumeFaces[i];
 		
 		LLVector4a* weight = vol_face.mWeights;
+
+		if(!weight)
+		{
+			continue;
+		}
 
 		LLMatrix4a bind_shape_matrix;
 		bind_shape_matrix.loadu(skin->mBindShapeMatrix);

@@ -235,6 +235,8 @@
 #include "lldxhardware.h"
 #endif
 
+#include "NACLantispam.h"    // for NaCl Antispam Registry
+
 //
 // exported globals
 //
@@ -1061,14 +1063,22 @@ bool idle_startup()
 		else
 		{
 			gDirUtilp->setPerAccountChatLogsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), 
- 			
-			gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
+				gSavedSettings.getString("FirstName"), gSavedSettings.getString("LastName") );
 			gDirUtilp->setPerAccountIRCSettingsDir(gHippoGridManager->getConnectedGrid()->getGridNick(), firstname, lastname);
 		}
 		LLFile::mkdir(gDirUtilp->getChatLogsDir());
 		LLFile::mkdir(gDirUtilp->getPerAccountChatLogsDir());
-
 		LLFile::mkdir(gDirUtilp->getPerAccountIRCSettingsDir());
+
+        // NaCl - Antispam
+        U32 antispam_time = gSavedSettings.getU32("_NACL_AntiSpamTime");
+        U32 antispam_amount = gSavedSettings.getU32("_NACL_AntiSpamAmount");
+        NACLAntiSpamRegistry::registerQueues(antispam_time, antispam_amount);
+		gSavedSettings.getControl("_NACL_AntiSpamGlobalQueue")->getSignal()->connect(boost::bind(&NACLAntiSpamRegistry::handleNaclAntiSpamGlobalQueueChanged, _2));
+		gSavedSettings.getControl("_NACL_AntiSpamTime")->getSignal()->connect(boost::bind(&NACLAntiSpamRegistry::handleNaclAntiSpamTimeChanged, _2));
+		gSavedSettings.getControl("_NACL_AntiSpamAmount")->getSignal()->connect(boost::bind(&NACLAntiSpamRegistry::handleNaclAntiSpamAmountChanged, _2));
+        // NaCl End
+
 		//good as place as any to create user windlight directories
 		std::string user_windlight_path_name(gDirUtilp->getExpandedFilename( LL_PATH_USER_SETTINGS , "windlight", ""));
 		LLFile::mkdir(user_windlight_path_name.c_str());		
@@ -1690,8 +1700,8 @@ bool idle_startup()
 
 		gAgent.initOriginGlobal(from_region_handle(gFirstSimHandle));
 		display_startup();
-        LLWorld::getInstance()->addRegion(gFirstSimHandle, gFirstSim, first_sim_size_x, first_sim_size_y); // with var
 
+        LLWorld::getInstance()->addRegion(gFirstSimHandle, gFirstSim, first_sim_size_x, first_sim_size_y); // with var
 		display_startup();
 
 		LLViewerRegion *regionp = LLWorld::getInstance()->getRegionFromHandle(gFirstSimHandle);
@@ -4091,13 +4101,13 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	if (gSavedSettings.getBOOL("RememberPassword"))
 	{
 		// Successful login means the password is valid, so save it.
-		LLStartUp::savePasswordToDisk(password);//commented this out for now broke it somehow -VS
+		LLStartUp::savePasswordToDisk(password);
 	}
 	else
 	{
 		// Don't leave password from previous session sitting around
 		// during this login session.
-		LLStartUp::deletePasswordFromDisk();//commented this out for now -VS
+		LLStartUp::deletePasswordFromDisk();
 		password.assign(""); // clear the password so it isn't saved to login history either
 	}
 
@@ -4110,8 +4120,8 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 		history_data.deleteEntry(firstname, lastname, grid_nick);
 		if (gSavedSettings.getBOOL("RememberLogin"))
 		{
-			LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);//commented out for now broken -VS
-			history_data.addEntry(login_entry);// same here -VS
+			LLSavedLoginEntry login_entry(firstname, lastname, password, grid_nick);
+			history_data.addEntry(login_entry);
 		}
 		else
 		{
@@ -4169,7 +4179,6 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	{
 		U32 sim_port = strtoul(sim_port_str.c_str(), NULL, 10);
 		gFirstSim.set(sim_ip_str, sim_port);
-
 		if (gFirstSim.isOk())
 		{
 			gMessageSystem->enableCircuit(gFirstSim, TRUE);
@@ -4403,3 +4412,4 @@ bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y
 	}
 	return success;
 }
+
