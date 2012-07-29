@@ -271,7 +271,7 @@ static bool gUseCircuitCallbackCalled = false;
 
 EStartupState LLStartUp::gStartupState = STATE_FIRST;
 
-static std::string password;//moved to here for global -VS
+
 static U64 gFirstSimHandle = 0;
 static LLHost gFirstSim;
 static std::string gFirstSimSeedCap;
@@ -299,8 +299,8 @@ void init_start_screen(S32 location_id);
 void release_start_screen();
 void reset_login();
 void apply_udp_blacklist(const std::string& csv);
-bool process_login_success_response(std::string &password);
-bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
+//bool process_login_success_response(std::string &password);//Non-var
+bool process_login_success_response(std::string &password, U32 &first_sim_size_x, U32 &first_sim_size_y);//for var
 
 void callback_cache_name(const LLUUID& id, const std::string& full_name, bool is_group)
 {
@@ -387,7 +387,7 @@ bool idle_startup()
 	static std::string firstname;
 	static std::string lastname;
 	static LLUUID web_login_key;
-//	static std::string password;
+	static std::string password;
 	static std::vector<const char*> requested_options;
 // added 2 lines below sams voodoo -----------------
 	static LLHost first_sim;
@@ -1590,7 +1590,7 @@ bool idle_startup()
 		{
 			// unpack login data needed by the application
 			//if(process_login_success_response(password))//was
-			if(process_login_success_response(first_sim_size_x,first_sim_size_y))//added for var -VS
+			if(process_login_success_response(password, first_sim_size_x, first_sim_size_y))//added for var -VS
 			{
 				std::string name = firstname;
 				std::string last_name = lastname;
@@ -4056,8 +4056,8 @@ bool LLStartUp::startLLProxy()
 
 	return proxy_ok;
 }
-//bool process_login_success_response(std::string& password);//org need to fix
-bool process_login_success_response(U32 &first_sim_size_x, U32 &first_sim_size_y)//for var
+//bool process_login_success_response(std::string& password);//non-var
+bool process_login_success_response(std::string& password, U32 &first_sim_size_x, U32 &first_sim_size_y)//for var
 {
 	LLSD response = LLUserAuth::getInstance()->getResponse();
 

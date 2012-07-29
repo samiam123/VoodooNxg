@@ -7121,6 +7121,27 @@ No
 
   <notification
    icon="alertmodal.tga"
+   name="Help_IRCSettings"
+   type="alert">
+IRC is an alternative type of group chat.
+IRC chats happen inside IRC "channels", all people on the same server and channel can talk with each other.
+
+To join an existing chat, click on the "New" button under the IRC tab,
+Type in a nick (anything that no one else has chosen), the server, and the channel you wish to connect to, and then press save.
+
+To create a new IRC group chat, follow the same instructions, just choose a channel that is not already taken.
+Instruct everyone else you wish to connect to to type in the same information as you, just a different nick.
+
+Settings Tag: This is the name of the group chat, it will appear under the IRC tab for you to identify by.
+Nick: This is like a user name, choose one that is not already picked by someone else.
+Nick Password: This is not your sl password.  Some servers allow you to keep a nick, even after you log off (look at /msg nickserv help for more information).
+Server: This is the server you would like to connect to.  You are free to use anyone you want here.
+Server Password: Some servers require a password (most don't) to connect, put that here.
+Channel: This is like the chat room name you wish to join.
+Channel Password: You can set up a channel to have a password by (/msg ChanServ), if you have, place it here.
+  </notification>
+  <notification
+   icon="alertmodal.tga"
    name="SetDisplayNameSuccess"
    type="alert">
     Hi [DISPLAY_NAME]!
