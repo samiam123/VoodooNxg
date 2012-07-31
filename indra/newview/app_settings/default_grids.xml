@@ -16,17 +16,17 @@
       <key>helperuri</key>
       <string>http://grid.kicks-ass.net:8002/</string>
       <key>loginpage</key>
-      <string>http://grid.kicks-ass.net/loginscreen/</string>
+      <string>http://grid.kicks-ass.net/welcomescreen/</string>
       <key>search</key>
-      <string>http://grid.kicks-ass.net</string>
+      <string>http://grid.kicks-ass.net/</string>
       <key>support</key>
-      <string>http://grid.kicks-ass.net/index.php?page=chat</string>
+      <string>http://grid.kicks-ass.net/index.html?page=chat</string>
       <key>website</key>
-      <string>http://grid.kicks-ass.net</string>
+      <string>http://grid.kicks-ass.net/</string>
       <key>password</key>
-      <string>http://grid.kicks-ass.net/index.php?page=forgotpass</string>
+      <string>http://grid.kicks-ass.net/index.html?page=forgotpass</string>
       <key>register</key>
-      <string>http://grid.kicks-ass.net/index.php?page=register</string>
+      <string>http://grid.kicks-ass.net/index.html?page=register</string>
       <key>render_compat</key>
       <boolean>1</boolean>
     </map>
