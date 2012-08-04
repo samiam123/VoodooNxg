@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <floater
   name="region_debug_console"
-  title="Region Debug Console"
+  title="Region Console Window"
   can_resize="false"
   can_minimize="true"
   can_close="true" 
