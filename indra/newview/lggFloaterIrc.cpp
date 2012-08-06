@@ -35,7 +35,6 @@
 #include "lggFloaterIrcEdit.h"
 #include "message.h"
 
-//#include "llevent.h"
 #include "llagent.h"
 #include "llbutton.h"
 #include "llfloaterdirectory.h"
@@ -259,9 +258,7 @@ void init_irc_list(LLScrollListCtrl* ctrl)
 		std::string style = "NORMAL";
 		LLSD element;
 
-		// comment out one line for now gives an error.DefaultListText NOT a color  sams voodoo
-		//element["columns"][0]["IRC List Color"] = gColors.getColor("DefaultListText").getValue();
-		//element["columns"][0]["column"] = gColors.getColor("DefaultListText").getValue();
+		element["columns"][0]["IRC List Color"] = gColors.getColor("DefaultListText").getValue();
 		element["id"] = id;
 		element["columns"][0]["column"] = "IRC_name";
 		element["columns"][0]["value"] = allGroups[i].name;
