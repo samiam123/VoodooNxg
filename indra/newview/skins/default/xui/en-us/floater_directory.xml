@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <floater can_close="true" can_drag_on_left="false" can_minimize="true"
      can_resize="true" height="570" min_height="570" min_width="780"
-     name="directory" rect_control="FloaterFindRect2" title="Search Second Life"
+     name="directory" rect_control="FloaterFindRect2" title="Search The Grid"
      width="780">
 	<tab_container bottom="-570" follows="left|top|right|bottom" height="550" left="0"
 	     mouse_opaque="false" name="Directory Tabs" tab_position="top" width="780">
@@ -24,7 +24,7 @@
 			     font="SansSerif" handle_edit_keys_directly="false" height="18"
 			     label="Search" left_delta="56" max_length="254" mouse_opaque="true"
 			     name="search_editor" select_all_on_focus_received="false"
-			     select_on_focus="false" tab_group="1" tool_tip="Search Second Life"
+			     select_on_focus="false" tab_group="1" tool_tip="Search The Grid"
 			     width="160" spell_check="true" />
       <button bottom="-26" follows="top|right" font="SansSerifSmall" height="25"
            label="" left="230" name="back_btn" width="25" image_overlay="go-previous-4.png"/>
@@ -479,7 +479,7 @@ To buy direct, visit the land and click on the place name in the title bar.
 					Any Category
 				</combo_item>
 				<combo_item name="GridOpLocation" value="GridOp">
-					Linden Location
+					Grid Owner Location
 				</combo_item>
 				<combo_item name="Arts&amp;Culture" value="arts">
 					Arts and Culture
@@ -518,13 +518,13 @@ To buy direct, visit the land and click on the place name in the title bar.
 			<!-- This is used only during the AO transition and can be deleted once the AO transition is
 			complete. It is identical to the combo box above except that it has the Adult category. 
 			You might also want to set it back to default visible and enabled. -->
-			<combo_box allow_text_entry="false" bottom="-46" enabled="false" follows="right|top" height="18" left="230"
-			     max_chars="20" mouse_opaque="true" name="Category_Adult" width="128" visible="false">
+			<combo_box allow_text_entry="false" bottom="-46" enabled="true" follows="right|top" height="18" left="230"
+			     max_chars="20" mouse_opaque="true" name="Category_Adult" width="128" visible="true">
 				<combo_item name="AnyCategory" value="any">
 					Any Category
 				</combo_item>
 				<combo_item name="GridOpLocation" value="GridOp">
-					Linden Location
+					Grid Owner Location
 				</combo_item>
 				<combo_item name="Adult" value="adult">
 					Adult

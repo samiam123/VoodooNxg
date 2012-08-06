@@ -4292,16 +4292,18 @@ bool process_login_success_response(std::string& password, U32 &first_sim_size_x
     std::string web_profile_url = response["web_profile_url"];
     if(!web_profile_url.empty())
 	{
-     /* We got an answer from the grid -> use that */
-    gSavedSettings.setString("WebProfileURL", web_profile_url);
-    LL_INFOS("LLStartup") << "map-server-url : we got an answer from the grid : " << web_profile_url << LL_ENDL;
+     /* We got an answer from the grid -> use that*/
+	//gFullName = utf8str_tolower(firstname + "." + lastname);
+   // gSavedSettings.setString("WebProfileURL", web_profile_url + gFullName);
+	gSavedSettings.setString("WebProfileURL", web_profile_url + (firstname + "." + lastname));
+    //LL_INFOS("LLStartup") << "map-server-url : we got an answer from the grid : " << web_profile_url << LL_ENDL;
 	}
 	else
 	{
-    /* No answer from the grid -> use the default setting for current session */
+    /// No answer from the grid -> use the default setting for current session
     web_profile_url = "https://my.secondlife.com/[AGENT_NAME]";
     gSavedSettings.setString("WebProfileURL", web_profile_url);
-    LL_INFOS("LLStartup") << "web_profile_url : no web_profile_url answer, we use the default setting for the web : " << web_profile_url << LL_ENDL;
+    //LL_INFOS("LLStartup") << "web_profile_url : no web_profile_url answer, we use the default setting for the web : " << web_profile_url << LL_ENDL;
     }
     /*------------------------------------------------------------------------------------*/
 
