@@ -143,6 +143,7 @@
 #include "llfloaterperms.h"
 #include "llfloaterpostprocess.h"
 #include "llfloaterpreference.h"
+#include "llfloaterregiondebugconsole.h"
 #include "llfloaterregioninfo.h"
 #include "llfloaterreporter.h"
 #include "llfloaterscriptdebug.h"
@@ -258,6 +259,7 @@
 #include "slfloatermediafilter.h"
 #include "llviewerobjectbackup.h"
 #include "llagentui.h"
+#include "llpathfindingmanager.h"
 
 #include "hippogridmanager.h"
 #include "llfloaterregiondebugconsole.h"
@@ -373,7 +375,6 @@ void near_sit_object();
 BOOL is_selection_buy_not_take();
 S32 selection_price();
 BOOL enable_take();
-void handle_take();
 bool confirm_take(const LLSD& notification, const LLSD& response, LLObjectSelectionHandle selection_handle);
 
 void handle_buy_object(LLSaleInfo sale_info);
@@ -417,6 +418,21 @@ void handle_god_mode(void*);
 
 // God menu
 void handle_leave_god_mode(void*);
+
+//Generic handler for singleton-based floaters.
+template<typename T>
+BOOL handle_singleton_check(void *)
+{
+	return T::instanceExists();
+}
+template<typename T>
+void handle_singleton_toggle(void *)
+{
+	if(!T::instanceExists())
+		T::getInstance();
+	else
+		T::getInstance()->close();
+}
 
 // <edit>
 void handle_fake_away_status(void*);
@@ -547,7 +563,6 @@ BOOL get_visibility(void*);
 void request_friendship(const LLUUID& agent_id);
 
 // Tools menu
-void handle_force_unlock(void*);
 void handle_selected_texture_info(void*);
 void handle_dump_image_list(void*);
 
@@ -810,7 +825,7 @@ void init_menus()
 	menu->addChild(new LLMenuItemCallGL(	"Asset Blacklist",
 											&handle_blacklist, NULL));
 	menu->addChild(new LLMenuItemCheckGL(  "Streaming Audio Display", 
-											&handle_ticker_toggle, &handle_ticker_enabled, &handle_ticker_check, NULL ));
+											&handle_ticker_toggle, &handle_ticker_enabled, &handle_singleton_check<SHFloaterMediaTicker>, NULL ));
 	
 	
 	
@@ -1281,6 +1296,7 @@ void init_debug_ui_menu(LLMenuGL* menu)
 		(void*)"DoubleClickTeleport"));
 	menu->addSeparator();
 //	menu->addChild(new LLMenuItemCallGL( "Print Packets Lost",			&print_packets_lost, NULL, NULL, 'L', MASK_SHIFT ));
+	menu->addChild(new LLMenuItemCheckGL("Region Console Window", handle_singleton_toggle<LLFloaterRegionDebugConsole>, NULL, handle_singleton_check<LLFloaterRegionDebugConsole>,NULL,'`', MASK_CONTROL|MASK_SHIFT));
 	menu->addChild(new LLMenuItemCheckGL("Debug SelectMgr", menu_toggle_control, NULL, menu_check_control, (void*)"DebugSelectMgr"));
 	menu->addChild(new LLMenuItemToggleGL("Debug Clicks", &gDebugClicks));
 	menu->addChild(new LLMenuItemToggleGL("Debug Views", &LLView::sDebugRects));
@@ -1770,7 +1786,7 @@ void init_server_menu(LLMenuGL* menu)
 	{
 		LLMenuGL* sub = new LLMenuGL("Region");
 		menu->addChild(sub);
-		sub->addChild(new LLMenuItemCallGL( "Region Console Window", LLFloaterRegionDebugConsole::PopUp));
+		sub->addChild(new LLMenuItemCheckGL("Region Console Window", handle_singleton_toggle<LLFloaterRegionDebugConsole>, NULL, handle_singleton_check<LLFloaterRegionDebugConsole>,NULL));
 		sub->addChild(new LLMenuItemCallGL("Dump Temp Asset Data",
 			&handle_region_dump_temp_asset_data,
 			&enable_god_customer_service, NULL));
@@ -2719,6 +2735,16 @@ class LLObjectMeasure : public view_listener_t
 		return true;
 	}
 };
+
+bool enable_object_select_in_pathfinding_linksets()
+{
+	return LLPathfindingManager::getInstance()->isPathfindingEnabledForCurrentRegion() && LLSelectMgr::getInstance()->selectGetEditableLinksets();
+}
+
+bool enable_object_select_in_pathfinding_characters()
+{
+	return LLPathfindingManager::getInstance()->isPathfindingEnabledForCurrentRegion() &&  LLSelectMgr::getInstance()->selectGetViewableCharacters();
+}
 
 class LLAvatarAnims : public view_listener_t
 {
@@ -4497,8 +4523,9 @@ static bool get_derezzable_objects(
 		{
 		case DRD_TAKE_INTO_AGENT_INVENTORY:
 		case DRD_TRASH:
-			if( (node->mPermissions->allowTransferTo(gAgent.getID()) && object->permModify())
-				|| (node->allowOperationOnNode(PERM_OWNER, GP_OBJECT_MANIPULATE)) )
+			if (!object->isPermanentEnforced() &&
+				((node->mPermissions->allowTransferTo(gAgent.getID()) && object->permModify())
+				|| (node->allowOperationOnNode(PERM_OWNER, GP_OBJECT_MANIPULATE))))
 			{
 				can_derez_current = TRUE;
 			}
@@ -4918,9 +4945,10 @@ BOOL enable_take()
 			return TRUE;
 		}
 # endif
-		if((node->mPermissions->allowTransferTo(gAgent.getID())
+		if(!object->isPermanentEnforced() &&
+			((node->mPermissions->allowTransferTo(gAgent.getID())
 			&& object->permModify())
-		   || (node->mPermissions->getOwner() == gAgent.getID()))
+			|| (node->mPermissions->getOwner() == gAgent.getID())))
 		{
 			return TRUE;
 		}
@@ -5164,6 +5192,7 @@ class LLToolsSaveToInventory : public view_listener_t
 		return true;
 	}
 };
+
 class LLToolsSaveToObjectInventory : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
@@ -5175,6 +5204,22 @@ class LLToolsSaveToObjectInventory : public view_listener_t
 			derez_objects(DRD_SAVE_INTO_TASK_INVENTORY, node->mFromTaskID);
 		}
 		return true;
+	}
+};
+
+class LLToolsEnablePathfinding : public view_listener_t
+{
+	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
+	{
+		return (LLPathfindingManager::getInstance() != NULL) && LLPathfindingManager::getInstance()->isPathfindingEnabledForCurrentRegion();
+	}
+};
+
+class LLToolsEnablePathfindingView : public view_listener_t
+{
+	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
+	{
+		return (LLPathfindingManager::getInstance() != NULL) && LLPathfindingManager::getInstance()->isPathfindingEnabledForCurrentRegion() && LLPathfindingManager::getInstance()->isPathfindingViewEnabled();
 	}
 };
 
@@ -6309,30 +6354,6 @@ void dump_inventory(void*)
 	gInventory.dumpInventory();
 }
 
-// forcibly unlock an object
-void handle_force_unlock(void*)
-{
-	// First, make it public.
-	LLSelectMgr::getInstance()->sendOwner(LLUUID::null, LLUUID::null, TRUE);
-
-	// Second, lie to the viewer and mark it editable and unowned
-
-	struct f : public LLSelectedObjectFunctor
-	{
-		virtual bool apply(LLViewerObject* object)
-		{
-			object->mFlags |= FLAGS_OBJECT_MOVE;
-			object->mFlags |= FLAGS_OBJECT_MODIFY;
-			object->mFlags |= FLAGS_OBJECT_COPY;
-
-			object->mFlags &= ~FLAGS_OBJECT_ANY_OWNER;
-			object->mFlags &= ~FLAGS_OBJECT_YOU_OWNER;
-			return true;
-		}
-	} func;
-	LLSelectMgr::getInstance()->getSelection()->applyToObjects(&func);
-}
-
 void handle_dump_followcam(void*)
 {
 	LLFollowCamMgr::dump();
@@ -7297,6 +7318,7 @@ BOOL object_selected_and_point_valid(void *user_data)
 	return (selection->getRootObjectCount() == 1) && 
 		(selection->getFirstRootObject()->getPCode() == LL_PCODE_VOLUME) && 
 		selection->getFirstRootObject()->permYouOwner() &&
+		!selection->getFirstRootObject()->flagObjectPermanent() &&
 		!((LLViewerObject*)selection->getFirstRootObject()->getRoot())->isAvatar() && 
 		(selection->getFirstRootObject()->getNVPair("AssetContainer") == NULL);
 }
@@ -7975,8 +7997,8 @@ BOOL enable_save_into_inventory(void*)
 			return TRUE;
 		}
 	}
-#endif
 	return FALSE;
+#endif
 }
 
 BOOL enable_save_into_task_inventory(void*)
@@ -9381,6 +9403,9 @@ void initialize_menus()
 	addMenu(new LLToolsEnableBuyOrTake(), "Tools.EnableBuyOrTake");
 	addMenu(new LLToolsEnableTakeCopy(), "Tools.EnableTakeCopy");
 	addMenu(new LLToolsEnableSaveToObjectInventory(), "Tools.SaveToObjectInventory");
+
+	addMenu(new LLToolsEnablePathfinding(), "Tools.EnablePathfinding");
+	addMenu(new LLToolsEnablePathfindingView(), "Tools.EnablePathfindingView");
 
 	/*addMenu(new LLToolsVisibleBuyObject(), "Tools.VisibleBuyObject");
 	addMenu(new LLToolsVisibleTakeObject(), "Tools.VisibleTakeObject");*/

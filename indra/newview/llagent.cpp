@@ -49,6 +49,7 @@
 #include "llmoveview.h"
 #include "llchatbar.h"
 #include "llnotificationsutil.h"
+#include "llpanelpathfindingrebakenavmesh.h"
 #include "llparcel.h"
 #include "llrendersphere.h"
 #include "llsdmessage.h"
@@ -1885,6 +1886,8 @@ void LLAgent::endAnimationUpdateUI()
 		gMenuBarView->setVisible(TRUE);
 		gStatusBar->setVisibleForMouselook(true);
 
+		LLPanelPathfindingRebakeNavmesh::getInstance()->setVisible(TRUE);
+
 		LLToolMgr::getInstance()->setCurrentToolset(gBasicToolset);
 
 
@@ -1973,6 +1976,7 @@ void LLAgent::endAnimationUpdateUI()
 		// hide menus
 		gMenuBarView->setVisible(FALSE);
 		gStatusBar->setVisibleForMouselook(false);
+		LLPanelPathfindingRebakeNavmesh::getInstance()->setVisible(FALSE);
 
 		// clear out camera lag effect
 		gAgentCamera.clearCameraLag();

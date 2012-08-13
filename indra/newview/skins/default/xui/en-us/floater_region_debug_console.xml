@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <floater
+  can_close="true"
+  can_minimize="true"
   name="region_debug_console"
   title="Region Console Window"
-  can_resize="false"
-  can_minimize="true"
-  can_close="true" 
-  can_drag_on_left="false"
+  can_resize="true"
   layout="topleft"
   min_height="300"
   min_width="300"
-  height="420"
+  height="400"
   width="600"
   default_tab_group="1">
   <text_editor
-  left="10"
-  bottom="30"
+   left="10"
    type="string"
    length="1"
-   follows="left|right|bottom"
+   follows="all"
    font="Monospace"
-   height="366"
+   bottom="-373"
+   height="353"
    width="576"
    ignore_tab="false"
    layout="topleft"
@@ -27,20 +26,19 @@
    name="region_debug_console_output"
    show_line_numbers="false" 
    word_wrap="true"
-   track_end="true"
-   read_only="true">
+   track_bottom="true"
+   enabled="false">
   </text_editor>
   <line_editor
    border_style="line"
    border_thickness="1"
    tab_group="1" 
-   follows="left|top|right"
+   follows="left|bottom|right"
    font="SansSerif"
    height="19"
    layout="topleft"
    bottom_delta="-20"
    max_length="127"
    name="region_debug_console_input"
-   top_delta="0"
    width="576" />
 </floater>

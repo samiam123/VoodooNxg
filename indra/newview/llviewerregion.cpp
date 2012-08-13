@@ -1581,8 +1581,10 @@ void LLViewerRegion::unpackRegionHandshake()
 
 void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 {
+	capabilityNames.append("AgentState");
 	//capabilityNames.append("AttachmentResources"); //Script limits (llfloaterscriptlimits.cpp)
 	//capabilityNames.append("AvatarPickerSearch"); //Display name/SLID lookup (llfloateravatarpicker.cpp)
+	capabilityNames.append("CharacterProperties");
 	capabilityNames.append("ChatSessionRequest");
 	capabilityNames.append("CopyInventoryFromNotecard");
 	capabilityNames.append("CreateInventoryCategory");
@@ -1615,7 +1617,9 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 #if MESH_IMPORT
 	capabilityNames.append("MeshUploadFlag");
 #endif //MESH_IMPORT
+	capabilityNames.append("NavMeshGenerationStatus");
 	capabilityNames.append("NewFileAgentInventory");
+	capabilityNames.append("ObjectNavMeshProperties");
 	capabilityNames.append("ParcelPropertiesUpdate");
 	capabilityNames.append("ParcelNavigateMedia");
 	capabilityNames.append("ParcelVoiceInfoRequest");
@@ -1624,13 +1628,13 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("RemoteParcelRequest");
 	capabilityNames.append("RequestTextureDownload");
 	capabilityNames.append("ResourceCostSelected"); //Unreferenced?
+	capabilityNames.append("RetrieveNavMeshSrc");
 	capabilityNames.append("SearchStatRequest");
 	capabilityNames.append("SearchStatTracking");
 	capabilityNames.append("SendPostcard");
 	capabilityNames.append("SendUserReport");
 	capabilityNames.append("SendUserReportWithScreenshot");
 	capabilityNames.append("ServerReleaseNotes");
-	//uncommented sim con caps
 	capabilityNames.append("SimConsole");
 	capabilityNames.append("SimulatorFeatures");
 	capabilityNames.append("SetDisplayName");
@@ -1638,6 +1642,7 @@ void LLViewerRegionImpl::buildCapabilityNames(LLSD& capabilityNames)
 	capabilityNames.append("StartGroupProposal");
 	// added one line for new caps faster tps RS
 	capabilityNames.append("TeleportLocation");
+	capabilityNames.append("TerrainNavMeshProperties");
 	capabilityNames.append("TextureStats");
 	capabilityNames.append("UntrustedSimulatorMessage");
 	capabilityNames.append("UpdateAgentInformation");

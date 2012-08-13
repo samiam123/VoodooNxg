@@ -32,36 +32,32 @@
 
 #include "llfloater.h"
 #include "llhttpclient.h"
-#include "lluictrlfactory.h"
-#include "lltexteditor.h"
 
 class LLTextEditor;
 
 typedef boost::signals2::signal<
-    void (const std::string& output)> console_reply_signal_t;
+	void (const std::string& output)> console_reply_signal_t;
 
-class LLFloaterRegionDebugConsole : public LLFloater, public LLHTTPClient::Responder
+class LLFloaterRegionDebugConsole : public LLFloater, public LLHTTPClient::Responder, public LLSingleton<LLFloaterRegionDebugConsole>
 {
 public:
-    LLFloaterRegionDebugConsole();
-    virtual ~LLFloaterRegionDebugConsole();
+	LLFloaterRegionDebugConsole();
+	virtual ~LLFloaterRegionDebugConsole();
 
-    // virtual
-    BOOL postBuild();
-    
-    static void onInput(LLUICtrl* ctrl, void* userdata);
+	// virtual
+	BOOL postBuild();
+	void onClose(bool app_quitting);
+	
+	void onInput(LLUICtrl* ctrl, const LLSD& param);
 
-    LLTextEditor * mOutput;
+	LLTextEditor * mOutput;
 
-	static void PopUp(void*);
-
-    static boost::signals2::connection setConsoleReplyCallback(const console_reply_signal_t::slot_type& cb);
+	static boost::signals2::connection setConsoleReplyCallback(const console_reply_signal_t::slot_type& cb);
 
  private:
-    void onReplyReceived(const std::string& output);
+	void onReplyReceived(const std::string& output);
 
-	static LLFloaterRegionDebugConsole*	sInstance;
-    boost::signals2::connection mReplySignalConnection;
+	boost::signals2::connection mReplySignalConnection;
 };
 
 #endif // LL_LLFLOATERREGIONDEBUGCONSOLE_H

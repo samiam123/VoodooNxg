@@ -3875,24 +3875,16 @@ void process_chat_from_simulator(LLMessageSystem *msg, void **user_data)
 			chat.mPosAgent = chatter->getPositionAgent();
 		}
 
-		// truth table:
-		// LINDEN	MUTED	BUSY	OWNED_BY_YOU	TASK		DISPLAY		STORE IN HISTORY
-		// F		T		*		*				*			No			No
-		// F		F		T		F				*			No			Yes
-		// *		F		F		*				*			Yes			Yes
-		// *		F		*		T				*			Yes			Yes
-		// T		*		*		*				F			Yes			Yes
-
 		chat.mMuted = is_muted && !is_linden;
+		bool only_history = visible_in_chat_bubble || (!is_linden && !is_owned_by_me && is_busy);
+#if 0	// Google translate doesn't work anymore
 		if (!chat.mMuted)
 		{
-			bool only_history = visible_in_chat_bubble || (!is_linden && !is_owned_by_me && is_busy);
-#if 0	// Google translate doesn't work anymore
 			check_translate_chat(mesg, chat, only_history);
-#else
-			add_floater_chat(chat, only_history);
-#endif
 		}
+#else
+		add_floater_chat(chat, only_history);
+#endif
 	}
 }
 
@@ -5317,7 +5309,7 @@ void process_avatar_animation(LLMessageSystem *mesgsys, void **user_data)
 				LLViewerObject* object = gObjectList.findObject(object_id);
 				if (object)
 				{
-					object->mFlags |= FLAGS_ANIM_SOURCE;
+					object->setFlagsWithoutUpdate(FLAGS_ANIM_SOURCE, TRUE);
 
 					BOOL anim_found = FALSE;
 					LLVOAvatar::AnimSourceIterator anim_it = avatarp->mAnimationSources.find(object_id);
@@ -5464,7 +5456,7 @@ void process_set_follow_cam_properties(LLMessageSystem *mesgsys, void **user_dat
 	LLViewerObject* objectp = gObjectList.findObject(source_id);
 	if (objectp)
 	{
-		objectp->mFlags |= FLAGS_CAMERA_SOURCE;
+		objectp->setFlagsWithoutUpdate(FLAGS_CAMERA_SOURCE, TRUE);
 	}
 
 	S32 num_objects = mesgsys->getNumberOfBlocks("CameraProperty");

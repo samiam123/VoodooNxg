@@ -384,6 +384,7 @@ set(viewer_SOURCE_FILES
     llpanelmsgs.cpp
     llpanelnetwork.cpp
     llpanelobject.cpp
+    llpanelpathfindingrebakenavmesh.cpp
     llpanelpermissions.cpp
     llpanelpick.cpp
     llpanelplace.cpp
@@ -392,6 +393,15 @@ set(viewer_SOURCE_FILES
     llpanelweb.cpp
     llparcelselection.cpp
     llpatchvertexarray.cpp
+    llpathfindingcharacter.cpp
+    llpathfindingcharacterlist.cpp
+    llpathfindinglinkset.cpp
+    llpathfindinglinksetlist.cpp
+    llpathfindingmanager.cpp
+    llpathfindingnavmesh.cpp
+    llpathfindingnavmeshstatus.cpp
+    llpathfindingobject.cpp
+    llpathfindingobjectlist.cpp
     llphysicsmotion.cpp
     llphysicsshapebuilderutil.cpp
     llpolymesh.cpp
@@ -880,7 +890,6 @@ set(viewer_HEADER_FILES
     llpanellandmedia.h
     llpanellandobjects.h
     llpanellandoptions.h
-    llpanelLCD.h
     llpanellogin.h
     llpanelmaininventory.h
     llpanelmorph.h
@@ -888,6 +897,7 @@ set(viewer_HEADER_FILES
     llpanelmsgs.h
     llpanelnetwork.h
     llpanelobject.h
+    llpanelpathfindingrebakenavmesh.h
     llpanelpermissions.h
     llpanelpick.h
     llpanelplace.h
@@ -896,6 +906,15 @@ set(viewer_HEADER_FILES
     llpanelweb.h
     llparcelselection.h
     llpatchvertexarray.h
+    llpathfindingcharacter.h
+    llpathfindingcharacterlist.h
+    llpathfindinglinkset.h
+    llpathfindinglinksetlist.h
+    llpathfindingmanager.h
+    llpathfindingnavmesh.h
+    llpathfindingnavmeshstatus.h
+    llpathfindingobject.h
+    llpathfindingobjectlist.h
     llphysicsmotion.h
     llphysicsshapebuilderutil.h
     llpolymesh.h
@@ -1602,6 +1621,14 @@ if (LINUX)
 
   set(product ${VIEWER_BRANDING_NAME_CAMELCASE}-${ARCH}-${viewer_VERSION})
 
+  if (FMODEX)
+    if(MANIFEST_LIBRARIES)
+      set(MANIFEST_LIBRARIES "${MANIFEST_LIBRARIES}|${FMODEX_LIBRARY}")
+    else(MANIFEST_LIBRARIES)
+      set(MANIFEST_LIBRARIES "--extra_libraries=${FMODEX_LIBRARY}")
+    endif(MANIFEST_LIBRARIES)
+  endif (FMODEX)
+
   add_custom_command(
       OUTPUT ${product}.tar.bz2
       COMMAND ${PYTHON_EXECUTABLE}
@@ -1620,6 +1647,7 @@ if (LINUX)
         --dest=${CMAKE_CURRENT_BINARY_DIR}/packaged
         --touch=${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/.${product}.touched
         --buildtype=${CMAKE_BUILD_TYPE}
+		  ${MANIFEST_LIBRARIES}
       DEPENDS secondlife-stripped ${CMAKE_CURRENT_SOURCE_DIR}/viewer_manifest.py
       )
 
