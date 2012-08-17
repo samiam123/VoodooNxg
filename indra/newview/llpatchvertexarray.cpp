@@ -82,14 +82,15 @@ void LLPatchVertexArray::create(U32 surface_width, U32 patch_width, F32 meters_p
 		surface_order += 1;
 	}
 
-	if (power_of_two == (surface_width-1))
-	{
-		mSurfaceWidth = surface_width;
 
-		// Make sure patch_width is a factor of (surface_width - 1)
-		U32 ratio = (surface_width - 1) / patch_width;
-		F32 fratio = ((float)(surface_width - 1)) / ((float)(patch_width));
-		if ( fratio == (float)(ratio))
+	if (power_of_two != (surface_width-1)) {
+		surface_width = power_of_two + 1;
+	}
+	mSurfaceWidth = surface_width;
+	// Make sure patch_width is a factor of (surface_width - 1)
+	U32 ratio = (surface_width - 1) / patch_width;
+	F32 fratio = ((float)(surface_width - 1)) / ((float)(patch_width));
+	if ( fratio == (float)(ratio))
 		{
 			// Make sure patch_width is a power of two
 			power_of_two = 1;
@@ -99,26 +100,17 @@ void LLPatchVertexArray::create(U32 surface_width, U32 patch_width, F32 meters_p
 				power_of_two *= 2;
 				patch_order += 1;
 			}
-			if (power_of_two == patch_width)
-			{
+			if (power_of_two != patch_width) {
+			patch_width = power_of_two;
+		    }
+
 				mPatchWidth = patch_width;
 				mPatchOrder = patch_order;
 			}
-			else // patch_width is not a power of two...
-			{
-				mPatchWidth = 0;
-				mPatchOrder = 0;
-			}
-		}
+
 		else // patch_width is not a factor of (surface_width - 1)...
 		{
-			mPatchWidth = 0;
-			mPatchOrder = 0;
-		}
-	}
-	else // surface_width is not a power of two...
-	{
-		mSurfaceWidth = 0;
+
 		mPatchWidth = 0;
 		mPatchOrder = 0;
 	}

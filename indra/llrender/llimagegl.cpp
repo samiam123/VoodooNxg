@@ -562,11 +562,14 @@ void LLImageGL::setSize(S32 width, S32 height, S32 ncomponents)
 	if (width != mWidth || height != mHeight || ncomponents != mComponents)
 	{
 		// Check if dimensions are a power of two!
+        /* disable for aurora var-region support on region having a non-power of two size
+
 		if (!checkSize(width,height))
 		{
 			llerrs << llformat("Texture has non power of two dimension: %dx%d",width,height) << llendl;
 		}
-		
+		*/
+
 		if (mTexName)
 		{
 // 			llwarns << "Setting Size of LLImageGL with existing mTexName = " << mTexName << llendl;
