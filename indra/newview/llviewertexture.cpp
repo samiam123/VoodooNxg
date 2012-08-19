@@ -2423,7 +2423,7 @@ bool LLViewerFetchedTexture::doLoadedCallbacks()
 {
 	//static const F32 MAX_INACTIVE_TIME = 120.f ; //seconds orginally
 	// changed this value experimentally lower is faster, sl has it at 900 .. ick  sams voodoo 
-	static const F32 MAX_INACTIVE_TIME = 30.f ; //seconds 
+	static const F32 MAX_INACTIVE_TIME = 10.f ; //seconds 
 
 	if (mNeedsCreateTexture)
 	{
@@ -2874,13 +2874,13 @@ void LLViewerFetchedTexture::saveRawImage()
 		return ;
 	}
 
-	// This shouldn't happen, but it did on Snowglobe 1.5. Better safe than sorry?
+	/* This shouldn't happen, but it did on Snowglobe 1.5. Better safe than sorry?
 	if (!mRawImage->getData())
 	{
 		llwarns << "mRawImage->getData() returns NULL" << llendl;
 		return;
 	}
-
+	*/
 	mSavedRawDiscardLevel = mRawDiscardLevel ;
 	mSavedRawImage = new LLImageRaw(mRawImage->getData(), mRawImage->getWidth(), mRawImage->getHeight(), mRawImage->getComponents()) ;
 
@@ -3438,7 +3438,7 @@ LLViewerMediaTexture::~LLViewerMediaTexture()
 	}
 }
 #endif //NEW_MEDIA_TEXTURE
-void LLViewerMediaTexture::reinit(BOOL usemipmaps /* = TRUE */)
+void LLViewerMediaTexture::reinit(BOOL usemipmaps /*= TRUE*/ )
 {
 	llassert(mGLTexturep.notNull()) ;
 

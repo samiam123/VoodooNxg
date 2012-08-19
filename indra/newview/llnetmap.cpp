@@ -83,7 +83,8 @@
 using namespace LLOldEvents;
 
 const F32 MAP_SCALE_MIN = 32;
-const F32 MAP_SCALE_MID = 256;
+//const F32 MAP_SCALE_MID = 256;//was
+const F32 MAP_SCALE_MID = 1024;
 const F32 MAP_SCALE_MAX = 4096;
 const F32 MAP_SCALE_INCREMENT = 16;
 const F32 MAP_SCALE_ZOOM_FACTOR = 1.1f;		// Zoom in factor per click of the scroll wheel (10%)

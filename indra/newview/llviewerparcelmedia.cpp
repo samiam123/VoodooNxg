@@ -326,7 +326,8 @@ LLViewerMediaImpl::EMediaStatus LLViewerParcelMedia::getStatus()
 // static
 std::string LLViewerParcelMedia::getMimeType()
 {
-	return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : LLMIMETypes::getDefaultMimeType();
+	//return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : LLMIMETypes::getDefaultMimeType();
+	return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : "none/none";	
 }
 
 viewer_media_t LLViewerParcelMedia::getParcelMedia()
@@ -776,7 +777,7 @@ void LLViewerParcelMedia::filterMedia(LLParcel* parcel, U32 type)
 
 	if (media_url.empty())
 	{
-		media_action = "allow";
+		media_action == "allow";
 	}
 	else if (!sMediaFilterListLoaded || sDeniedMedia.count(domain) || sDeniedMedia.count(ip))
 	{

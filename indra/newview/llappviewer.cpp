@@ -4519,6 +4519,7 @@ void LLAppViewer::disconnectViewer()
 
 	cleanup_xfer_manager();
 	gDisconnected = TRUE;
+
 }
 
 void LLAppViewer::forceErrorLLError()
@@ -4645,9 +4646,9 @@ void LLAppViewer::handleLoginComplete()
 	}
 	
 	gDebugInfo["SettingsFilename"] = gSavedSettings.getString("ClientSettingsFile");
-	gDebugInfo["CAFilename"] = gDirUtilp->getCAFile();
-	gDebugInfo["ViewerExePath"] = gDirUtilp->getExecutablePathAndName();
-	gDebugInfo["CurrentPath"] = gDirUtilp->getCurPath();
+	//gDebugInfo["CAFilename"] = gDirUtilp->getCAFile();
+	//gDebugInfo["ViewerExePath"] = gDirUtilp->getExecutablePathAndName();
+	//gDebugInfo["CurrentPath"] = gDirUtilp->getCurPath();
 
 	if(gAgent.getRegion())
 	{

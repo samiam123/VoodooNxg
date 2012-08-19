@@ -302,7 +302,7 @@ U32 LLVOWater::getPartitionType() const
 { 
 	if (mIsEdgePatch)
 	{
-		//return LLViewerRegion::PARTITION_VOIDWATER;
+		return LLViewerRegion::PARTITION_VOIDWATER;
 	}
 
 	return LLViewerRegion::PARTITION_WATER; 

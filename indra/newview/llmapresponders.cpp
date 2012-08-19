@@ -74,14 +74,14 @@ void LLMapLayerResponder::result(const LLSD& result)
 		new_layer.LayerExtents.mTop = layer_data["Top"];
 
 		new_layer.LayerImageID = layer_data["ImageID"];
-//		if (use_web_map_tiles)
-//		{
-//			new_layer.LayerImage = LLWorldMap::loadObjectsTile((U32)new_layer.LayerExtents.mLeft, (U32)new_layer.LayerExtents.mBottom); // no good... Maybe using of level 2 and higher web maps ?
-//		}
-//		else
-//		{
+		if (use_web_map_tiles)
+		{
+			new_layer.LayerImage = LLWorldMap::loadObjectsTile((U32)new_layer.LayerExtents.mLeft, (U32)new_layer.LayerExtents.mBottom); // no good... Maybe using of level 2 and higher web maps ?
+		}
+		else
+		{
 			new_layer.LayerImage = LLViewerTextureManager::getFetchedTexture(new_layer.LayerImageID);
-//		}
+		}
 		gGL.getTexUnit(0)->bind(new_layer.LayerImage.get());
 		new_layer.LayerImage->setAddressMode(LLTexUnit::TAM_CLAMP);
 

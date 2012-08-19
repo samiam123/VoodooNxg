@@ -116,7 +116,7 @@ public:
 	std::string mCurrentURL;
 	bool mFromMessage;
 
-	// void onNavigateComplete( const EventType& event_in );
+	//void onNavigateComplete( const EventType& event_in );
 
 };
 
