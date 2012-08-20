@@ -210,6 +210,7 @@ void LLViewerParcelMedia::play(LLParcel* parcel, bool filter)
 		return;
 	}
 
+    std::string media_current_url = parcel->getMediaCurrentURL();//added
 	std::string mime_type = parcel->getMediaType();
 	LLUUID placeholder_texture_id = parcel->getMediaID();
 	U8 media_auto_scale = parcel->getMediaAutoScale();
@@ -234,6 +235,7 @@ void LLViewerParcelMedia::play(LLParcel* parcel, bool filter)
 		LL_DEBUGS("Media") << "new media impl with mime type " << mime_type << ", url " << media_url << LL_ENDL;
 
 		// There is no media impl, or it has just been deprecated, make a new one
+
 			sMediaImpl = LLViewerMedia::newMediaImpl(media_url, placeholder_texture_id,
 				media_width, media_height, media_auto_scale,
 				media_loop, mime_type);
@@ -326,8 +328,8 @@ LLViewerMediaImpl::EMediaStatus LLViewerParcelMedia::getStatus()
 // static
 std::string LLViewerParcelMedia::getMimeType()
 {
-	//return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : LLMIMETypes::getDefaultMimeType();
-	return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : "none/none";	
+	return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : LLMIMETypes::getDefaultMimeType();
+	//return sMediaImpl.notNull() ? sMediaImpl->getMimeType() : "none/none";	
 }
 
 viewer_media_t LLViewerParcelMedia::getParcelMedia()
@@ -360,6 +362,7 @@ void LLViewerParcelMedia::processParcelMediaCommandMessage( LLMessageSystem *msg
 		if( command == PARCEL_MEDIA_COMMAND_STOP )
 		{
 			stop();
+			//sMediaImpl->stop();
 		}
 		else
 		// pause
@@ -777,7 +780,7 @@ void LLViewerParcelMedia::filterMedia(LLParcel* parcel, U32 type)
 
 	if (media_url.empty())
 	{
-		media_action == "allow";
+		media_action = "allow";
 	}
 	else if (!sMediaFilterListLoaded || sDeniedMedia.count(domain) || sDeniedMedia.count(ip))
 	{

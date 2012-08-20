@@ -73,7 +73,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gHippoLimits->mAllowPhysicalPrims = body["AllowPhysicalPrims"].asInteger() == 1;
 			limitschanged = TRUE;
 		}
-		///*
+		
 		if ( body.has("DrawDistance") )
 		{
 			F32 distance = body["DrawDistance"].asReal();
@@ -88,12 +88,12 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		{
 			gAgent.mLockedDrawDistance = body["ForceDrawDistance"].asInteger() == 1;
 		}
-		/*
+		
 		if ( body.has("LSLFunctions") )
 		{
 			//IMPLEMENT ME//not yet avail
 		}
-      */
+        
 	  if ( body.has("TerrainDetailScale") )
 		{
 			//gAgent.getRegion()->getComposition()->setScaleParams(body["TerrainDetailScale"].asReal(), body["TerrainDetailScale"].asReal());
@@ -149,7 +149,8 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		}
 		if ( body.has("MaxPhysPrimScale") )
 		{
-			//IMPLEMENT ME
+			gHippoLimits-> mMaxPhysPrimScale = body["MaxPhysPrimScale"].asReal();
+			limitschanged = TRUE;
 		}
 		if ( body.has("MinPrimScale") )
 		{
@@ -159,24 +160,28 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 		
 		if ( body.has("OffsetOfUTC") )
 		{
-			gSavedSettings.setS32("TimeOffset", body["OffsetOfUTC"].asInteger());
+			//gSavedSettings.setS32("TimeOffset", body["OffsetOfUTC"].asInteger());
+			//gSavedSettings.setBOOL("UseTimeOffset", true);
+			//ViewerTime::sUseTimeOffset = true;
+			//ViewerTime::sTimeOffset = gSavedSettings.getS32("TimeOffset");
+            gSavedSettings.setS32("TimeOffset", body["OffsetOfUTC"].asReal());
 			gSavedSettings.setBOOL("UseTimeOffset", true);
-			ViewerTime::sUseTimeOffset = true;
-			ViewerTime::sTimeOffset = gSavedSettings.getS32("TimeOffset");
 		}
 		
 		if ( body.has("OffsetOfUTCDST") )
 		{
+			//gSavedSettings.setBOOL("TimeOffsetDST", body["OffsetOfUTCDST"].asInteger() == 1 ? TRUE : FALSE);
+			//ViewerTime::sTimeOffsetDST = gSavedSettings.getBOOL("TimeOffsetDST");
 			gSavedSettings.setBOOL("TimeOffsetDST", body["OffsetOfUTCDST"].asInteger() == 1 ? TRUE : FALSE);
-			ViewerTime::sTimeOffsetDST = gSavedSettings.getBOOL("TimeOffsetDST");
 		}
 		
 		if ( body.has("RenderWater") )
 		{
 			gHippoLimits->mRenderWater = body["RenderWater"].asInteger() == 1 ? TRUE : FALSE;
-		//	gAgent.getRegion()->rebuildWater();//not yet
+			//gAgent.getRegion()->rebuildWater();//not yet uncommenting this will make the viewer crash
+			gSavedSettings.setBOOL("RenderWater", true);
 		}
-		/*
+		
 		if ( body.has("SayDistance") )
 		{
 			gSavedSettings.setU32("ChatDistance", body["SayDistance"].asReal()); //this should override chat_normal_radius
@@ -193,7 +198,7 @@ class OpenRegionInfoUpdate : public LLHTTPNode
 			gSavedSettings.setU32("WhisperDistance", body["WhisperDistance"].asReal()); // this should override chat_whisper_radius
 			//CHAT_WHISPER_RADIUS = 10.f;
 		}
-		*/
+		
 		if ( body.has("ToggleTeenMode") )
 		{
 			gHippoLimits->mEnableTeenMode = body["ToggleTeenMode"].asInteger() == 1 ? TRUE : FALSE;

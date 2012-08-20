@@ -852,8 +852,8 @@ bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 	
 	childSetValue("draw_distance", gAgent.mDrawDistance);
 	childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
-	//childSetValue("draw_distance", LLSD(gHippoLimits->mDrawDistance));
-	//childSetValue("force_draw_distance", (gHippoLimits->mLockedDrawDistance == 1 ? TRUE : FALSE));
+	childSetValue("draw_distance", LLSD(gHippoLimits->mDrawDistance));
+	childSetValue("force_draw_distance", (gHippoLimits->mLockedDrawDistance == 1 ? TRUE : FALSE));
 	childSetValue("allow_minimap", LLSD(gHippoLimits->mAllowMinimap));
 	childSetValue("allow_physical_prims", (gHippoLimits->mAllowPhysicalPrims == 1 ? TRUE : FALSE));
 	childSetValue("max_drag_distance", LLSD(gHippoLimits->mMaxDragDistance));
@@ -862,7 +862,7 @@ bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 	childSetValue("max_inventory_items_transfer", LLSD(gHippoLimits->mMaxInventoryItemsTransfer));
 	childSetValue("max_link_count", LLSD(gHippoLimits->mMaxLinkedPrims));
 	childSetValue("max_link_count_phys", LLSD(gHippoLimits->mMaxPhysLinkedPrims));
-	childSetValue("max_phys_prim_scale", LLSD(gHippoLimits->mMaxPrimScale));//Todo:Fix
+	childSetValue("max_phys_prim_scale", LLSD(gHippoLimits->mMaxPhysPrimScale));//NOT Todo:Fix
 	childSetValue("max_prim_scale", LLSD(gHippoLimits->mMaxPrimScale));
 	childSetValue("min_prim_scale", LLSD(gHippoLimits->mMinPrimScale));
 	childSetValue("render_water", LLSD(gHippoLimits->mRenderWater));

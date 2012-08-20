@@ -77,6 +77,7 @@ void HippoLimits::setAuroraLimits()
 	if (mMaxAgentGroups < 0) mMaxAgentGroups = 50;
 	mMaxPrimScale = 256.0f;
 	mMinPrimScale = 0.001f;
+	mMaxPhysPrimScale = 60;//added for openregion
 	mMinPrimXPos = 0;
 	mMinPrimYPos = 0;
 	mMinPrimZPos = 0;

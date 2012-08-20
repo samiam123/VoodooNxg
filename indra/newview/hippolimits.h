@@ -20,6 +20,7 @@ public:
 	float getMaxSelectDistance() const { return mMaxSelectDistance; }
 	float getDrawDistance()      const { return mDrawDistance;      }
 	float getLockedDrawDistance()      const { return mLockedDrawDistance;      }
+	float getMaxPhysPrimScale() const { return mMaxPhysPrimScale; }
 	// Returns the max prim size we can use on a grid
 	F32	getMinPrimScale() const;
 	
@@ -42,6 +43,7 @@ public:
 	float   mMaxPrimScale;
 	float   mDrawDistance;//added for openregion
     float   mLockedDrawDistance;//added for openregion
+	float   mMaxPhysPrimScale;//added for openregion
 	F32		mMinPrimScale;
 	S32		mMaxLinkedPrims;
 	S32		mMaxPhysLinkedPrims;
