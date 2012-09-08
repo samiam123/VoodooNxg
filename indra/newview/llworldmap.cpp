@@ -586,7 +586,7 @@ void LLWorldMap::processMapLayerReply(LLMessageSystem* msg, void**)
 
 	LLWorldMap::getInstance()->mMapLayers[agent_flags].clear();
 
-//	bool use_web_map_tiles = useWebMapTiles();
+	bool use_web_map_tiles = useWebMapTiles();
 	BOOL adjust = FALSE;
 	for (S32 block=0; block<num_blocks; ++block)
 	{
@@ -600,14 +600,14 @@ void LLWorldMap::processMapLayerReply(LLMessageSystem* msg, void**)
 		msg->getU32Fast(_PREHASH_LayerData, _PREHASH_Top, top, block);
 		msg->getU32Fast(_PREHASH_LayerData, _PREHASH_Bottom, bottom, block);
 
-//		if (use_web_map_tiles)
-//		{
-//			new_layer.LayerImage = loadObjectsTile(left, bottom); // no good... Maybe using of level 2 and higher web maps ?
-//		}
-//		else
-//		{
+		if (use_web_map_tiles)
+		{
+			new_layer.LayerImage = loadObjectsTile(left, bottom); // no good... Maybe using of level 2 and higher web maps ?
+		}
+		else
+		{
 			new_layer.LayerImage = LLViewerTextureManager::getFetchedTexture(new_layer.LayerImageID, MIPMAP_TRUE, LLViewerTexture::BOOST_MAP, LLViewerTexture::LOD_TEXTURE);
-//		}
+		}
 
 		gGL.getTexUnit(0)->bind(new_layer.LayerImage.get());
 		new_layer.LayerImage->setAddressMode(LLTexUnit::TAM_CLAMP);

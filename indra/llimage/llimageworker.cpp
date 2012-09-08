@@ -105,6 +105,7 @@ LLImageDecodeThread::ImageRequest::ImageRequest(handle_t handle, LLImageFormatte
 	  mNeedsAux(needs_aux),
 	  mDecodedRaw(FALSE),
 	  mDecodedAux(FALSE),
+	  mDecodedImageRawValid(true),
 	  mResponder(responder)
 {
 }
@@ -132,10 +133,12 @@ bool LLImageDecodeThread::ImageRequest::processRequest()
 			// parse formatted header
 			if (!mFormattedImage->updateData())
 			{
+				mDecodedImageRawValid = false;
 				return true; // done (failed)
 			}
 			if (!(mFormattedImage->getWidth() * mFormattedImage->getHeight() * mFormattedImage->getComponents()))
 			{
+				mDecodedImageRawValid = false;
 				return true; // done (failed)
 			}
 			if (mDiscardLevel >= 0)
@@ -161,7 +164,7 @@ bool LLImageDecodeThread::ImageRequest::processRequest()
 		done = mFormattedImage->decodeChannels(mDecodedImageAux, decode_time_slice, 4, 4); // 1ms
 		mDecodedAux = done;
 	}
-
+	mDecodedImageRawValid = true;
 	return done;
 }
 
@@ -169,7 +172,8 @@ void LLImageDecodeThread::ImageRequest::finishRequest(bool completed)
 {
 	if (mResponder.notNull())
 	{
-		bool success = completed && mDecodedRaw && mDecodedImageRaw->getDataSize() && (!mNeedsAux || mDecodedAux);
+		//bool success = completed && mDecodedRaw && mDecodedImageRaw->getDataSize() && (!mNeedsAux || mDecodedAux);
+		bool success = completed && mDecodedRaw && (!mNeedsAux || mDecodedAux) && mDecodedImageRawValid;
 		mResponder->completed(success, mDecodedImageRaw, mDecodedImageAux);
 	}
 	// Will automatically be deleted
