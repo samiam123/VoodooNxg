@@ -370,7 +370,18 @@
 				</map>
 
 				<!-- Server to client -->
+				<key>DisplayNameUpdate</key>
+				
+				<map>
+					<key>flavor</key>
+					<string>llsd</string>
+					<key>trusted-sender</key>
+					<boolean>true</boolean>
+				</map>
+
+				<!-- Server to client -->
 			<key>OpenRegionInfo</key>
+			
 			<map>
 				<key>flavor</key>
 				<string>llsd</string>
@@ -378,15 +389,17 @@
 				<boolean>true</boolean>
 			</map>
 			
+
 			<key>SimConsoleResponse</key>
+			
 			<map>
 				<key>flavor</key>
 				<string>llsd</string>
 				<key>trusted-sender</key>
 				<boolean>true</boolean>
 			</map>
-
 			<key>ObjectPhysicsProperties</key>
+			
 			<map>
 				<key>flavor</key>
 				<string>llsd</string>
@@ -400,13 +413,7 @@
                      <key>trusted-sender</key>
                      <boolean>true</boolean>
             </map>
-				<key>DisplayNameUpdate</key>
-				<map>
-					<key>flavor</key>
-					<string>llsd</string>
-					<key>trusted-sender</key>
-					<boolean>true</boolean>
-				</map>
+
                 
 				<key>ParcelVoiceInfo</key>
 				<map>
@@ -416,7 +423,15 @@
 					<boolean>true</boolean>
 				</map>
 
+				<key>ParcelMediaURLFilter</key>
 
+				<map>
+					<key>flavor</key>
+					<string>llsd</string>
+					<key>trusted-sender</key>
+					<boolean>false</boolean>
+				</map>
+				
 				<key>ParcelNavigateMedia</key>
 				<map>
 					<key>flavor</key>
@@ -738,6 +753,16 @@
 		
 			<key>FetchLib2</key>
 			<boolean>true</boolean>
+
+			<key>UploadBakedTexture</key>
+			<boolean>true</boolean>
+			
+			<key>ObjectMedia</key>
+            <boolean>false</boolean>
+                  
+            <key>ObjectMediaNavigate</key>
+            <boolean>false</boolean>
+
 		</map>
 
 		<key>messageBans</key>
