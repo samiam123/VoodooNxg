@@ -106,6 +106,15 @@ class ViewerManifest(LLManifest):
                         self.end_prefix("gemini/textures")
                 self.path("Gemini.xml")
                 self.path("gemini/*.xml")
+                if self.prefix(src="voodoo/textures"):
+		        self.path("*.tga")
+                        self.path("*.j2c")
+                        self.path("*.jpg")
+                        self.path("*.png")
+                        self.path("textures.xml")
+                        self.end_prefix("voodoo/textures")
+                self.path("Voodoo.xml")
+                self.path("voodoo/*.xml")
                 
                 # Local HTML files (e.g. loading screen)
                 if self.prefix(src="*/html"):
