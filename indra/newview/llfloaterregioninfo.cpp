@@ -790,7 +790,7 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 		body["block_parcel_search"] = childGetValue("block_parcel_search_check");
 		body["minimum_agent_age"] = childGetValue("minimum_agent_age");
 
-		LLHTTPClient::post(url, body, new LLHTTPClient::Responder());
+		LLHTTPClient::post(url, body, new LLHTTPClient::ResponderIgnore);
 	}
 	else
 	{
@@ -845,7 +845,7 @@ BOOL LLPanelRegionGeneralInfo::sendUpdate()
 //
 bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 {
-	// Data gets filled in by hippo manager then hyjacked by caps if sim has them else it will use default limits in hippo limmits
+	// Data gets filled in by hippo manager then hijacked by caps if sim has them else it will use default limits in hippo limmits
 	BOOL allow_modify = gAgent.isGodlike() || (region && region->canManageEstate());
 	
 	childSetValue("draw_distance", gAgent.mDrawDistance);
@@ -930,15 +930,14 @@ BOOL LLPanelRegionOpenSettingsInfo::postBuild()
 // strings[9] = 'Y' - block parcel search, 'N' - allow
 void LLPanelRegionOpenSettingsInfo::onClickOrs(void* userdata)
 {
-	LLPanelRegionOpenSettingsInfo* self;
-	self = (LLPanelRegionOpenSettingsInfo*)userdata;
-	
 	llinfos << "LLPanelRegionOpenSettingsInfo::onClickOrs()" << llendl;
 
-	LLSD body;
+	LLPanelRegionOpenSettingsInfo* self = (LLPanelRegionOpenSettingsInfo*)userdata;
+
 	std::string url = gAgent.getRegion()->getCapability("DispatchOpenRegionSettings");
 	if (!url.empty())
 	{
+		LLSD body;
 		body["draw_distance"] = self->childGetValue("draw_distance");
 		body["force_draw_distance"] = self->childGetValue("force_draw_distance");
 		body["allow_minimap"] = self->childGetValue("allow_minimap");
@@ -960,7 +959,7 @@ void LLPanelRegionOpenSettingsInfo::onClickOrs(void* userdata)
 		body["enable_teen_mode"] = self->childGetValue("enable_teen_mode");
 		body["enforce_max_build"] = self->childGetValue("enforce_max_build");
 
-		LLHTTPClient::post(url, body, new LLHTTPClient::Responder());
+		LLHTTPClient::post(url, body, new LLHTTPClient::ResponderIgnore); //Voodoo: TODO: find out if this needs to be a real responder, like LLEstateChangeInfoResponder.
 	}
 }
 

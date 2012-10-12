@@ -35,7 +35,7 @@ include(LLUI)
 include(LLVFS)
 include(LLWindow)
 include(LLXML)
-include(LScript)
+#include(LScript)
 include(Linking)
 include(NDOF)
 include(GooglePerfTools)
@@ -69,8 +69,8 @@ include_directories(
     ${LLVFS_INCLUDE_DIRS}
     ${LLWINDOW_INCLUDE_DIRS}
     ${LLXML_INCLUDE_DIRS}
-    ${LSCRIPT_INCLUDE_DIRS}
-    ${LSCRIPT_INCLUDE_DIRS}/lscript_compile
+#    ${LSCRIPT_INCLUDE_DIRS}
+#    ${LSCRIPT_INCLUDE_DIRS}/lscript_compile
     )
 
 set(viewer_SOURCE_FILES
@@ -141,6 +141,7 @@ set(viewer_SOURCE_FILES
     llconfirmationmanager.cpp
     llconsole.cpp
     llcontainerview.cpp
+    llcurlrequest.cpp
     llcurrencyuimanager.cpp
     llcylinder.cpp
     lldaycyclemanager.cpp
@@ -652,6 +653,7 @@ set(viewer_HEADER_FILES
     llconfirmationmanager.h
     llconsole.h
     llcontainerview.h
+    llcurlrequest.h
     llcurrencyuimanager.h
     llcylinder.h
     lldaycyclemanager.h
@@ -1293,8 +1295,6 @@ if (WINDOWS)
     if (INTEL_MEMOPS_LIBRARY)
       list(APPEND viewer_LIBRARIES ${INTEL_MEMOPS_LIBRARY})
     endif (INTEL_MEMOPS_LIBRARY)
-
-    use_prebuilt_binary(dbghelp)
 endif (WINDOWS)
 
 # Add the xui files. This is handy for searching for xui elements
@@ -1574,7 +1574,7 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${LLVFS_LIBRARIES}
     ${LLWINDOW_LIBRARIES}
     ${LLXML_LIBRARIES}
-    ${LSCRIPT_LIBRARIES}
+#    ${LSCRIPT_LIBRARIES}
     ${LLMATH_LIBRARIES}
     ${LLCOMMON_LIBRARIES}
     ${NDOF_LIBRARY}

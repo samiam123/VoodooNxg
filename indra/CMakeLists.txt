@@ -46,7 +46,6 @@ endif(NOT STANDALONE)
 add_custom_target(prepare DEPENDS ${prepare_depends})
 
 add_subdirectory(cmake)
-add_subdirectory(${LIBS_OPEN_PREFIX}cwdebug)
 add_subdirectory(${LIBS_OPEN_PREFIX}llaudio)
 add_subdirectory(${LIBS_OPEN_PREFIX}llcharacter)
 add_subdirectory(${LIBS_OPEN_PREFIX}llcommon)
@@ -70,7 +69,7 @@ if (EXISTS ${LIBS_CLOSED_DIR}llkdu AND NOT STANDALONE)
   add_subdirectory(${LIBS_CLOSED_PREFIX}llkdu)
 endif (EXISTS ${LIBS_CLOSED_DIR}llkdu AND NOT STANDALONE)
 
-add_subdirectory(${LIBS_OPEN_PREFIX}lscript)
+#add_subdirectory(${LIBS_OPEN_PREFIX}lscript)
 
 if (WINDOWS AND EXISTS ${LIBS_CLOSED_DIR}copy_win_scripts)
   add_subdirectory(${LIBS_CLOSED_PREFIX}copy_win_scripts)
