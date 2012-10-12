@@ -3,5 +3,5 @@
      can_resize="false" name="regioninfo" rect_control="FloaterRegionInfo"
      title="Region/Estate">
 	<tab_container border="false" bottom="0" follows="left|right|top|bottom" left="1"
-	     name="region_panels" right="-1" tab_position="top" top="-20" />
+	     name="region_panels" right="-1" tab_position="top" top="-20" tab_min_width="0" tab_max_width="200"/>
 </floater>
