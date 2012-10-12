@@ -1141,7 +1141,7 @@ void send_ObjectGrab_message(LLViewerObject* object, const LLPickInfo & pick, co
 	LLMessageSystem	*msg = gMessageSystem;
 
 	msg->newMessageFast(_PREHASH_ObjectGrab);
-	msg->nextBlockFast(_PREHASH_AgentData);
+	msg->nextBlockFast( _PREHASH_AgentData);
 	msg->addUUIDFast(_PREHASH_AgentID, gAgent.getID());
 	msg->addUUIDFast(_PREHASH_SessionID, gAgent.getSessionID());
 	msg->nextBlockFast( _PREHASH_ObjectData);
@@ -1170,6 +1170,7 @@ void send_ObjectGrab_message(LLViewerObject* object, const LLPickInfo & pick, co
 	*/
 }
 
+
 void send_ObjectDeGrab_message(LLViewerObject* object, const LLPickInfo & pick)
 {
 	if (!object) return;
@@ -1191,3 +1192,6 @@ void send_ObjectDeGrab_message(LLViewerObject* object, const LLPickInfo & pick)
 	msg->addVector3("Binormal", pick.mBinormal);
 	msg->sendMessage(object->getRegion()->getHost());
 }
+
+
+

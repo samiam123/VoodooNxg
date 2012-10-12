@@ -35,7 +35,9 @@
 #include "llfloateractivespeakers.h"
 
 #include "llagent.h"
-#include "llvoavatar.h"
+#include "llappviewer.h"
+#include "llimview.h"
+#include "llsdutil.h"
 #include "llfloateravatarinfo.h"
 #include "lluictrlfactory.h"
 #include "llviewercontrol.h"
@@ -44,12 +46,10 @@
 #include "lltextbox.h"
 #include "llmutelist.h"
 #include "llviewerobjectlist.h"
+#include "llvoavatar.h"
 #include "llimpanel.h" // LLVoiceChannel
-#include "llsdutil.h"
-#include "llimview.h"
 #include "llviewerwindow.h"
 #include "llworld.h"
-#include "llappviewer.h"
 #include "lggIrcGroupHandler.h"
 
 // [RLVa:KB]
@@ -91,9 +91,7 @@ LLSpeaker::LLSpeaker(const LLUUID& id, const std::string& name, const ESpeakerTy
 		mDisplayName = name;
 		mLegacyName = name;
 	}
-
 	gVoiceClient->setUserVolume(id, LLMuteList::getInstance()->getSavedResidentVolume(id));
-
 	mActivityTimer.reset(SPEAKER_TIMEOUT);
 }
 
@@ -105,7 +103,7 @@ void LLSpeaker::lookupName()
     // [/Ansariel: Display name support]
 }
 
-//static 
+//static
 // [Ansariel: Display name support]
 void LLSpeaker::onAvatarNameLookup(const LLUUID& id, const LLAvatarName& avatar_name, void* user_data)
 // [/Ansariel: Display name support]
@@ -123,12 +121,12 @@ void LLSpeaker::onAvatarNameLookup(const LLUUID& id, const LLAvatarName& avatar_
 			case 2 : speaker_ptr->mDisplayName = avatar_name.mDisplayName; break;
 			default : speaker_ptr->mDisplayName = avatar_name.getLegacyName(); break;
 		}
-		
+
 		// Also set the legacy name. We will need it to initiate a new
 		// IM session.
 		speaker_ptr->mLegacyName = LLCacheName::cleanFullName(avatar_name.getLegacyName());
 	    // [/Ansariel: Display name support]
-		
+
 // [RLVa:KB] - Checked: 2009-07-10 (RLVa-1.0.0g) | Added: RLVa-1.0.0g
 		// TODO-RLVa: this seems to get called per frame which is very likely an LL bug that will eventuall get fixed
 		if (gRlvHandler.hasBehaviour(RLV_BHVR_SHOWNAMES))
@@ -501,7 +499,7 @@ void LLPanelActiveSpeakers::refreshSpeakers()
 			}
 
 			LLColor4 icon_color;
-			
+
 			if (speakerp->mStatus == LLSpeaker::STATUS_MUTED)
 			{
 				icon_cell->setValue(mute_icon_image);
@@ -606,7 +604,7 @@ void LLPanelActiveSpeakers::refreshSpeakers()
 			speaking_status_cell->setValue(speaking_order_sort_string);
 		}
 	}
-	
+
 	// we potentially modified the sort order by touching the list items
 	mSpeakerList->setSorted(FALSE);
 
@@ -805,24 +803,17 @@ void LLPanelActiveSpeakers::onDoubleClickSpeaker(void* user_data)
 
 	if (speaker_id != gAgent.getID() && speakerp.notNull())
 	{
+		if (glggIrcGroupHandler.sendWhoisToAll(speaker_id)
+		&& !gIMMgr->hasSession(LLIMMgr::computeSessionID(IM_PRIVATE_IRC, speaker_id)))
+		{
+			make_ui_sound("UISndNewIncomingIMSession");
+			gIMMgr->addSession(speakerp->mLegacyName, IM_PRIVATE_IRC, speaker_id);
+			return;
+		}
 		// Changed for display name support
 		//gIMMgr->addSession(speakerp->mDisplayName, IM_NOTHING_SPECIAL, speaker_id);
-	//	gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
-    if(  glggIrcGroupHandler.sendWhoisToAll(speaker_id))
-    {
-    LLUUID computed_session_id=LLIMMgr::computeSessionID(IM_PRIVATE_IRC, speaker_id);
-
-    if(!gIMMgr->hasSession(computed_session_id))
-    {
-    make_ui_sound("UISndNewIncomingIMSession");
-    gIMMgr->addSession(speakerp->mLegacyName,IM_PRIVATE_IRC,speaker_id);
-    }
-  }
-    else
-  {
-   gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
-   }
-  }
+		gIMMgr->addSession(speakerp->mLegacyName, IM_NOTHING_SPECIAL, speaker_id);
+	}
 }
 
 //static
@@ -875,25 +866,25 @@ void LLPanelActiveSpeakers::onModeratorMuteVoice(LLUICtrl* ctrl, void* user_data
 
 			if ( gIMMgr )
 			{
-				//403 == you're not a mod
-				//should be disabled if you're not a moderator
 				LLFloaterIMPanel* floaterp;
 
 				floaterp = gIMMgr->findFloaterBySession(mSessionID);
 
 				if ( floaterp )
 				{
+					//403 == you're not a mod
+					//should be disabled if you're not a moderator
 					if ( 403 == status )
 					{
 						floaterp->showSessionEventError(
 							"mute",
-							"not_a_moderator");
+							"not_a_mod_error");
 					}
 					else
 					{
 						floaterp->showSessionEventError(
 							"mute",
-							"generic");
+							"generic_request_error");
 					}
 				}
 			}
@@ -940,25 +931,25 @@ void LLPanelActiveSpeakers::onModeratorMuteText(LLUICtrl* ctrl, void* user_data)
 
 			if ( gIMMgr )
 			{
-				//403 == you're not a mod
-				//should be disabled if you're not a moderator
 				LLFloaterIMPanel* floaterp;
 
 				floaterp = gIMMgr->findFloaterBySession(mSessionID);
 
 				if ( floaterp )
 				{
+					//403 == you're not a mod
+					//should be disabled if you're not a moderator
 					if ( 403 == status )
 					{
 						floaterp->showSessionEventError(
 							"mute",
-							"not_a_moderator");
+							"not_a_mod_error");
 					}
 					else
 					{
 						floaterp->showSessionEventError(
 							"mute",
-							"generic");
+							"generic_request_error");
 					}
 				}
 			}
@@ -1209,6 +1200,9 @@ void LLSpeakerMgr::updateSpeakerList()
 
 const LLPointer<LLSpeaker> LLSpeakerMgr::findSpeaker(const LLUUID& speaker_id)
 {
+	//In some conditions map causes crash if it is empty(Windows only), adding check (EK)
+	if (mSpeakers.size() == 0)
+		return NULL;
 	speaker_map_t::iterator found_it = mSpeakers.find(speaker_id);
 	if (found_it == mSpeakers.end())
 	{
@@ -1359,6 +1353,7 @@ void LLIMSpeakerMgr::setIrcSpeakers(const LLSD& speakers)
 		speakerp->mIsModerator = personData["irc_agent_mod"].asBoolean();
     }
 }
+
 void LLIMSpeakerMgr::updateSpeakers(const LLSD& update)
 {
 	if ( !update.isMap() ) return;

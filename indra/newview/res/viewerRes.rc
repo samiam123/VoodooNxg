@@ -59,7 +59,7 @@ END
 // Icon
 //
 
-// Icon with lowest ID value placed first to ensure application icon.
+// Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_LL_ICON             ICON                    "Voodoo.ico"
 IDI_LCD_LL_ICON         ICON                    "Voodoo.ico"

@@ -8,11 +8,12 @@ include(DBusGlib)
 include(DirectX)
 include(ELFIO)
 if(FMODEX)
-    include(FMODEX)
-    set(FMOD OFF)
-else(FMODEX)
-    include(FMOD)
+  include(FMODEX)
+  set(FMOD OFF)
 endif(FMODEX)
+if(FMOD)
+  include(FMOD)
+endif(FMOD)
 include(OPENAL)
 include(FindOpenGL)
 include(Hunspell)
@@ -84,7 +85,6 @@ set(viewer_SOURCE_FILES
     emeraldboobutils.cpp
     floaterao.cpp
     floaterlocalassetbrowse.cpp
-    floatersculptpreview.cpp
     floatervoicelicense.cpp
     hbfloatergrouptitles.cpp
     hgfloatertexteditor.cpp
@@ -595,7 +595,6 @@ set(viewer_HEADER_FILES
     emeraldboobutils.h
     floaterao.h
     floaterlocalassetbrowse.h
-    floatersculptpreview.h
     floatervoicelicense.h
     hbfloatergrouptitles.h
     hgfloatertexteditor.h
@@ -1393,16 +1392,10 @@ if (FMOD OR FMODEX)
     set(LLSTARTUP_COMPILE_FLAGS "${LLSTARTUP_COMPILE_FLAGS} -DLL_FMOD")
   endif (FMOD)
 
-  if (DARWIN)
-    #if(FMOD) # FIXME: This makes no sense, we can't nest an if(FMODEX) and it's senseless to check for FMOD again.
+  if (DARWIN AND FMOD)
       set(fmodwrapper_SOURCE_FILES fmodwrapper.cpp)
       add_library(fmodwrapper SHARED ${fmodwrapper_SOURCE_FILES})
-      if (FMODEX)
-        set(fmodwrapper_needed_LIBRARIES ${FMODEX_LIBRARY} ${CARBON_LIBRARY})
-      endif (FMODEX)
-      if (FMOD)
-        set(fmodwrapper_needed_LIBRARIES ${FMOD_LIBRARY} ${CARBON_LIBRARY})
-      endif (FMOD)
+      set(fmodwrapper_needed_LIBRARIES ${FMOD_LIBRARY} ${CARBON_LIBRARY})
       set_target_properties(
         fmodwrapper
         PROPERTIES
@@ -1412,11 +1405,7 @@ if (FMOD OR FMODEX)
         )
       set(FMODWRAPPER_LIBRARY fmodwrapper)
       target_link_libraries(fmodwrapper ${fmodwrapper_needed_LIBRARIES})
-    #endif(FMOD) # FIXME!
-    if(FMODEX)
-      set(FMODWRAPPER_LIBRARY ${FMODEX_LIBRARY})
-    endif(FMODEX)
-  else (DARWIN)
+  else (DARWIN AND FMOD)
     # fmodwrapper unnecessary on linux or windows, for fmod and fmodex
     if (FMODEX)
        set(FMODWRAPPER_LIBRARY ${FMODEX_LIBRARY})
@@ -1424,7 +1413,7 @@ if (FMOD OR FMODEX)
     if (FMOD)
        set(FMODWRAPPER_LIBRARY ${FMOD_LIBRARY})
     endif (FMOD)
-  endif (DARWIN)
+  endif (DARWIN AND FMOD)
 endif (FMOD OR FMODEX)
 
 set_source_files_properties(llstartup.cpp PROPERTIES COMPILE_FLAGS "${LLSTARTUP_COMPILE_FLAGS}")
@@ -1460,25 +1449,25 @@ set(PACKAGE ${PACKAGE_DEFAULT} CACHE BOOL
 if (WINDOWS)
     if(MSVC10)
         set(release_flags "/MAPRelease/${VIEWER_BINARY_NAME}.map")
-    else()
+    else(MSVC10)
         set(release_flags "/MAP:Release/${VIEWER_BINARY_NAME}.map")
-    endif()
+    endif(MSVC10)
 
-if (FMOD)
-	if(MANIFEST_LIBRARIES)
-		set(MANIFEST_LIBRARIES "${MANIFEST_LIBRARIES}|${FMOD_BINARY_DIR}/fmod.dll")
-	else(MANIFEST_LIBRARIES)
-		set(MANIFEST_LIBRARIES "--extra_libraries=${FMOD_BINARY_DIR}/fmod.dll")
-	endif(MANIFEST_LIBRARIES)
-endif (FMOD)
-if (FMODEX)
-	if(MANIFEST_LIBRARIES)
-		set(MANIFEST_LIBRARIES "${MANIFEST_LIBRARIES}|${FMODEX_BINARY_DIR}/fmodex.dll")
-	else(MANIFEST_LIBRARIES)
-		set(MANIFEST_LIBRARIES "--extra_libraries=${FMODEX_BINARY_DIR}/fmodex.dll")
-	endif(MANIFEST_LIBRARIES)
-	set(EXTRA_LINKER_FLAGS "/DELAYLOAD:fmodex.dll")
-endif (FMODEX)
+    if (FMOD)
+        if(MANIFEST_LIBRARIES)
+            set(MANIFEST_LIBRARIES "${MANIFEST_LIBRARIES}|${FMOD_BINARY_DIR}/fmod.dll")
+        else(MANIFEST_LIBRARIES)
+            set(MANIFEST_LIBRARIES "--extra_libraries=${FMOD_BINARY_DIR}/fmod.dll")
+        endif(MANIFEST_LIBRARIES)
+    endif (FMOD)
+    if (FMODEX)
+        if(MANIFEST_LIBRARIES)
+       	    set(MANIFEST_LIBRARIES "${MANIFEST_LIBRARIES}|${FMODEX_BINARY_DIR}/fmodex.dll")
+        else(MANIFEST_LIBRARIES)
+            set(MANIFEST_LIBRARIES "--extra_libraries=${FMODEX_BINARY_DIR}/fmodex.dll")
+        endif(MANIFEST_LIBRARIES)
+        set(EXTRA_LINKER_FLAGS "/DELAYLOAD:fmodex.dll")
+    endif (FMODEX)
 
     set_target_properties(${VIEWER_BINARY_NAME}
         PROPERTIES
@@ -1570,6 +1559,7 @@ endif (WINDOWS)
 target_link_libraries(${VIEWER_BINARY_NAME}
     ${GOOGLE_PERFTOOLS_LIBRARIES}
     ${LLAUDIO_LIBRARIES}
+    ${LLAUDIO_VORBIS_LIBRARIES}
     ${LLCHARACTER_LIBRARIES}
     ${LLIMAGE_LIBRARIES}
     ${LLIMAGEJ2COJ_LIBRARIES}
@@ -1589,10 +1579,10 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${LLCOMMON_LIBRARIES}
     ${NDOF_LIBRARY}
     ${viewer_LIBRARIES}
-    ${BOOST_FILESYSTEM_LIBRARY}
-    ${BOOST_PROGRAM_OPTIONS_LIBRARY}
-    ${BOOST_REGEX_LIBRARY}
-    ${BOOST_SYSTEM_LIBRARY}
+    ${Boost_FILESYSTEM_LIBRARY}
+    ${Boost_PROGRAM_OPTIONS_LIBRARY}
+    ${Boost_REGEX_LIBRARY}
+    ${Boost_SYSTEM_LIBRARY}
     ${DBUSGLIB_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${FMODWRAPPER_LIBRARY} # must come after LLAudio
@@ -1692,6 +1682,15 @@ if (DARWIN)
     )
 
   add_dependencies(${VIEWER_BINARY_NAME} SLPlugin media_plugin_quicktime media_plugin_webkit basic_plugin_filepicker)
+
+  if (FMODEX)
+    add_custom_command(OUTPUT "${FMODEX_LIBRARY}"
+                      COMMAND cp "${FMODEX_ORIG_LIBRARY}" "${FMODEX_LIBRARY}"
+                      COMMAND install_name_tool -id "@executable_path/../Resources/libfmodex.dylib" ${FMODEX_LIBRARY}
+                      DEPENDS "${FMODEX_ORIG_LIBRARY}")
+    add_custom_target(fmodex_modified_library DEPENDS "${FMODEX_LIBRARY}")
+    add_dependencies(${VIEWER_BINARY_NAME} fmodex_modified_library)
+  endif (FMODEX)
 
   if (PACKAGE)
       add_custom_target(package ALL DEPENDS ${VIEWER_BINARY_NAME})

@@ -82,6 +82,7 @@
 #include "llviewerwindow.h"
 #include "llvlcomposition.h"
 #include "llagentui.h"
+#include "hippogridmanager.h"
 #include "hippolimits.h"
 // [RLVa:KB]
 #include "rlvhandler.h"
@@ -166,6 +167,7 @@ bool estate_dispatch_initialized = false;
 //S32 LLFloaterRegionInfo::sRequestSerial = 0;
 LLUUID LLFloaterRegionInfo::sRequestInvoice;
 
+
 LLFloaterRegionInfo::LLFloaterRegionInfo(const LLSD& seed)
 {
 	LLUICtrlFactory::getInstance()->buildFloater(this, "floater_region_info.xml", NULL, FALSE);
@@ -177,23 +179,33 @@ BOOL LLFloaterRegionInfo::postBuild()
 
 	// contruct the panels
 	LLPanelRegionInfo* panel;
-	panel = new LLPanelRegionGeneralInfo;
+	panel = new LLPanelEstateInfo;
 	mInfoPanels.push_back(panel);
-	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_general.xml");
-	mTab->addTabPanel(panel, panel->getLabel(), TRUE);
+	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_estate.xml");
+	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
 
 	// We only use this panel on Aurora-based sims -- MC
-	std::string url = gAgent.getRegion()->getCapability("DispatchOpenRegionSettings");
-	if (!url.empty())
+	if (!gAgent.getRegion()->getCapability("DispatchOpenRegionSettings").empty())
 	{
 		panel = new LLPanelRegionOpenSettingsInfo;
 		mInfoPanels.push_back(panel);
 		LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_open_region_settings.xml");
 		mTab->addTabPanel(panel, panel->getLabel(), FALSE);
 	}
-	panel = new LLPanelRegionDebugInfo;
+
+	panel = new LLPanelEstateCovenant;
 	mInfoPanels.push_back(panel);
-	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_debug.xml");
+	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_covenant.xml");
+	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
+
+	panel = new LLPanelRegionGeneralInfo;
+	mInfoPanels.push_back(panel);
+	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_general.xml");
+	mTab->addTabPanel(panel, panel->getLabel(), TRUE);
+
+	panel = new LLPanelRegionTerrainInfo;
+	mInfoPanels.push_back(panel);
+	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_terrain.xml");
 	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
 
 	panel = new LLPanelRegionTextureInfo;
@@ -201,19 +213,9 @@ BOOL LLFloaterRegionInfo::postBuild()
 	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_texture.xml");
 	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
 
-	panel = new LLPanelRegionTerrainInfo;
+	panel = new LLPanelRegionDebugInfo;
 	mInfoPanels.push_back(panel);
-	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_terrain.xml");
-	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
-
-	panel = new LLPanelEstateInfo;
-	mInfoPanels.push_back(panel);
-	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_estate.xml");
-	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
-
-	panel = new LLPanelEstateCovenant;
-	mInfoPanels.push_back(panel);
-	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_covenant.xml");
+	LLUICtrlFactory::getInstance()->buildPanel(panel, "panel_region_debug.xml");
 	mTab->addTabPanel(panel, panel->getLabel(), FALSE);
 
 	gMessageSystem->setHandlerFunc(
@@ -342,6 +344,7 @@ void LLFloaterRegionInfo::processRegionInfo(LLMessageSystem* msg)
 		msg->getSize("RegionInfo2", "ProductName") > 0)
 	{
 		msg->getString("RegionInfo2", "ProductName", sim_type);
+		LLTrans::findString(sim_type, sim_type); // try localizing sim product name
 	}
 
 	// GENERAL PANEL
@@ -425,17 +428,12 @@ LLPanelEstateCovenant* LLFloaterRegionInfo::getPanelCovenant()
 LLPanelRegionOpenSettingsInfo* LLFloaterRegionInfo::getPanelOpenSettings()
 {
 	LLFloaterRegionInfo* floater = LLFloaterRegionInfo::getInstance();
-	if (floater) 
-	{
-		LLTabContainer* tab = floater->getChild<LLTabContainer>("region_panels");
-		LLPanelRegionOpenSettingsInfo* panel = (LLPanelRegionOpenSettingsInfo*)tab->getChild<LLPanel>("RegionSettings", FALSE, FALSE);
-		if (panel)
-		{
-			return panel;
-		}
-	}
-	return NULL;
+	if (!floater) return NULL;
+	LLTabContainer* tab = floater->getChild<LLTabContainer>("region_panels");
+	LLPanelRegionOpenSettingsInfo* panel = (LLPanelRegionOpenSettingsInfo*)tab->getChild<LLPanel>("RegionSettings", FALSE, FALSE);
+	return panel;
 }
+
 void LLFloaterRegionInfo::refreshFromRegion(LLViewerRegion* region)
 {
 	// call refresh from region on all panels
@@ -852,26 +850,26 @@ bool LLPanelRegionOpenSettingsInfo::refreshFromRegion(LLViewerRegion* region)
 	
 	childSetValue("draw_distance", gAgent.mDrawDistance);
 	childSetValue("force_draw_distance", gAgent.mLockedDrawDistance);
-	childSetValue("draw_distance", LLSD(gHippoLimits->mDrawDistance));
-	childSetValue("force_draw_distance", (gHippoLimits->mLockedDrawDistance == 1 ? TRUE : FALSE));
-	childSetValue("allow_minimap", LLSD(gHippoLimits->mAllowMinimap));
-	childSetValue("allow_physical_prims", (gHippoLimits->mAllowPhysicalPrims == 1 ? TRUE : FALSE));
-	childSetValue("max_drag_distance", LLSD(gHippoLimits->mMaxDragDistance));
-	childSetValue("min_hole_size", LLSD(gHippoLimits->mMinHoleSize));
-	childSetValue("max_hollow_size", LLSD(gHippoLimits->mMaxHollow));
-	childSetValue("max_inventory_items_transfer", LLSD(gHippoLimits->mMaxInventoryItemsTransfer));
-	childSetValue("max_link_count", LLSD(gHippoLimits->mMaxLinkedPrims));
-	childSetValue("max_link_count_phys", LLSD(gHippoLimits->mMaxPhysLinkedPrims));
-	childSetValue("max_phys_prim_scale", LLSD(gHippoLimits->mMaxPhysPrimScale));//NOT Todo:Fix
-	childSetValue("max_prim_scale", LLSD(gHippoLimits->mMaxPrimScale));
-	childSetValue("min_prim_scale", LLSD(gHippoLimits->mMinPrimScale));
-	childSetValue("render_water", LLSD(gHippoLimits->mRenderWater));
-	childSetValue("show_tags", LLSD(gHippoLimits->mRenderName));
-	childSetValue("max_groups", LLSD(gHippoLimits->mMaxAgentGroups));
-	childSetValue("terraindetailscale", LLSD(gHippoLimits->mTerrainScale));
-	childSetValue("allow_parcel_windlight", LLSD(gHippoLimits->mAllowParcelWindLight));
-	childSetValue("enable_teen_mode", LLSD(gHippoLimits->mEnableTeenMode));
-	childSetValue("enforce_max_build", LLSD(gHippoLimits->mEnforceMaxBuild));
+	childSetValue("draw_distance", LLSD(gHippoLimits->getDrawDistance()));
+	childSetValue("force_draw_distance", (gHippoLimits->getLockedDrawDistance() == 1));
+	childSetValue("allow_minimap", LLSD(gHippoLimits->getAllowMinimap()));
+	childSetValue("allow_physical_prims", (gHippoLimits->getAllowPhysicalPrims() == 1));
+	childSetValue("max_drag_distance", LLSD(gHippoLimits->getMaxDragDistance()));
+	childSetValue("min_hole_size", LLSD(gHippoLimits->getMinHoleSize()));
+	childSetValue("max_hollow_size", LLSD(gHippoLimits->getMaxHollow()));
+	childSetValue("max_inventory_items_transfer", LLSD(gHippoLimits->getMaxInventoryItemsTransfer()));
+	childSetValue("max_link_count", LLSD(gHippoLimits->getMaxLinkedPrims()));
+	childSetValue("max_link_count_phys", LLSD(gHippoLimits->getMaxPhysLinkedPrims()));
+	childSetValue("max_phys_prim_scale", LLSD(gHippoLimits->getMaxPhysPrimScale()));//NOT Todo:Fix
+	childSetValue("max_prim_scale", LLSD(gHippoLimits->getMaxPrimScale()));
+	childSetValue("min_prim_scale", LLSD(gHippoLimits->getMinPrimScale()));
+	childSetValue("render_water", LLSD(gHippoLimits->getRenderWater()));
+	childSetValue("show_tags", LLSD(gHippoLimits->getRenderName()));
+	childSetValue("max_groups", LLSD(gHippoLimits->getMaxAgentGroups()));
+	childSetValue("terraindetailscale", LLSD(gHippoLimits->getTerrainScale()));
+	childSetValue("allow_parcel_windlight", LLSD(gHippoLimits->getAllowParcelWindLight()));
+	childSetValue("enable_teen_mode", LLSD(gHippoLimits->getEnableTeenMode()));
+	childSetValue("enforce_max_build", LLSD(gHippoLimits->getEnforceMaxBuild()));
 
 	setCtrlsEnabled(allow_modify);
  
@@ -1247,12 +1245,11 @@ BOOL LLPanelRegionTextureInfo::sendUpdate()
 {
 	llinfos << "LLPanelRegionTextureInfo::sendUpdate()" << llendl;
 
-	// Make sure user hasn't chosen wacky textures.
-	//  Buzz -Revolution  Allow 'wacky' things
-	//if (!validateTextureSizes()) // comment out with var uncomment for non var
-	//{
-	//	return FALSE;
-	//}
+	// Make sure user hasn't chosen wacky textures on sl grids.
+	if (gHippoGridManager->getConnectedGrid()->isSecondLife() && !validateTextureSizes())
+	{
+		return FALSE;
+	}
 
 	LLTextureCtrl* texture_ctrl;
 	std::string buffer;
@@ -1307,22 +1304,26 @@ BOOL LLPanelRegionTextureInfo::validateTextureSizes()
 
 		//llinfos << "texture detail " << i << " is " << width << "x" << height << "x" << components << llendl;
 
+		//Allow terrain textures up to 1024x1024 pixels on non-sl grids.
+		int pixels = gHippoGridManager->getConnectedGrid()->isSecondLife() ? 512 : 1024;
 		if (components != 3)
 		{
 			LLSD args;
 			args["TEXTURE_NUM"] = i+1;
 			args["TEXTURE_BIT_DEPTH"] = llformat("%d",components * 8);
+			args["PIXELS"] = pixels;
 			LLNotificationsUtil::add("InvalidTerrainBitDepth", args);
 			return FALSE;
 		}
-        //Allow terrain textures up to 1024x1024 pixels
-        if (width > 1024 || height > 1024)
+
+		if (width > pixels || height > pixels)
 		{
 
 			LLSD args;
 			args["TEXTURE_NUM"] = i+1;
 			args["TEXTURE_SIZE_X"] = width;
 			args["TEXTURE_SIZE_Y"] = height;
+			args["PIXELS"] = pixels;
 			LLNotificationsUtil::add("InvalidTerrainSize", args);
 			return FALSE;
 			
@@ -1390,6 +1391,7 @@ bool LLPanelRegionTerrainInfo::refreshFromRegion(LLViewerRegion* region)
 
 	return LLPanelRegionInfo::refreshFromRegion(region);
 }
+
 
 // virtual
 BOOL LLPanelRegionTerrainInfo::sendUpdate()
@@ -1547,6 +1549,7 @@ bool LLPanelRegionTerrainInfo::callbackBakeTerrain(const LLSD& notification, con
 	strings.push_back("bake");
 	LLUUID invoice(LLFloaterRegionInfo::getLastInvoice());
 	sendEstateOwnerMessage(gMessageSystem, "terrain", invoice, strings);
+
 	return false;
 }
 
@@ -1826,26 +1829,29 @@ bool LLPanelEstateInfo::kickUserConfirm(const LLSD& notification, const LLSD& re
 std::string all_estates_text()
 {
 	LLPanelEstateInfo* panel = LLFloaterRegionInfo::getPanelEstate();
-	if (!panel) return "(error)";
+	if (!panel) return "(" + LLTrans::getString("RegionInfoError") + ")";
 
+	LLStringUtil::format_map_t args;
 	std::string owner = panel->getOwnerName();
 
 	LLViewerRegion* region = gAgent.getRegion();
 	if (gAgent.isGodlike())
 	{
-		return llformat("all estates\nowned by %s", owner.c_str());
+		args["[OWNER]"] = owner.c_str();
+		return LLTrans::getString("RegionInfoAllEstatesOwnedBy", args);
 	}
 	else if (region && region->getOwner() == gAgent.getID())
 	{
-		return "all estates you own";
+		return LLTrans::getString("RegionInfoAllEstatesYouOwn");
 	}
 	else if (region && region->isEstateManager())
 	{
-		return llformat("all estates that\nyou manage for %s", owner.c_str());
+		args["[OWNER]"] = owner.c_str();
+		return LLTrans::getString("RegionInfoAllEstatesYouManage", args);
 	}
 	else
 	{
-		return "(error)";
+		return "(" + LLTrans::getString("RegionInfoError") + ")";
 	}
 }
 
@@ -2411,6 +2417,7 @@ bool LLPanelEstateInfo::callbackChangeLindenEstate(const LLSD& notification, con
 			LLFloaterRegionInfo::nextInvoice();
 			commitEstateInfoDataserver();
 		}
+
 		// we don't want to do this because we'll get it automatically from the sim
 		// after the spaceserver processes it
 //		else
@@ -2880,7 +2887,6 @@ bool LLPanelEstateCovenant::refreshFromRegion(LLViewerRegion* region)
 		region_landtype->setText(region->getLocalizedSimProductName());
 	}
 	
-	
 	// let the parent class handle the general data collection. 
 	bool rv = LLPanelRegionInfo::refreshFromRegion(region);
 	LLMessageSystem *msg = gMessageSystem;
@@ -3020,7 +3026,7 @@ void LLPanelEstateCovenant::loadInvItem(LLInventoryItem *itemp)
 	else
 	{
 		mAssetStatus = ASSET_LOADED;
-		setCovenantTextEditor("There is no Covenant provided for this Estate.");
+		setCovenantTextEditor(LLTrans::getString("RegionNoCovenant"));
 		sendChangeCovenantID(LLUUID::null);
 	}
 }
@@ -3336,9 +3342,10 @@ bool LLDispatchSetEstateAccess::operator()(
 			totalAllowedAgents += allowed_agent_name_list->getItemCount();
 		}
 
-		std::string msg = llformat("Allowed residents: (%d, max %d)",
-									totalAllowedAgents,
-									ESTATE_MAX_ACCESS_IDS);
+		LLStringUtil::format_map_t args;
+		args["[ALLOWEDAGENTS]"] = llformat ("%d", totalAllowedAgents);
+		args["[MAXACCESS]"] = llformat ("%d", ESTATE_MAX_ACCESS_IDS);
+		std::string msg = LLTrans::getString("RegionInfoAllowedResidents", args);
 		panel->childSetValue("allow_resident_label", LLSD(msg));
 
 		if (allowed_agent_name_list)
@@ -3360,9 +3367,10 @@ bool LLDispatchSetEstateAccess::operator()(
 		LLNameListCtrl* allowed_group_name_list;
 		allowed_group_name_list = panel->getChild<LLNameListCtrl>("allowed_group_name_list");
 
-		std::string msg = llformat("Allowed groups: (%d, max %d)",
-									num_allowed_groups,
-									(S32) ESTATE_MAX_GROUP_IDS);
+		LLStringUtil::format_map_t args;
+		args["[ALLOWEDGROUPS]"] = llformat ("%d", num_allowed_groups);
+		args["[MAXACCESS]"] = llformat ("%d", ESTATE_MAX_GROUP_IDS);
+		std::string msg = LLTrans::getString("RegionInfoAllowedGroups", args);
 		panel->childSetValue("allow_group_label", LLSD(msg));
 
 		if (allowed_group_name_list)

@@ -873,11 +873,14 @@ void LLViewerObjectList::update(LLAgent &agent, LLWorld &world)
 	LLMemType mt(LLMemType::MTYPE_OBJECT);
 
 	// Update globals
-	LLViewerObject::setVelocityInterpolate( gSavedSettings.getBOOL("VelocityInterpolate") );
-	LLViewerObject::setPingInterpolate( gSavedSettings.getBOOL("PingInterpolate") );
+	static const LLCachedControl<bool> VelocityInterpolate("VelocityInterpolate");
+	static const LLCachedControl<bool> PingInterpolate("PingInterpolate");
+	LLViewerObject::setVelocityInterpolate( VelocityInterpolate );
+	LLViewerObject::setPingInterpolate( PingInterpolate );
 	
-	F32 interp_time = gSavedSettings.getF32("InterpolationTime");
-	F32 phase_out_time = gSavedSettings.getF32("InterpolationPhaseOut");
+	static LLCachedControl<F32> interp_time("InterpolationTime");
+	static LLCachedControl<F32> phase_out_time("InterpolationPhaseOut");
+
 	if (interp_time < 0.0 || 
 		phase_out_time < 0.0 ||
 		phase_out_time > interp_time)
@@ -889,7 +892,8 @@ void LLViewerObjectList::update(LLAgent &agent, LLWorld &world)
 	LLViewerObject::setPhaseOutUpdateInterpolationTime( interp_time );
 	LLViewerObject::setMaxUpdateInterpolationTime( phase_out_time );
 
-	gAnimateTextures = gSavedSettings.getBOOL("AnimateTextures");
+	static const LLCachedControl<bool> AnimateTextures("AnimateTextures");
+	gAnimateTextures = AnimateTextures;
 
 	// update global timer
 	F32 last_time = gFrameTimeSeconds;
@@ -918,30 +922,21 @@ void LLViewerObjectList::update(LLAgent &agent, LLWorld &world)
 	LLViewerObject *objectp = NULL;	
 	
 	// Make a copy of the list in case something in idleUpdate() messes with it
-	static std::vector<LLViewerObject*> idle_list;
-
-	U32 idle_count = 0;
-		
+	std::vector<LLViewerObject*> idle_list;
+	
 	static LLFastTimer::DeclareTimer idle_copy("Idle Copy");
 
 	{
 		LLFastTimer t(idle_copy);
-		
- 		for (std::vector<LLPointer<LLViewerObject> >::iterator active_iter = mActiveObjects.begin();
+		idle_list.reserve( mActiveObjects.size() );
+
+ 		for (std::set<LLPointer<LLViewerObject> >::iterator active_iter = mActiveObjects.begin();
 			active_iter != mActiveObjects.end(); active_iter++)
 		{
 			objectp = *active_iter;
 			if (objectp)
 			{
-				if (idle_count >= idle_list.size())
-				{
-					idle_list.push_back( objectp );
-				}
-				else
-				{
-					idle_list[idle_count] = objectp;
-				}
-				++idle_count;
+				idle_list.push_back( objectp );
 			}
 			else
 			{	// There shouldn't be any NULL pointers in the list, but they have caused
@@ -951,12 +946,11 @@ void LLViewerObjectList::update(LLAgent &agent, LLWorld &world)
 		}
 	}
 
-	std::vector<LLViewerObject*>::iterator idle_end = idle_list.begin()+idle_count;
 	static const LLCachedControl<bool> freeze_time("FreezeTime",0);
 	if (freeze_time)
 	{
 		for (std::vector<LLViewerObject*>::iterator iter = idle_list.begin();
-			iter != idle_end; iter++)
+			iter != idle_list.end(); iter++)
 		{
 			objectp = *iter;
 			if (
@@ -972,17 +966,17 @@ void LLViewerObjectList::update(LLAgent &agent, LLWorld &world)
 	else
 	{
 		for (std::vector<LLViewerObject*>::iterator idle_iter = idle_list.begin();
-			idle_iter != idle_end; idle_iter++)
+			idle_iter != idle_list.end(); idle_iter++)
 		{
 			objectp = *idle_iter;
-			if (objectp->idleUpdate(agent, world, frame_time))
-			{
-				num_active_objects++;				
-			}
-			else
+			if (!objectp->idleUpdate(agent, world, frame_time))
 			{
 				//  If Idle Update returns false, kill object!
 				kill_list.push_back(objectp);
+			}
+			else
+			{
+				num_active_objects++;
 			}
 		}
 		for (std::vector<LLViewerObject*>::iterator kill_iter = kill_list.begin();
@@ -1225,7 +1219,7 @@ void LLViewerObjectList::cleanupReferences(LLViewerObject *objectp)
 	{
 		//llinfos << "Removing " << objectp->mID << " " << objectp->getPCodeString() << " from active list in cleanupReferences." << llendl;
 		objectp->setOnActiveList(FALSE);
-		removeFromActiveList(objectp);
+		mActiveObjects.erase(objectp);
 	}
 
 	if (objectp->isOnMap())
@@ -1292,7 +1286,6 @@ BOOL LLViewerObjectList::killObject(LLViewerObject *objectp)
 
 		return TRUE;
 	}
-
 	return FALSE;
 }
 
@@ -1416,26 +1409,6 @@ void LLViewerObjectList::cleanDeadObjects(BOOL use_timer)
 	mNumDeadObjects = 0;
 }
 
-void LLViewerObjectList::removeFromActiveList(LLViewerObject* objectp)
-{
-	S32 idx = objectp->getListIndex();
-	if (idx != -1)
-	{ //remove by moving last element to this object's position
-		llassert(mActiveObjects[idx] == objectp);
-		
-		objectp->setListIndex(-1);
-
-		S32 last_index = mActiveObjects.size()-1;
-
-		if (idx != last_index)
-		{
-			mActiveObjects[idx] = mActiveObjects[last_index];
-			mActiveObjects[idx]->setListIndex(idx);
-			mActiveObjects.pop_back();
-		}
-	}
-}
-
 void LLViewerObjectList::updateActive(LLViewerObject *objectp)
 {
 	LLMemType mt(LLMemType::MTYPE_OBJECT);
@@ -1450,29 +1423,13 @@ void LLViewerObjectList::updateActive(LLViewerObject *objectp)
 		if (active)
 		{
 			//llinfos << "Adding " << objectp->mID << " " << objectp->getPCodeString() << " to active list." << llendl;
-			S32 idx = objectp->getListIndex();
-			if (idx <= -1)
-			{
-				mActiveObjects.push_back(objectp);
-				objectp->setListIndex(mActiveObjects.size()-1);
-				objectp->setOnActiveList(TRUE);
-			}
-			else
-			{
-				llassert(idx < (S32)mActiveObjects.size());
-				llassert(mActiveObjects[idx] == objectp);
-
-				if (idx >= (S32)mActiveObjects.size() ||
-					mActiveObjects[idx] != objectp)
-				{
-					llwarns << "Invalid object list index detected!" << llendl;
-				}
-			}
+			mActiveObjects.insert(objectp);
+			objectp->setOnActiveList(TRUE);
 		}
 		else
 		{
 			//llinfos << "Removing " << objectp->mID << " " << objectp->getPCodeString() << " from active list." << llendl;
-			removeFromActiveList(objectp);
+			mActiveObjects.erase(objectp);
 			objectp->setOnActiveList(FALSE);
 		}
 	}
@@ -1546,6 +1503,10 @@ void LLViewerObjectList::onPhysicsFlagsFetchFailure(const LLUUID& object_id)
 	mPendingPhysicsFlags.erase(object_id);
 }
 
+static LLFastTimer::DeclareTimer FTM_SHIFT_OBJECTS("Shift Objects");
+static LLFastTimer::DeclareTimer FTM_PIPELINE_SHIFT("Pipeline Shift");
+static LLFastTimer::DeclareTimer FTM_REGION_SHIFT("Region Shift");
+
 void LLViewerObjectList::shiftObjects(const LLVector3 &offset)
 {
 	// This is called when we shift our origin when we cross region boundaries...
@@ -1556,6 +1517,8 @@ void LLViewerObjectList::shiftObjects(const LLVector3 &offset)
 	{
 		return;
 	}
+
+	LLFastTimer t(FTM_SHIFT_OBJECTS);
 
 	LLViewerObject *objectp;
 	for (vobj_list_t::iterator iter = mObjects.begin(); iter != mObjects.end(); ++iter)
@@ -1573,8 +1536,15 @@ void LLViewerObjectList::shiftObjects(const LLVector3 &offset)
 		}
 	}
 
-	gPipeline.shiftObjects(offset);
-	LLWorld::getInstance()->shiftRegions(offset);
+	{
+		LLFastTimer t(FTM_PIPELINE_SHIFT);
+		gPipeline.shiftObjects(offset);
+	}
+
+	{
+		LLFastTimer t(FTM_REGION_SHIFT);
+		LLWorld::getInstance()->shiftRegions(offset);
+	}
 }
 
 void LLViewerObjectList::repartitionObjects()
@@ -2109,8 +2079,8 @@ void LLViewerObjectList::findOrphans(LLViewerObject* objectp, U32 ip, U32 port)
 			llinfos << "Agent: " << objectp->getPositionAgent() << llendl;
 			addDebugBeacon(objectp->getPositionAgent(),"");
 #endif
-            gPipeline.markMoved(objectp->mDrawable);                
-            objectp->setChanged(LLXform::MOVED | LLXform::SILHOUETTE);
+			gPipeline.markMoved(objectp->mDrawable);                
+			objectp->setChanged(LLXform::MOVED | LLXform::SILHOUETTE);
 
 			// Flag the object as no longer orphaned
 			childp->mOrphaned = FALSE;

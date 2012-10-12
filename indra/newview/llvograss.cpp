@@ -330,6 +330,7 @@ BOOL LLVOGrass::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 		
 		return TRUE ;
 	}
+
 	if (mPatch && (mLastPatchUpdateTime != mPatch->getLastUpdateTime()))
 	{
 		gPipeline.markRebuild(mDrawable, LLDrawable::REBUILD_VOLUME, TRUE);
@@ -645,6 +646,7 @@ void LLGrassPartition::addGeometryCount(LLSpatialGroup* group, U32& vertex_count
 	mFaceList.clear();
 
 	LLViewerCamera* camera = LLViewerCamera::getInstance();
+	OctreeGuard guard(group->mOctreeNode);
 	for (LLSpatialGroup::element_iter i = group->getDataBegin(); i != group->getDataEnd(); ++i)
 	{
 		LLDrawable* drawablep = *i;

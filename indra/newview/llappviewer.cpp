@@ -133,7 +133,7 @@
 #include "llviewermenu.h"
 #include "llselectmgr.h"
 #include "lltrans.h"
-//#include "lltrans.h"
+#include "lltrans.h"
 #include "lltracker.h"
 #include "llviewerparcelmgr.h"
 #include "llworldmapview.h"
@@ -316,10 +316,10 @@ BOOL gLogoutInProgress = FALSE;
 // Internal globals... that should be removed.
 static std::string gArgs;
 
-const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
-const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
-const std::string LLERROR_MARKER_FILE_NAME("SecondLife.llerror_marker");
-const std::string LOGOUT_MARKER_FILE_NAME("SecondLife.logout_marker");
+const std::string MARKER_FILE_NAME("Voodoo.exec_marker");
+const std::string ERROR_MARKER_FILE_NAME("Voodoo.error_marker");
+const std::string LLERROR_MARKER_FILE_NAME("Voodoo.llerror_marker");
+const std::string LOGOUT_MARKER_FILE_NAME("Voodoo.logout_marker");
 static BOOL gDoDisconnect = FALSE;
 // <edit>
 //static BOOL gBusyDisconnect = FALSE;
@@ -327,7 +327,6 @@ static BOOL gDoDisconnect = FALSE;
 static std::string gLaunchFileOnQuit;
 
 // Used on Win32 for other apps to identify our window (eg, win_setup)
-//const char* const VIEWER_WINDOW_CLASSNAME = "Second Life"; // Don't change
 const char* const VIEWER_WINDOW_CLASSNAME = "Voodoo"; // Don't change
 
 //-- LLDeferredTaskList ------------------------------------------------------
@@ -609,8 +608,7 @@ bool LLAppViewer::init()
 
 	// Need to do this initialization before we do anything else, since anything
 	// that touches files should really go through the lldir API
-	//gDirUtilp->initAppDirs("SecondLife");	
-    gDirUtilp->initAppDirs("Voodoo");
+	gDirUtilp->initAppDirs("Voodoo");
 	// set skin search path to default, will be overridden later
 	// this allows simple skinned file lookups to work
 	gDirUtilp->setSkinFolder("default");
@@ -724,7 +722,7 @@ bool LLAppViewer::init()
 	LLWeb::initClass();			  // do this after LLUI
 
 	LLUICtrlFactory::getInstance()->setupPaths(); // update paths with correct language set
-//	LLTrans::parseStrings("strings.xml", default_trans_args);
+	LLTrans::parseStrings("strings.xml", default_trans_args);
 
 	LLTextEditor::setURLCallbacks(&LLWeb::loadURL,
 				&LLURLDispatcher::dispatchFromTextEditor,
@@ -1023,6 +1021,8 @@ void LLAppViewer::checkMemory()
 
 static LLFastTimer::DeclareTimer FTM_MESSAGES("System Messages");
 static LLFastTimer::DeclareTimer FTM_SLEEP("Sleep");
+static LLFastTimer::DeclareTimer FTM_YIELD("Yield");
+
 static LLFastTimer::DeclareTimer FTM_TEXTURE_CACHE("Texture Cache");
 static LLFastTimer::DeclareTimer FTM_DECODE("Image Decode");
 static LLFastTimer::DeclareTimer FTM_VFS("VFS Thread");
@@ -1090,7 +1090,7 @@ bool LLAppViewer::mainLoop()
 				LLFastTimer t2(FTM_MESSAGES);
 				gViewerWindow->getWindow()->processMiscNativeEvents();
 			}
-			
+		
 			pingMainloopTimeout("Main:GatherInput");
 			
 			if (gViewerWindow)
@@ -1213,6 +1213,7 @@ bool LLAppViewer::mainLoop()
 				// yield some time to the os based on command line option
 				if(mYieldTime >= 0)
 				{
+					LLFastTimer t(FTM_YIELD);
 					ms_sleep(mYieldTime);
 				}
 
@@ -1666,7 +1667,7 @@ bool LLAppViewer::cleanup()
 	writeDebugInfo();
 
 	if(!gDirUtilp->getLindenUserDir(true).empty())
-	//		LLViewerMedia::saveCookieFile();
+			LLViewerMedia::saveCookieFile();
 	// Stop the plugin read thread if it's running.
 	LLPluginProcessParent::setUseReadThread(false);
 
@@ -1872,7 +1873,7 @@ bool LLAppViewer::initLogging()
 	LLError::initForApplication(
 				gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, ""));
 	LLError::setFatalFunction(errorCallback);
-
+	
 	// Remove the last ".old" log file.
 	std::string old_log_file = gDirUtilp->getExpandedFilename(LL_PATH_LOGS,
 							     "Voodoo.old");
@@ -1883,7 +1884,7 @@ bool LLAppViewer::initLogging()
 							     "Voodoo.log");
 	LLFile::rename(log_file, old_log_file);
 
-	// Set the log file to SecondLife.log
+	// Set the log file to Voodoo.log
 
 	LLError::logToFile(log_file);
 
@@ -2937,10 +2938,10 @@ void LLAppViewer::initMarkerFile()
 	LL_DEBUGS("MarkerFile") << "Checking marker file for lock..." << LL_ENDL;
 
 	//We've got 4 things to test for here
-	// - Other Process Running (SecondLife.exec_marker present, locked)
-	// - Freeze (SecondLife.exec_marker present, not locked)
-	// - LLError Crash (SecondLife.llerror_marker present)
-	// - Other Crash (SecondLife.error_marker present)
+	// - Other Process Running (Voodoo.exec_marker present, locked)
+	// - Freeze (Voodoo.exec_marker present, not locked)
+	// - LLError Crash (Voodoo.llerror_marker present)
+	// - Other Crash (Voodoo.error_marker present)
 	// These checks should also remove these files for the last 2 cases if they currently exist
 
 	//LLError/Error checks. Only one of these should ever happen at a time.
@@ -4519,7 +4520,6 @@ void LLAppViewer::disconnectViewer()
 
 	cleanup_xfer_manager();
 	gDisconnected = TRUE;
-
 }
 
 void LLAppViewer::forceErrorLLError()
@@ -4646,9 +4646,9 @@ void LLAppViewer::handleLoginComplete()
 	}
 	
 	gDebugInfo["SettingsFilename"] = gSavedSettings.getString("ClientSettingsFile");
-	//gDebugInfo["CAFilename"] = gDirUtilp->getCAFile();
-	//gDebugInfo["ViewerExePath"] = gDirUtilp->getExecutablePathAndName();
-	//gDebugInfo["CurrentPath"] = gDirUtilp->getCurPath();
+	gDebugInfo["CAFilename"] = gDirUtilp->getCAFile();
+	gDebugInfo["ViewerExePath"] = gDirUtilp->getExecutablePathAndName();
+	gDebugInfo["CurrentPath"] = gDirUtilp->getCurPath();
 
 	if(gAgent.getRegion())
 	{

@@ -171,6 +171,7 @@ LLGLSLShader			gPostColorFilterProgram(LLViewerShaderMgr::SHADER_EFFECT);	//Not 
 LLGLSLShader			gPostNightVisionProgram(LLViewerShaderMgr::SHADER_EFFECT);	//Not in mShaderList
 LLGLSLShader			gPostGaussianBlurProgram(LLViewerShaderMgr::SHADER_EFFECT);	//Not in mShaderList
 LLGLSLShader			gPostPosterizeProgram(LLViewerShaderMgr::SHADER_EFFECT);	//Not in mShaderList
+LLGLSLShader			gPostMotionBlurProgram(LLViewerShaderMgr::SHADER_EFFECT);	//Not in mShaderList
  
  // Deferred rendering shaders
 LLGLSLShader			gDeferredImpostorProgram(LLViewerShaderMgr::SHADER_DEFERRED);
@@ -576,10 +577,10 @@ void LLViewerShaderMgr::setShaders()
 
 		//Flag base shader objects for deletion
 		//Don't worry-- they won't be deleted until no programs refrence them.
-		std::map<std::string, GLhandleARB>::iterator it = mShaderObjects.begin();
+		std::multimap<std::string, LLShaderMgr::CachedObjectInfo >::iterator it = mShaderObjects.begin();
 		for(; it!=mShaderObjects.end();++it)
-			if(it->second)
-				glDeleteObjectARB(it->second);
+			if(it->second.mHandle)
+				glDeleteObjectARB(it->second.mHandle);
 		mShaderObjects.clear(); 
 	}
 	else
@@ -599,6 +600,7 @@ void LLViewerShaderMgr::setShaders()
 	LLWaterParamManager::getInstance()->updateShaderLinks();
 	LLWLParamManager::getInstance()->updateShaderLinks();
 
+	gPipeline.refreshCachedSettings();
 	gPipeline.createGLBuffers();
 
 	reentrance = false;
@@ -974,6 +976,26 @@ BOOL LLViewerShaderMgr::loadShadersEffects()
 		{
 			gPostPosterizeProgram.bind();
 			gPostPosterizeProgram.uniform1i("tex0", 0);
+		}
+	}
+
+	{
+		vector<string> shaderUniforms;
+		shaderUniforms.reserve(3);
+		shaderUniforms.push_back("inv_proj");
+		shaderUniforms.push_back("prev_proj");
+		shaderUniforms.push_back("screen_res");
+
+		gPostMotionBlurProgram.mName = "Motion Blur Shader (Post)";
+		gPostMotionBlurProgram.mShaderFiles.clear();
+		gPostMotionBlurProgram.mShaderFiles.push_back(make_pair("effects/MotionBlurF.glsl", GL_FRAGMENT_SHADER_ARB));
+		gPostMotionBlurProgram.mShaderFiles.push_back(make_pair("interface/onetexturenocolorV.glsl", GL_VERTEX_SHADER_ARB));
+		gPostMotionBlurProgram.mShaderLevel = mVertexShaderLevel[SHADER_EFFECT];
+		if(gPostMotionBlurProgram.createShader(NULL, &shaderUniforms))
+		{
+			gPostMotionBlurProgram.bind();
+			gPostMotionBlurProgram.uniform1i("tex0", 0);
+			gPostMotionBlurProgram.uniform1i("tex1", 1);
 		}
 	}
 	#endif

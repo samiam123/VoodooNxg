@@ -98,7 +98,6 @@
 #include "llfloater.h"
 
 #include "llfloaterabout.h"
-#include "llfloaterbuycurrency.h"
 #include "llfloateractivespeakers.h"
 #include "llfloateranimpreview.h"
 #include "llfloateravatarinfo.h"
@@ -109,7 +108,7 @@
 #include "llfloaterbump.h"
 #include "llfloaterbuy.h"
 #include "llfloaterbuycontents.h"
-//#include "llfloaterbuycurrency.h"
+#include "llfloaterbuycurrency.h"
 #include "llfloaterbuyland.h"
 #include "llfloatercamera.h"
 #include "llfloaterchat.h"
@@ -262,7 +261,6 @@
 #include "llpathfindingmanager.h"
 
 #include "hippogridmanager.h"
-#include "llfloaterregiondebugconsole.h"
 
 using namespace LLOldEvents;
 using namespace LLVOAvatarDefines;
@@ -939,6 +937,8 @@ void init_client_menu(LLMenuGL* menu)
 									   	'6', MASK_CONTROL|MASK_SHIFT ) );
 		}
 
+		sub->addChild(new LLMenuItemCheckGL("Region Console Window", handle_singleton_toggle<LLFloaterRegionDebugConsole>, NULL, handle_singleton_check<LLFloaterRegionDebugConsole>,NULL,'`', MASK_CONTROL|MASK_SHIFT));
+
 		sub->addChild(new LLMenuItemCheckGL("Fast Timers", 
 										&toggle_visibility,
 										NULL,
@@ -1296,7 +1296,6 @@ void init_debug_ui_menu(LLMenuGL* menu)
 		(void*)"DoubleClickTeleport"));
 	menu->addSeparator();
 //	menu->addChild(new LLMenuItemCallGL( "Print Packets Lost",			&print_packets_lost, NULL, NULL, 'L', MASK_SHIFT ));
-	menu->addChild(new LLMenuItemCheckGL("Region Console Window", handle_singleton_toggle<LLFloaterRegionDebugConsole>, NULL, handle_singleton_check<LLFloaterRegionDebugConsole>,NULL,'`', MASK_CONTROL|MASK_SHIFT));
 	menu->addChild(new LLMenuItemCheckGL("Debug SelectMgr", menu_toggle_control, NULL, menu_check_control, (void*)"DebugSelectMgr"));
 	menu->addChild(new LLMenuItemToggleGL("Debug Clicks", &gDebugClicks));
 	menu->addChild(new LLMenuItemToggleGL("Debug Views", &LLView::sDebugRects));
@@ -1786,7 +1785,6 @@ void init_server_menu(LLMenuGL* menu)
 	{
 		LLMenuGL* sub = new LLMenuGL("Region");
 		menu->addChild(sub);
-		sub->addChild(new LLMenuItemCheckGL("Region Console Window", handle_singleton_toggle<LLFloaterRegionDebugConsole>, NULL, handle_singleton_check<LLFloaterRegionDebugConsole>,NULL));
 		sub->addChild(new LLMenuItemCallGL("Dump Temp Asset Data",
 			&handle_region_dump_temp_asset_data,
 			&enable_god_customer_service, NULL));
@@ -2454,7 +2452,7 @@ class LLObjectEnableMute : public view_listener_t
 			{
 				// It's an avatar
 				LLNameValue *lastname = avatar->getNVPair("LastName");
-				BOOL is_linden = lastname && !LLStringUtil::compareStrings(lastname->getString(), "GridOp");
+				BOOL is_linden = lastname && !LLStringUtil::compareStrings(lastname->getString(), gHippoGridManager->getConnectedGrid()->isSecondLife() ? "Linden" : "GridOp");
 				BOOL is_self = avatar->isSelf();
 				new_value = !is_linden && !is_self;
 // [RLVa:KB] - Checked: 2009-07-08 (RLVa-1.0.0e) | OK
@@ -3031,6 +3029,7 @@ class LLAvatarEnableDebug : public view_listener_t
 {
 	bool handleEvent(LLPointer<LLEvent> event, const LLSD& userdata)
 	{
+		if(gHippoGridManager->getConnectedGrid()->isSecondLife()) return true;
 		bool new_value = gAgent.isGodlike(); /* required for remote region console in god tools -VS*/
 		gMenuHolder->findControl(userdata["control"].asString())->setValue(new_value); /* required for remote region console in god tools -VS*/
 		return true;
@@ -4353,8 +4352,7 @@ void handle_object_owner_self(void*)
 // Shortcut to set owner permissions to not editable.
 void handle_object_lock(void*)
 {
-	LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, TRUE, PERM_MODIFY);
-	//LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, FALSE, PERM_MODIFY);
+	LLSelectMgr::getInstance()->selectionSetObjectPermissions(PERM_OWNER, FALSE, PERM_MODIFY);
 }
 
 void handle_object_asset_ids(void*)
@@ -7400,9 +7398,7 @@ class LLAvatarSendIM : public view_listener_t
 			//EInstantMessage type = have_agent_callingcard(gLastHitObjectID)
 			//	? IM_SESSION_ADD : IM_SESSION_CARDLESS_START;
 			gIMMgr->addSession(LLCacheName::cleanFullName(name),IM_NOTHING_SPECIAL,avatar->getID());
-			gIMMgr->addSession(name,
-								IM_NOTHING_SPECIAL,
-								avatar->getID());
+			gIMMgr->addSession(name, IM_NOTHING_SPECIAL, avatar->getID()); //Liru: What's this for?
 		}
 		return true;
 	}

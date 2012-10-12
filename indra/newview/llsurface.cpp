@@ -323,7 +323,7 @@ void LLSurface::rebuildWater()
 		gObjectList.killObject(mWaterObjp);
 	}
 
-	if (gSavedSettings.getBOOL("RenderWater") && gHippoLimits->mRenderWater)
+	if (gSavedSettings.getBOOL("RenderWater") && gHippoLimits->getRenderWater())
 	//if (!prev_renderwater && renderwater)
 	{
 		//lldebugs << "Building Water";

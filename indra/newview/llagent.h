@@ -46,7 +46,6 @@
 #include "llviewerinventory.h"
 #include "llinventorymodel.h"
 #include "v3dmath.h"
-#include "hippolimits.h"
 
 #include <boost/signals2.hpp>
 
@@ -88,7 +87,6 @@ struct LLGroupData
 	std::string mName;
 };
 
-BOOL isAgentAvatarValid();
 
 // forward declarations
 

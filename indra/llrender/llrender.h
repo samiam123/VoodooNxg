@@ -345,6 +345,7 @@ public:
 	void loadIdentity();
 	void multMatrix(const GLfloat* m);
 	void matrixMode(U32 mode);	
+	U32 getMatrixMode();
 
 	const glh::matrix4f& getModelviewMatrix();
 	const glh::matrix4f& getProjectionMatrix();
@@ -473,6 +474,7 @@ private:
 extern F32 gGLModelView[16];
 extern F32 gGLLastModelView[16];
 extern F32 gGLLastProjection[16];
+extern F32 gGLPreviousModelView[16];
 extern F32 gGLProjection[16];
 extern S32 gGLViewport[4];
 

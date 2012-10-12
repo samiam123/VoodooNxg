@@ -167,6 +167,7 @@ void LLVOPartGroup::freeVBSlot(S32 idx)
 		*sVBSlotCursor = idx;
 	}
 }
+
 LLVOPartGroup::LLVOPartGroup(const LLUUID &id, const LLPCode pcode, LLViewerRegion *regionp)
 	:	LLAlphaObject(id, pcode, regionp),
 		mViewerPartGroupp(NULL)
@@ -180,7 +181,6 @@ LLVOPartGroup::LLVOPartGroup(const LLUUID &id, const LLPCode pcode, LLViewerRegi
 LLVOPartGroup::~LLVOPartGroup()
 {
 }
-
 
 BOOL LLVOPartGroup::isActive() const
 {
@@ -557,6 +557,7 @@ void LLParticlePartition::addGeometryCount(LLSpatialGroup* group, U32& vertex_co
 	mFaceList.clear();
 
 	LLViewerCamera* camera = LLViewerCamera::getInstance();
+	OctreeGuard guard(group->mOctreeNode);
 	for (LLSpatialGroup::element_iter i = group->getDataBegin(); i != group->getDataEnd(); ++i)
 	{
 		LLDrawable* drawablep = *i;

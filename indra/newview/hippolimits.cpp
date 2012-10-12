@@ -34,7 +34,6 @@ void HippoLimits::setOpenSimLimits()
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
 	if (mMaxAgentGroups < 0) mMaxAgentGroups = 50;
 	mMaxPrimScale = 256.0f;
-	mMinPrimScale = 0.001f;
 	mMinPrimXPos = 0;
 	mMinPrimYPos = 0;
 	mMinPrimZPos = 0;
@@ -59,18 +58,19 @@ void HippoLimits::setOpenSimLimits()
 	mTerrainScale = 16.0f;
 	mDrawDistance = 128;
 	mLockedDrawDistance = FALSE;
-	//if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
-	//	llinfos << "Using rendering compatible OpenSim limits." << llendl;
-	//	mMinHoleSize = 0.005f;
-	//	mMaxHollow = 0.95f;
-	//}
-	//else
-	//{
-	//	llinfos << "Using Hippo OpenSim limits." << llendl;
-		mMinHoleSize = 0.001f;
-		mMaxHollow = 99.0f;
-	//}
+	if (gHippoGridManager->getConnectedGrid()->isRenderCompat()) {
+		llinfos << "Using rendering compatible OpenSim limits." << llendl;
+		mMinPrimScale = 0.01f;
+		mMinHoleSize = 0.05f;
+		mMaxHollow = 0.95f;
+	} else {
+		llinfos << "Using Hippo OpenSim limits." << llendl;
+		mMinPrimScale = 0.001f;
+		mMinHoleSize = 0.01f;
+		mMaxHollow = 0.99f;
+	}
 }
+
 void HippoLimits::setAuroraLimits()
 {
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
@@ -102,8 +102,8 @@ void HippoLimits::setAuroraLimits()
 	mLockedDrawDistance = FALSE;
 	mMinHoleSize = 0.001f;
 	mMaxHollow = 99.0f;
-	
 }
+
 void HippoLimits::setSecondLifeLimits()
 {
 	llinfos << "Using Second Life limits." << llendl;
@@ -114,10 +114,10 @@ void HippoLimits::setSecondLifeLimits()
 	mMaxAgentGroups = gHippoGridManager->getConnectedGrid()->getMaxAgentGroups();
 	if (mMaxAgentGroups <= 0)
 	{
-		mMaxAgentGroups = 25;
+		mMaxAgentGroups = DEFAULT_MAX_AGENT_GROUPS;
 	}
-	mMaxPrimScale = 67.0f;
-	mMinPrimScale = 0.001f;
+
+	mMinPrimScale = 0.01f;
 	mMinPrimXPos = 0;
 	mMinPrimYPos = 0;
 	mMinPrimZPos = 0;
@@ -140,8 +140,9 @@ void HippoLimits::setSecondLifeLimits()
 	mVoiceConnector = "SLVoice";
 	mMaxSelectDistance = 192.0f;
 	mTerrainScale = 16.0f;
-	mMinHoleSize = 0.001f;
-	mMaxHollow = 95.0f;
+	mMinHoleSize = 0.05f;
+	mMaxHollow = 0.95f;
+	mMaxPrimScale = 64.0f;
 	mDrawDistance = 128;
 	mLockedDrawDistance = FALSE;
 }

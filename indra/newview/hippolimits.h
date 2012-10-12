@@ -22,10 +22,17 @@ public:
 	float getLockedDrawDistance()      const { return mLockedDrawDistance;      }
 	float getMaxPhysPrimScale() const { return mMaxPhysPrimScale; }
 	// Returns the max prim size we can use on a grid
-	F32	getMinPrimScale() const;
-	
+	float getMinPrimScale()			const { return mMinPrimScale; }
+	bool getAllowMinimap()			const { return mAllowMinimap; }
+	bool getAllowParcelWindLight()	const { return mAllowParcelWindLight; }
+	bool getAllowPhysicalPrims()	const { return mAllowPhysicalPrims; }
+	bool getEnableTeenMode()		const { return mEnableTeenMode; }
+	bool getEnforceMaxBuild()		const { return mEnforceMaxBuild; }
+	bool getRenderName()			const { return mRenderName; }
+	bool getRenderWater()			const { return mRenderWater; }
+	float getTerrainScale()			const { return mTerrainScale; }
 
-	F32 getMaxDragDistance() const;
+	F32 getMaxDragDistance()		const { return mMaxDragDistance; }
 
 	F32	getMinPrimXPos() const;
 	F32	getMinPrimYPos() const;
@@ -35,16 +42,11 @@ public:
 	F32	getMaxPrimZPos() const;
 	void setLimits();
 
-//private:
-	int     mMaxAgentGroups;
-	float   mMaxHeight;
-	float   mMinHoleSize;
-	float   mMaxHollow;
-	float   mMaxPrimScale;
-	float   mDrawDistance;//added for openregion
-    float   mLockedDrawDistance;//added for openregion
-	float   mMaxPhysPrimScale;//added for openregion
-	F32		mMinPrimScale;
+protected:
+	friend class OpenRegionInfoUpdate;
+	float	mDrawDistance;//added for openregion
+    float	mLockedDrawDistance;//added for openregion
+	float	mMaxPhysPrimScale;//added for openregion
 	S32		mMaxLinkedPrims;
 	S32		mMaxPhysLinkedPrims;
 	F32		mMaxPrimXPos;
@@ -68,11 +70,19 @@ public:
 	BOOL    mEnforceMaxBuild;
 	BOOL    mRenderWater;
 	std::string    mVoiceConnector;
+
+	int   mMaxAgentGroups;
+	float mMaxHeight;
+	float mMinHoleSize;
+	float mMaxHollow;
+	float mMaxPrimScale;
+	float mMinPrimScale;
+
 private:
-	void    setOpenSimLimits();
-	void    setAuroraLimits();
-	void    setSecondLifeLimits();
-	void	setSecondLifeMaxPrimScale();
+	void setOpenSimLimits();
+	void setAuroraLimits();
+	void setSecondLifeLimits();
+	void setSecondLifeMaxPrimScale();
 };
 
 
