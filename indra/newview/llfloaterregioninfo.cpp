@@ -959,7 +959,7 @@ void LLPanelRegionOpenSettingsInfo::onClickOrs(void* userdata)
 		body["enable_teen_mode"] = self->childGetValue("enable_teen_mode");
 		body["enforce_max_build"] = self->childGetValue("enforce_max_build");
 
-		LLHTTPClient::post(url, body, new LLHTTPClient::ResponderIgnore); //Voodoo: TODO: find out if this needs to be a real responder, like LLEstateChangeInfoResponder.
+		LLHTTPClient::post(url, body, new LLHTTPClient::ResponderIgnore);
 	}
 }
 
