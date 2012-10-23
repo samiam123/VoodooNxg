@@ -66,13 +66,15 @@ std::string LLLogChat::makeLogFileName(std::string filename)
 
 std::string LLLogChat::cleanFileName(std::string filename)
 {
-	std::string invalidChars = "\"\'\\/?*:<>|[]{}~"; // Cannot match glob or illegal filename chars
+	/*std::string invalidChars = "\"\'\\/?*:<>|[]{}~"; // was Cannot match glob or illegal filename chars */
+	std::string invalidChars = "\"\\/?*:<>|[]{}~"; /* dont filter out ' for now -VS*/
 	S32 position = filename.find_first_of(invalidChars);
 	while (position != filename.npos)
 	{
 		filename[position] = '_';
 		position = filename.find_first_of(invalidChars, position);
 	}
+	
 	return filename;
 }
 
@@ -101,13 +103,15 @@ std::string LLLogChat::timestamp(bool withdate)
 //static
 void LLLogChat::saveHistory(std::string const& filename, std::string line)
 {
+	
 	if(!filename.size())
 	{
 		llinfos << "Filename is Empty!" << llendl;
 		return;
 	}
-
+	
 	LLFILE* fp = LLFile::fopen(LLLogChat::makeLogFileName(filename), "a"); 		/*Flawfinder: ignore*/
+	
 	if (!fp)
 	{
 		llinfos << "Couldn't open chat history log!" << llendl;
@@ -127,8 +131,9 @@ void LLLogChat::loadHistory(std::string const& filename , void (*callback)(ELogL
 		llwarns << "Filename is Empty!" << llendl;
 		return ;
 	}
-
+	//filename = cleanFileName(filename);
 	LLFILE* fptr = LLFile::fopen(makeLogFileName(filename), "r");		/*Flawfinder: ignore*/
+	
 	if (!fptr)
 	{
 		//LLUIString message = LLFloaterChat::getInstance()->getString("IM_logging_string");
