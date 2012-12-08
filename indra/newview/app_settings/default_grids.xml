@@ -4,7 +4,69 @@
     <map>
       <key>default_grids_version</key><string>21</string>
     </map>
-
+    <!-- Second Life -->
+    <map>
+      <key>gridnick</key><string>secondlife</string>
+      <key>gridname</key><string>Second Life (Agni)</string>
+      <key>platform</key><string>SecondLife</string>
+      <key>loginuri</key><string>https://login.agni.lindenlab.com/cgi-bin/login.cgi</string>
+      <key>loginpage</key><string>http://viewer-login.agni.lindenlab.com/</string>
+      <key>helperuri</key><string>https://secondlife.com/helpers/</string>
+      <key>website</key><string>http://secondlife.com/</string>
+      <key>support</key><string>http://secondlife.com/support/</string>
+      <key>register</key><string>http://secondlife.com/registration/</string>
+      <key>password</key><string>http://secondlife.com/account/request.php</string>
+      <key>render_compat</key><boolean>0</boolean>
+      <key>search</key><string>http://search.secondlife.com/client_search.php?</string>
+      <key>meshurlhelper</key><string>http://secondlife.com/my/account/mesh.php</string>
+      <key>inventory_links</key><boolean>1</boolean>
+      <key>auto_update</key><boolean>0</boolean>
+    </map>
+    <map>
+      <key>gridnick</key><string>secondlife_beta</string>
+      <key>gridname</key><string>Second Life (Aditi)</string>
+      <key>helperuri</key><string>http://aditi-secondlife.webdev.lindenlab.com/helpers/</string>
+      <key>loginpage</key><string>http://viewer-login.agni.lindenlab.com/</string>
+      <key>loginuri</key><string>https://login.aditi.lindenlab.com/cgi-bin/login.cgi</string>
+      <key>password</key><string>http://secondlife.com/account/request.php</string>
+      <key>platform</key><string>SecondLife</string>
+      <key>website</key><string>http://secondlife.com/</string>
+      <key>support</key><string>http://secondlife.com/support/</string>
+      <key>register</key><string>http://secondlife.com/registration/</string>
+      <key>render_compat</key><boolean>0</boolean>
+	  <key>search</key><string>http://search.secondlife.com/client_search.php?</string>
+      <key>version</key><integer>0</integer>
+	  <key>meshurlhelper</key><string>http://secondlife.aditi.lindenlab.com/my/account/mesh.php</string>
+      <key>inventory_links</key><boolean>1</boolean>
+      <key>auto_update</key><boolean>0</boolean>
+    </map>
+    <!-- OSGrid -->
+    <map>
+      <key>auto_update</key> <boolean>0</boolean>
+      <key>gridname</key> <string>OSGrid</string>
+      <key>gridnick</key> <string>osgrid</string>
+      <key>helperuri</key> <string>http://helper.osgrid.org/</string>
+      <key>inventory_links</key> <boolean>0</boolean>
+      <key>loginpage</key> <string>http://www.osgrid.org/splash/</string>
+      <key>loginuri</key> <string>http://login.osgrid.org/</string>
+      <key>password</key> <string>http://www.osgrid.org/</string>
+      <key>platform</key> <string>OpenSim</string>
+      <key>register</key> <string>http://www.osgrid.org/</string>
+      <key>render_compat</key> <boolean>1</boolean>
+      <key>search</key> <string />
+      <key>support</key> <string>http://www.osgrid.org/</string>
+      <key>website</key> <string>http://www.osgrid.org/</string>
+    </map>
+    <!-- Local Host -->
+    <map>
+      <key>gridnick</key><string>local</string>
+      <key>gridname</key><string>Local Host</string>
+      <key>platform</key><string>Aurora</string>
+      <key>loginuri</key><string>http://127.0.0.1:9000/</string>
+      <key>helperuri</key><string>http://127.0.0.1:9000/</string>
+      <key>render_compat</key><boolean>1</boolean>
+      <key>auto_update</key><boolean>0</boolean>
+    </map>
 <!-- Talon -->
     <map>
 	  <key>gridnick</key>
@@ -34,110 +96,5 @@
 	  <key>inventory_links</key><boolean>0</boolean>
       <key>auto_update</key><boolean>0</boolean>
     </map>
- <!-- Gay Nations -->
-    <map>
-      <key>gridname</key>
-      <string>Gay Nations</string>
-      <key>platform</key>
-      <string>Aurora</string>
-      <key>loginuri</key>
-      <string>http://GayNations.org:8002/</string>
-      <key>helperuri</key>
-      <string>http://209.160.29.45:9000/</string>
-      <key>loginpage</key>
-      <string>http://gaysanfrancisco.us.com/loginscreen/</string>
-      <key>search</key>
-      <string>http://GayNations.org/search.php?</string>
-      <key>support</key>
-      <string>http://gaynations.org/help.php</string>
-      <key>website</key>
-      <string>http://GayNations.org/index.php</string>
-      <key>password</key>
-      <string>http://GayNations.org/password.php</string>
-      <key>register</key>
-      <string>http://gaynations.org/register.php</string>
-      <key>render_compat</key>
-      <boolean>1</boolean>
-    </map> 
-
-    <!-- OSGrid -->
-    <map>
-      <key>gridname</key>
-      <string>OSGrid</string>
-      <key>platform</key>
-      <string>OpenSim</string>
-      <key>loginuri</key>
-      <string>http://login.osgrid.org:80/</string>
-      <key>render_compat</key>
-      <boolean>1</boolean>
-    </map>
-
-    <!-- Second Life -->
-    <map>
-      <key>gridnick</key><string>secondlife</string>
-      <key>gridname</key><string>Second Life (Agni)</string>
-      <key>platform</key><string>SecondLife</string>
-      <key>loginuri</key><string>https://login.agni.lindenlab.com/cgi-bin/login.cgi</string>
-      <key>loginpage</key><string>http://viewer-login.agni.lindenlab.com/</string>
-      <key>helperuri</key><string>https://secondlife.com/helpers/</string>
-      <key>website</key><string>http://secondlife.com/</string>
-      <key>support</key><string>http://secondlife.com/support/</string>
-      <key>register</key><string>http://secondlife.com/registration/</string>
-      <key>password</key><string>http://secondlife.com/account/request.php</string>
-      <key>render_compat</key><boolean>0</boolean>
-      <key>search</key><string>http://search.secondlife.com/client_search.php?</string>
-      <key>meshurlhelper</key><string>http://secondlife.com/my/account/mesh.php</string>
-      <key>inventory_links</key><boolean>1</boolean>
-      <key>auto_update</key><boolean>0</boolean>
-    </map>
-
-    <map>
-      <key>gridnick</key><string>secondlife_beta</string>
-      <key>gridname</key><string>Second Life (Aditi)</string>
-      <key>helperuri</key><string>http://aditi-secondlife.webdev.lindenlab.com/helpers/</string>
-      <key>loginpage</key><string>http://viewer-login.agni.lindenlab.com/</string>
-      <key>loginuri</key><string>https://login.aditi.lindenlab.com/cgi-bin/login.cgi</string>
-      <key>password</key><string>http://secondlife.com/account/request.php</string>
-      <key>platform</key><string>SecondLife</string>
-      <key>website</key><string>http://secondlife.com/</string>
-      <key>support</key><string>http://secondlife.com/support/</string>
-      <key>register</key><string>http://secondlife.com/registration/</string>
-      <key>render_compat</key><boolean>0</boolean>
-	  <key>search</key><string>http://search.secondlife.com/client_search.php?</string>
-      <key>version</key><integer>0</integer>
-	  <key>meshurlhelper</key><string>http://secondlife.aditi.lindenlab.com/my/account/mesh.php</string>
-      <key>inventory_links</key><boolean>1</boolean>
-      <key>auto_update</key><boolean>0</boolean>
-    </map>
-
-    <!-- OSGrid -->
-    <map>
-      <key>auto_update</key> <boolean>0</boolean>
-      <key>gridname</key> <string>OSGrid</string>
-      <key>gridnick</key> <string>osgrid</string>
-      <key>helperuri</key> <string>http://helper.osgrid.org/</string>
-      <key>inventory_links</key> <boolean>0</boolean>
-      <key>loginpage</key> <string>http://www.osgrid.org/splash/</string>
-      <key>loginuri</key> <string>http://login.osgrid.org/</string>
-      <key>password</key> <string>http://www.osgrid.org/</string>
-      <key>platform</key> <string>OpenSim</string>
-      <key>register</key> <string>http://www.osgrid.org/</string>
-      <key>render_compat</key> <boolean>1</boolean>
-      <key>search</key> <string />
-      <key>support</key> <string>http://www.osgrid.org/</string>
-      <key>website</key> <string>http://www.osgrid.org/</string>
-    </map>
-
-    <!-- Local Host -->
-    <map>
-      <key>gridnick</key><string>local</string>
-      <key>gridname</key><string>Local Host</string>
-      <key>platform</key><string>Aurora</string>
-      <key>loginuri</key><string>http://127.0.0.1:9000/</string>
-      <key>helperuri</key><string>http://127.0.0.1:9000/</string>
-      <key>render_compat</key><boolean>1</boolean>
-      <key>auto_update</key><boolean>0</boolean>
-    </map>
-
   </array>
 </llsd>

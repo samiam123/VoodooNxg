@@ -371,7 +371,7 @@ public:
 		}
 	}
 	
-	virtual bool followRedir()
+	bool followRedir() const
 	{
 		return mFollowRedir;
 	}

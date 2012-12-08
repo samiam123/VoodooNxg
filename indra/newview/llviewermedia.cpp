@@ -70,8 +70,10 @@ class LLMimeDiscoveryResponder : public LLHTTPClient::Responder
 {
 LOG_CLASS(LLMimeDiscoveryResponder);
 public:
-	LLMimeDiscoveryResponder( viewer_media_t media_impl)
+	//LLMimeDiscoveryResponder( viewer_media_t media_impl)
+	LLMimeDiscoveryResponder(viewer_media_t media_impl, std::string const& default_mime_type)
 		: mMediaImpl(media_impl),
+		mDefaultMimeType(default_mime_type),
 		  mInitialized(false)
 	{}
 
@@ -99,6 +101,7 @@ public:
 
 	public:
 		viewer_media_t mMediaImpl;
+		std::string mDefaultMimeType;
 		bool mInitialized;
 };
 
@@ -1285,7 +1288,8 @@ void LLViewerMediaImpl::navigateTo(const std::string& url, const std::string& mi
 		{
 			if(mime_type.empty())
 			{
-				LLHTTPClient::getHeaderOnly( url, new LLMimeDiscoveryResponder(this));
+				//LLHTTPClient::getHeaderOnly( url, new LLMimeDiscoveryResponder(this));
+				LLHTTPClient::getHeaderOnly(url, new LLMimeDiscoveryResponder(this, "text/html"));
 			}
 			else if(initializeMedia(mime_type) && (plugin = getMediaPlugin()))
 			{
